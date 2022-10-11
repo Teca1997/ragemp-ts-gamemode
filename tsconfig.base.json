@@ -4,7 +4,7 @@
 	"compilerOptions": {
 		"skipLibCheck": false,
 		"target": "esnext",
-		"module": "commonjs",
+		"module": "CommonJS",
 		"moduleResolution": "node",
 		"lib": ["es6", "esnext", "DOM"],
 		"rootDir": ".",

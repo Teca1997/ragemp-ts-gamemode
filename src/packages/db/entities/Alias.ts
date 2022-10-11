@@ -1,0 +1,19 @@
+import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
+
+import { Character } from './Character';
+
+@Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
+export class Alias {
+	@Index()
+	@PrimaryColumn({ name: 'aliasingId', type: 'int8' })
+	@ManyToOne(() => Character, (character) => character.aliasAliasing)
+	aliasing!: number;
+
+	@Index()
+	@PrimaryColumn({ name: 'aliasedId', type: 'int8' })
+	@ManyToOne(() => Character, (character) => character.aliasAliased)
+	aliased!: number;
+
+	@Column({ length: 50 })
+	alias!: string;
+}
