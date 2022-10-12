@@ -27,14 +27,12 @@ export class setReportClaimedTimeTrigger1665107964552 implements MigrationInterf
 
 	async down(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.query(`
-		DROP TRIGGER IF EXISTS ${process.env.DB_SCHEMA}.set_report_claimed_time_trigger ON ${process.env.DB_SCHEMA}.vehicle;
+		DROP TRIGGER IF EXISTS set_report_claimed_time_trigger ON ${process.env.DB_SCHEMA}.report;
 		`);
-		await queryRunner.query('');
 		console.log('next_house_number_assign_trigger deleted');
 		await queryRunner.query(`
 		DROP FUNCTION IF EXISTS ${process.env.DB_SCHEMA}.set_report_claimed_time();
 		`);
-		await queryRunner.query('');
 		console.log('set_report_claimed_time() function deleted!');
 	}
 }

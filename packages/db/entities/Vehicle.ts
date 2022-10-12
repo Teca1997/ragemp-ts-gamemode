@@ -17,7 +17,7 @@ export class Vehicle {
 	plate?: string;
 
 	@Column({ length: 30, nullable: false })
-	modelHash!: string;
+	model!: string;
 
 	@Column({ nullable: false, default: false })
 	doorState?: boolean;
@@ -35,7 +35,7 @@ export class Vehicle {
 	mods?: VehicleMod[];
 
 	@Column({ type: 'jsonb', nullable: true })
-	location!: VehiclePosition;
+	position!: Position;
 
 	@CreateDateColumn({ type: 'timestamptz' })
 	dateCreated?: Date;
@@ -51,7 +51,7 @@ export class Vehicle {
 	characterOwner?: number;
 
 	@Index()
-	@ManyToOne(() => Corporation, (corporation) => corporation.corporationVehicle, { nullable: true })
+	@ManyToOne(() => Corporation, (corporation) => corporation.corporationVehicles, { nullable: true })
 	corporationOwner?: number;
 
 	@Index()

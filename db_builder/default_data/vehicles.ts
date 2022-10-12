@@ -2,9 +2,9 @@ import { Vehicle } from '../../packages/db/entities/Vehicle';
 
 export const default_vehicles: Vehicle[] = [
 	{
-		modelHash: 'comet3',
-		location: {
-			position: {
+		model: 'comet3',
+		position: {
+			location: {
 				x: 0,
 				y: 0,
 				z: 0
@@ -21,9 +21,9 @@ export const default_vehicles: Vehicle[] = [
 		]
 	},
 	{
-		modelHash: 'comet3',
-		location: {
-			position: {
+		model: 'comet3',
+		position: {
+			location: {
 				x: 0,
 				y: 0,
 				z: 0

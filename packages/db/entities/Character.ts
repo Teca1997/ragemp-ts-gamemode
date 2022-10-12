@@ -16,7 +16,7 @@ import { Account } from './Account';
 import { Alias } from './Alias';
 import { CharacterIdLog } from './CharacterIdLog';
 import { CharacterPunishment } from './CharacterPunishment';
-import { Corporation } from './Corporation';
+import { CorporationRole } from './CorporationRole';
 import { Group } from './Group';
 import { House } from './House';
 import { Report } from './Report';
@@ -55,7 +55,7 @@ export class Character {
 	hair!: CharacterHair;
 
 	@Column({ type: 'jsonb' })
-	location!: Position;
+	position!: Position;
 
 	@Column({ type: 'date' })
 	dateOfBirth!: string;
@@ -87,19 +87,19 @@ export class Character {
 	@Index()
 	@Column({ type: 'number', name: 'accountId' })
 	@ManyToOne(() => Account, (account) => account.characters)
-	account!: number;
+	account!: Account | number;
+
+	@ManyToOne(() => Group, (group) => group.members, { nullable: true })
+	group?: Group | number;
 
 	@OneToMany(() => Alias, (alias) => alias.aliasing, { nullable: false, eager: true })
-	aliasAliasing?: Alias[];
+	aliasedCharacters?: Alias[];
 
 	@OneToMany(() => Alias, (alias) => alias.aliased, { nullable: false, eager: true })
-	aliasAliased?: Alias[];
+	aliasedByCharacters?: Alias[];
 
-	@OneToMany(() => Corporation, (corporation) => corporation.owner, { nullable: false, eager: true })
-	characterCorporation?: Corporation[];
-
-	@OneToMany(() => Group, (group) => group.owner, { nullable: false, eager: true })
-	characterGroup?: Group[];
+	@ManyToOne(() => CorporationRole, (corporationRole) => corporationRole.characters)
+	corporationRole?: CorporationRole | number;
 
 	@OneToMany(() => CharacterIdLog, (characterIdLog) => characterIdLog.character, { nullable: false, eager: true })
 	characterIdLog?: CharacterIdLog[];

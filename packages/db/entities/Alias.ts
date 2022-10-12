@@ -6,12 +6,12 @@ import { Character } from './Character';
 export class Alias {
 	@Index()
 	@PrimaryColumn({ name: 'aliasingId', type: 'int8' })
-	@ManyToOne(() => Character, (character) => character.aliasAliasing)
+	@ManyToOne(() => Character, (character) => character.aliasedCharacters)
 	aliasing!: number;
 
 	@Index()
 	@PrimaryColumn({ name: 'aliasedId', type: 'int8' })
-	@ManyToOne(() => Character, (character) => character.aliasAliased)
+	@ManyToOne(() => Character, (character) => character.aliasedByCharacters)
 	aliased!: number;
 
 	@Column({ length: 50 })

@@ -31,14 +31,12 @@ export class newVehiclePlateGenerationTrigger1665107964550 implements MigrationI
 
 	async down(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.query(`
-		DROP TRIGGER IF EXISTS ${process.env.DB_SCHEMA}.new_vehicle_plate_generation_trigger ON ${process.env.DB_SCHEMA}.vehicle;
+		DROP TRIGGER IF EXISTS new_vehicle_plate_generation_trigger ON ${process.env.DB_SCHEMA}.vehicle;
 		`);
-		await queryRunner.query('');
 		console.log('next_house_number_assign_trigger deleted');
 		await queryRunner.query(`
 		DROP FUNCTION IF EXISTS ${process.env.DB_SCHEMA}.new_vehicle_plate_generation();
 		`);
-		await queryRunner.query('');
 		console.log('new_vehicle_plate_generation() function deleted');
 	}
 }

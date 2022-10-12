@@ -16,28 +16,15 @@ export class createQueryUser1665107964549 implements MigrationInterface {
 		`);
 		console.log(
 			greenBright(`
-				${process.env.DB_USERNAME} user created and granted 
-				SELECT, INSERT, UPDATE AND DELETE in schema ${process.env.DB_SCHEMA};
+				${process.env.DB_USERNAME} user created and granted SELECT, INSERT, UPDATE AND DELETE in schema ${process.env.DB_SCHEMA};
 			`)
 		);
 	}
 
 	async down(queryRunner: QueryRunner): Promise<void> {
-		await queryRunner.query(`
-			DO
-			$DO$
-			BEGIN
-				IF EXISTS (
-					SELECT FROM pg_catalog.pg_roles
-					WHERE  rolname = '${process.env.DB_USERNAME}') THEN
-						REVOKE ALL ON DATABASE ${process.env.DB_DATABASE} FROM ${process.env.DB_USERNAME};
-						
-						REVOKE ALL ON SCHEMA ${process.env.DB_SCHEMA} FROM ${process.env.DB_USERNAME};
-						DROP USER ${process.env.DB_USERNAME};
-				END IF;
-			END
-			$DO$;
-		`);
+		await queryRunner.query(`REVOKE ALL ON DATABASE ${process.env.DB_DATABASE} FROM ${process.env.DB_USERNAME};`);
+		await queryRunner.query(`revoke select, update, delete, insert on all tables in ${process.env.DB_SCHEMA} test ${process.env.DB_USERNAME};`);
+		await queryRunner.query(`DROP USER ${process.env.DB_USERNAME};`);
 		console.log(`user ${process.env.DB_USERNAME} deleted`);
 	}
 }

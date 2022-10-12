@@ -6,14 +6,14 @@ declare global {
 		customMethod(message: String): void;
 	}
 
-	interface Position {
+	interface Vector {
 		x: number;
 		y: number;
 		z: number;
 	}
 
-	interface VehiclePosition {
-		position: Position;
+	interface Position {
+		location: Vector;
 		heading: number;
 		dimension: number;
 	}
@@ -84,6 +84,7 @@ declare global {
 			DB_LOGGING: string;
 			DB_SYNCHRONISE: string;
 			DB_DROPDB: string;
+			DB_INSERTDATA: string;
 		}
 	}
 }

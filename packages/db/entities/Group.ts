@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Character } from './Character';
 import { House } from './House';
@@ -21,13 +21,17 @@ export class Group {
 	@UpdateDateColumn({ type: 'timestamptz' })
 	dateUpdated?: Date;
 
+	/*
 	@Index()
 	@ManyToOne(() => Character, (character) => character.characterGroup, { nullable: true })
 	owner?: number;
-
+	*/
 	@OneToMany(() => Vehicle, (vehicle) => vehicle.groupOwner)
 	groupVehicle?: number[];
 
 	@OneToMany(() => House, (house) => house.groupOwner)
 	houses?: number[];
+
+	@OneToMany(() => Character, (character) => character.group)
+	members?: number[];
 }

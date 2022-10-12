@@ -13,7 +13,7 @@ export class House {
 	id?: number;
 
 	@Column('jsonb')
-	markerPosition!: Position;
+	markerPosition!: Vector;
 
 	@Column('double precision', { default: () => '1000000' })
 	price?: number;
@@ -23,7 +23,7 @@ export class House {
 	characterOwner?: number;
 
 	@Index()
-	@ManyToOne(() => Corporation, (corporation) => corporation.houses, { nullable: true })
+	@ManyToOne(() => Corporation, (corporation) => corporation.corporationHouses, { nullable: true })
 	corporationOwner?: number;
 
 	@Index()

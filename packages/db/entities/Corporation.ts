@@ -1,6 +1,6 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import { Character } from './Character';
+import { CorporationRole } from './CorporationRole';
 import { House } from './House';
 import { Vehicle } from './Vehicle';
 
@@ -21,13 +21,12 @@ export class Corporation {
 	@UpdateDateColumn({ type: 'timestamptz' })
 	dateUpdated?: Date;
 
-	@Index()
-	@ManyToOne(() => Character, (character) => character.characterCorporation, { nullable: true })
-	owner?: number;
-
 	@OneToMany(() => Vehicle, (vehicle) => vehicle.corporationOwner)
-	corporationVehicle?: number[];
+	corporationVehicles?: Vehicle[];
 
 	@OneToMany(() => House, (house) => house.corporationOwner)
-	houses?: number[];
+	corporationHouses?: House[];
+
+	@OneToMany(() => CorporationRole, (corporationRole) => corporationRole.corporation)
+	corporationRoles?: CorporationRole[];
 }

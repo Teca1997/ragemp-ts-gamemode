@@ -14,10 +14,10 @@ export class HouseWorldDoor {
 	state!: boolean;
 
 	@Column('jsonb')
-	labelPosition!: Position;
+	labelPosition!: Vector;
 
 	@Column('jsonb')
-	interactionColshapePosition!: Position;
+	interactionColshapePosition!: Vector;
 
 	@Column('float')
 	interactionColshapeRadius!: number;

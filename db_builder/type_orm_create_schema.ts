@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 
 import { DataSource, Repository } from 'typeorm';
-import { blue, greenBright, red } from 'colorette';
+import { greenBright, red } from 'colorette';
 
 import { Account } from '../packages/db/entities/Account';
 import { AccountIp } from '../packages/db/entities/AccountIp';
@@ -11,6 +11,7 @@ import { Alias } from '../packages/db/entities/Alias';
 import { Character } from '../packages/db/entities/Character';
 import { CharacterPunishment } from '../packages/db/entities/CharacterPunishment';
 import { Corporation } from '../packages/db/entities/Corporation';
+import { CorporationRole } from '../packages/db/entities/CorporationRole';
 import { Group } from '../packages/db/entities/Group';
 import { House } from '../packages/db/entities/House';
 import { HouseWorldDoor } from '../packages/db/entities/HouseWorldDoor';
@@ -24,6 +25,7 @@ import { Serial } from '../packages/db/entities/Serial';
 import { SocialId } from '../packages/db/entities/SocialId';
 import { Vehicle } from '../packages/db/entities/Vehicle';
 import { config } from 'dotenv';
+import { createQueryUser1665107964549 } from './migrations/1665107964549-create_query_user';
 import { default_acount_ips } from './default_data/accountips';
 import { default_acount_serials } from './default_data/accountserials';
 import { default_acount_socialids } from './default_data/accountsocialids';
@@ -31,6 +33,7 @@ import { default_acounts } from './default_data/account';
 import { default_aliases } from './default_data/aliases';
 import { default_character_punishments } from './default_data/characterpunishments';
 import { default_characters } from './default_data/characters';
+import { default_corporation_roles } from './default_data/corporationroles';
 import { default_corporations } from './default_data/corporations';
 import { default_groups } from './default_data/groups';
 import { default_house_world_doors } from './default_data/houseworlddoors';
@@ -44,7 +47,11 @@ import { default_roles } from './default_data/roles';
 import { default_serials } from './default_data/serials';
 import { default_social_ids } from './default_data/socialids';
 import { default_vehicles } from './default_data/vehicles';
+import { newVehiclePlateGenerationTrigger1665107964550 } from './migrations/1665107964550-new_vehicle_plate_trigger';
+import { nextCorporationRoleAssignTrigger1665107964553 } from './migrations/1665107964553-next_corporation_role_level_assign_trigger';
+import { nextHouseNumberTrigger1665107964551 } from './migrations/1665107964551-next_house_number_trigger';
 import path from 'path';
+import { setReportClaimedTimeTrigger1665107964552 } from './migrations/1665107964552-set_report_claimed_time_trigger';
 
 config({
 	path: path.resolve('.env')
@@ -71,42 +78,24 @@ AppDataSource.initialize()
 	.then(async () => {
 		console.log(`Datasource initializeed`);
 		if (process.env.DB_DROPDB === 'true') {
-			await AppDataSource.dropDatabase();
-			console.log(blue(`DATABASE DROPPED!!!!!`));
-			await AppDataSource.query(`
-				DO
-				$DO$
-				BEGIN
-					IF EXISTS (
-						SELECT FROM pg_catalog.pg_roles
-						WHERE  rolname = '${process.env.DB_USERNAME}') THEN
-							REVOKE ALL ON DATABASE ${process.env.DB_DATABASE} FROM ${process.env.DB_USERNAME};
-							
-							REVOKE ALL ON SCHEMA ${process.env.DB_SCHEMA} FROM ${process.env.DB_USERNAME};
-							DROP USER ${process.env.DB_USERNAME};
-					END IF;
-				END
-				$DO$;
-			`);
-			await AppDataSource.query(`
-				DROP FUNCTION IF EXISTS ${process.env.DB_SCHEMA}.next_house_number_assign();
-			`);
-			await AppDataSource.query(`
-				DROP FUNCTION IF EXISTS ${process.env.DB_SCHEMA}.new_vehicle_plate_generation();
-			`);
-			await AppDataSource.query(`
-				DROP FUNCTION IF EXISTS ${process.env.DB_SCHEMA}.set_report_claimed_time();
-			`);
+			const queryRunner = AppDataSource.createQueryRunner();
+			await new nextCorporationRoleAssignTrigger1665107964553().down(queryRunner);
+			await new setReportClaimedTimeTrigger1665107964552().down(queryRunner);
+			await new nextHouseNumberTrigger1665107964551().down(queryRunner);
+			await new newVehiclePlateGenerationTrigger1665107964550().down(queryRunner);
+			await new createQueryUser1665107964549().down(queryRunner);
 		}
 		AppDataSource.synchronize(process.env.DB_SYNCHRONISE === 'true' ? true : false)
 			.then(() => {
 				AppDataSource.runMigrations()
 					.then(async () => {
-						insert_default_data()
-							.then(async () => {})
-							.catch((error) => {
-								console.log(red('Error inserting data\n') + error);
-							});
+						if (process.env.DB_INSERTDATA === 'true' ? true : false) {
+							await insert_default_data()
+								.then(async () => {})
+								.catch((error) => {
+									console.log(red('Error inserting data\n') + error);
+								});
+						}
 					})
 					.catch((error) => console.log(red(error)));
 			})
@@ -318,32 +307,72 @@ export async function insert_default_data() {
 	console.log(greenBright('--------accountsocialids data inserted--------'));
 	console.log(greenBright('----------------------------------------------'));
 
-	const characterRepository: Repository<Character> = await AppDataSource.getRepository(Character);
-	await Promise.all(
-		default_characters.map(async (character: Character) => {
-			await characterRepository.save(characterRepository.create(character));
-		})
-	);
-
-	/*
 	await AppDataSource.createQueryBuilder()
 		.insert()
-		.into(Character)
-		.values(default_characters)
+		.into(Corporation)
+		.values(default_corporations)
 		.returning(`*`)
 		.execute()
 		.then((result) => {
 			console.log(greenBright('---------------------------------------------'));
-			console.log(greenBright('----------characters data inserted-----------'));
+			console.log(greenBright('--------corporations data inserted-----------'));
 			console.log(greenBright('---------------------------------------------'));
-			result.raw.map((row: Character) => {
+			result.raw.map((row: Corporation) => {
 				console.log(row);
 			});
 			console.log(greenBright('---------------------------------------------'));
-			console.log(greenBright('----------characters data inserted-----------'));
+			console.log(greenBright('--------corporations data inserted-----------'));
 			console.log(greenBright('---------------------------------------------'));
 		});
-		*/
+
+	await AppDataSource.createQueryBuilder()
+		.insert()
+		.into(CorporationRole)
+		.values(default_corporation_roles)
+		.returning(`*`)
+		.execute()
+		.then((result) => {
+			console.log(greenBright('---------------------------------------------'));
+			console.log(greenBright('-------corporationroles data inserted--------'));
+			console.log(greenBright('---------------------------------------------'));
+			result.raw.map((row: CorporationRole) => {
+				console.log(row);
+			});
+			console.log(greenBright('---------------------------------------------'));
+			console.log(greenBright('-------corporationroles data inserted--------'));
+			console.log(greenBright('---------------------------------------------'));
+		});
+	await AppDataSource.createQueryBuilder()
+		.insert()
+		.into(Group)
+		.values(default_groups)
+		.returning(`*`)
+		.execute()
+		.then((result) => {
+			console.log(greenBright('---------------------------------------------'));
+			console.log(greenBright('------------groups data inserted-------------'));
+			console.log(greenBright('---------------------------------------------'));
+			result.raw.map((row: Group) => {
+				console.log(row);
+			});
+			console.log(greenBright('---------------------------------------------'));
+			console.log(greenBright('------------groups data inserted-------------'));
+			console.log(greenBright('---------------------------------------------'));
+		});
+
+	const characterRepository: Repository<Character> = await AppDataSource.getRepository(Character);
+	console.log(greenBright('---------------------------------------------'));
+	console.log(greenBright('----------characters data inserted-----------'));
+	console.log(greenBright('---------------------------------------------'));
+	await Promise.all(
+		default_characters.map(async (character: Character) => {
+			console.log(await characterRepository.save(characterRepository.create(character)));
+		})
+	);
+	console.log(greenBright('---------------------------------------------'));
+	console.log(greenBright('----------characters data inserted-----------'));
+	console.log(greenBright('---------------------------------------------'));
+
 	await AppDataSource.createQueryBuilder()
 		.insert()
 		.into(Alias)
@@ -381,40 +410,6 @@ export async function insert_default_data() {
 	console.log(greenBright('------characterpunishments data inserted------'));
 	console.log(greenBright('----------------------------------------------'));
 
-	await AppDataSource.createQueryBuilder()
-		.insert()
-		.into(Corporation)
-		.values(default_corporations)
-		.returning(`*`)
-		.execute()
-		.then((result) => {
-			console.log(greenBright('---------------------------------------------'));
-			console.log(greenBright('--------corporations data inserted-----------'));
-			console.log(greenBright('---------------------------------------------'));
-			result.raw.map((row: Corporation) => {
-				console.log(row);
-			});
-			console.log(greenBright('---------------------------------------------'));
-			console.log(greenBright('--------corporations data inserted-----------'));
-			console.log(greenBright('---------------------------------------------'));
-		});
-	await AppDataSource.createQueryBuilder()
-		.insert()
-		.into(Group)
-		.values(default_groups)
-		.returning(`*`)
-		.execute()
-		.then((result) => {
-			console.log(greenBright('---------------------------------------------'));
-			console.log(greenBright('------------groups data inserted-------------'));
-			console.log(greenBright('---------------------------------------------'));
-			result.raw.map((row: Group) => {
-				console.log(row);
-			});
-			console.log(greenBright('---------------------------------------------'));
-			console.log(greenBright('------------groups data inserted-------------'));
-			console.log(greenBright('---------------------------------------------'));
-		});
 	await AppDataSource.createQueryBuilder()
 		.insert()
 		.into(House)
@@ -490,4 +485,6 @@ export async function insert_default_data() {
 	console.log(greenBright('----------------------------------------------'));
 	console.log(greenBright('-----------vehicles data inserted-------------'));
 	console.log(greenBright('----------------------------------------------'));
+
+	return;
 }

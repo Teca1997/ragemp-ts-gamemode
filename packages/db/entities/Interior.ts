@@ -11,7 +11,7 @@ export class Interior {
 	ipl?: string;
 
 	@Column('jsonb')
-	interiorLocation!: Position;
+	interiorLocation!: Vector;
 
 	@Column({ length: 50 })
 	name!: string;

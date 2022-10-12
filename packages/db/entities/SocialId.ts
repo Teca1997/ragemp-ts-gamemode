@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 import { Account } from './Account';
 
@@ -6,9 +6,6 @@ import { Account } from './Account';
 export class SocialId {
 	@PrimaryColumn({ type: 'int8' })
 	socialId!: number;
-
-	@Column({ default: () => 'CURRENT_TIMESTAMP' })
-	timeAdded?: Date;
 
 	@CreateDateColumn({ type: 'timestamptz' })
 	dateCreated?: Date;

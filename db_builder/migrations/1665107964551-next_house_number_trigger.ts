@@ -18,12 +18,8 @@ export class nextHouseNumberTrigger1665107964551 implements MigrationInterface {
 			nextHouseNumber int;
 		BEGIN
 			select count(*) + 1 from ${process.env.DB_SCHEMA}.house h where new."street" like h."street" into nextHouseNumber;
-			if nextHouseNumber = 0 THEN
-				new."houseNumber" = 0;
-			else
-				new."houseNumber" = nextHouseNumber;
-			return new;
-			end if;
+			new."houseNumber" = nextHouseNumber;
+			RETURN new;
 		END;
 		$$;
 		`);
@@ -39,7 +35,7 @@ export class nextHouseNumberTrigger1665107964551 implements MigrationInterface {
 
 	async down(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.query(`
-		DROP TRIGGER IF EXISTS ${process.env.DB_SCHEMA}.next_house_number_assign_trigger;
+		DROP TRIGGER IF EXISTS next_house_number_assign_trigger ON ${process.env.DB_SCHEMA}.house;
 		`);
 		console.log('next_house_number_assign_trigger deleted');
 
