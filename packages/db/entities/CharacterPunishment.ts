@@ -1,4 +1,4 @@
-import { DeleteDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 import { Character } from './Character';
 import { Punishment } from './Punishment';
@@ -16,7 +16,7 @@ export class CharacterPunishment {
 	@ManyToOne(() => Character, (character) => character.characterIssuedPunishments, { nullable: true })
 	characterIssuedPunishment?: number;
 
-	@PrimaryColumn({ type: 'timestamptz', name: 'dateCreated', default: () => 'CURRENT_TIMESTAMP' })
+	@CreateDateColumn({ type: 'timestamptz', name: 'dateCreated', primary: true })
 	dateCreated?: Date;
 
 	@DeleteDateColumn({ type: 'timestamptz' })

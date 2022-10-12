@@ -3,7 +3,7 @@
     "builddb": "ts-node db_builder/type_orm_create_schema.ts",
     "buildserver": "tsc -p ./packages/tsconfig.json",
     "buildclient": "tsc -p ./client_packages/tsconfig.json",
-    "build": "npm run buildserver | npm run buildclient"
+    "build": "npm run buildserver && npm run buildclient"
   },
   "devDependencies": {
     "@ragempcommunity/types-client": "^2.1.3",

@@ -1,4 +1,16 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import {
+	BeforeInsert,
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	Index,
+	ManyToOne,
+	OneToMany,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
+} from 'typeorm';
+import { default_female_clothes, default_male_clothes } from '../../constants/defaultChacterClothes';
 
 import { Account } from './Account';
 import { Alias } from './Alias';
@@ -22,7 +34,25 @@ export class Character {
 	lastname!: string;
 
 	@Column({ type: 'jsonb' })
-	appearance!: object;
+	colors!: CharacterColors;
+
+	@Column({ type: 'int' })
+	gender!: number;
+
+	@Column({ type: 'jsonb', nullable: false })
+	parents!: CharacterParents;
+
+	@Column('int', { array: true })
+	faceFeatures!: number[];
+
+	@Column({ type: 'jsonb' })
+	headOverlay!: CharacterHeadOverlay[];
+
+	@Column({ type: 'jsonb' })
+	clothes?: CharacterClothingItem[];
+
+	@Column({ type: 'jsonb' })
+	hair!: CharacterHair;
 
 	@Column({ type: 'jsonb' })
 	location!: Position;
@@ -43,7 +73,7 @@ export class Character {
 	inventory!: any;
 
 	@Column({ type: 'jsonb', default: { armour: 0, health: 100, hunger: 100, thirst: 100 } })
-	vitals?: any;
+	vitals?: CharacterVitals;
 
 	@CreateDateColumn({ type: 'timestamptz' })
 	dateCreated?: Date;
@@ -75,13 +105,13 @@ export class Character {
 	characterIdLog?: CharacterIdLog[];
 
 	@OneToMany(() => Vehicle, (vehicle) => vehicle.characterOwner, { nullable: false, eager: true })
-	characterVehicle?: number[];
+	characterVehicle?: Vehicle[];
 
 	@OneToMany(() => Report, (report) => report.claimedBy, { nullable: false, eager: true })
-	characterClaimedBy?: number[];
+	characterClaimedBy?: Report[];
 
 	@OneToMany(() => Report, (aliased) => aliased.reportedBy, { nullable: false, eager: true })
-	characterReportedBy?: number[];
+	characterReportedBy?: Report[];
 
 	@OneToMany(() => House, (house) => house.characterOwner, { nullable: false, eager: true })
 	houses?: House[];
@@ -91,4 +121,15 @@ export class Character {
 
 	@OneToMany(() => CharacterPunishment, (characterPunishment) => characterPunishment.characterIssuedPunishment, { nullable: false, eager: true })
 	characterIssuedPunishments?: CharacterPunishment[];
+
+	//event listners
+	@BeforeInsert()
+	setDefaultCLothes?(): void {
+		console.log('called before insert');
+		if (this.gender == 1) {
+			this.clothes = default_male_clothes;
+		} else {
+			this.clothes = default_female_clothes;
+		}
+	}
 }

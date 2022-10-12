@@ -1,5 +1,6 @@
 import 'reflect-metadata';
 
+import { DataSource, Repository } from 'typeorm';
 import { blue, greenBright, red } from 'colorette';
 
 import { Account } from '../packages/db/entities/Account';
@@ -10,7 +11,6 @@ import { Alias } from '../packages/db/entities/Alias';
 import { Character } from '../packages/db/entities/Character';
 import { CharacterPunishment } from '../packages/db/entities/CharacterPunishment';
 import { Corporation } from '../packages/db/entities/Corporation';
-import { DataSource } from 'typeorm';
 import { Group } from '../packages/db/entities/Group';
 import { House } from '../packages/db/entities/House';
 import { HouseWorldDoor } from '../packages/db/entities/HouseWorldDoor';
@@ -317,6 +317,15 @@ export async function insert_default_data() {
 	console.log(greenBright('----------------------------------------------'));
 	console.log(greenBright('--------accountsocialids data inserted--------'));
 	console.log(greenBright('----------------------------------------------'));
+
+	const characterRepository: Repository<Character> = await AppDataSource.getRepository(Character);
+	await Promise.all(
+		default_characters.map(async (character: Character) => {
+			await characterRepository.save(characterRepository.create(character));
+		})
+	);
+
+	/*
 	await AppDataSource.createQueryBuilder()
 		.insert()
 		.into(Character)
@@ -334,6 +343,7 @@ export async function insert_default_data() {
 			console.log(greenBright('----------characters data inserted-----------'));
 			console.log(greenBright('---------------------------------------------'));
 		});
+		*/
 	await AppDataSource.createQueryBuilder()
 		.insert()
 		.into(Alias)
