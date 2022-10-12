@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { AccountIp } from './AccountIp';
 import { AccountSerial } from './AccountSerial';
@@ -18,17 +18,23 @@ export class Account {
 	@Column({ length: 50, unique: true })
 	email!: string;
 
-	@Column({ default: () => 'CURRENT_TIMESTAMP' })
-	dateCreated?: Date;
-
-	@Column({ nullable: true })
-	dateActivated?: Date;
-
-	@Column({ nullable: true })
-	lastLogin?: Date;
-
 	@Column({ type: 'char', length: 60 })
 	password!: string;
+
+	@Column({ type: 'timestamptz', nullable: true })
+	dateActivated?: Date;
+
+	@Column({ type: 'timestamptz', nullable: true })
+	lastLogin?: Date;
+
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 
 	@Index()
 	@Column({ type: 'number', name: 'roleId' })

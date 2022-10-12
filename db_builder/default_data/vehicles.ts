@@ -1,4 +1,4 @@
-import { Vehicle } from '../../src/packages/db/entities/Vehicle';
+import { Vehicle } from '../../packages/db/entities/Vehicle';
 
 export const default_vehicles: Vehicle[] = [
 	{

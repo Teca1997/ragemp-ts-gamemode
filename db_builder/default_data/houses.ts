@@ -1,4 +1,4 @@
-import { House } from '../../src/packages/db/entities/House';
+import { House } from '../../packages/db/entities/House';
 
 export const default_houses: House[] = [
 	{

@@ -8,7 +8,7 @@
 		"moduleResolution": "node",
 		"lib": ["es6", "esnext", "DOM"],
 		"rootDir": ".",
-		"outDir": "dist",
+		"outDir": "compiled server-files",
 		"strict": true,
 		"removeComments": false,
 		"noUnusedLocals": true,

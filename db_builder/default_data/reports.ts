@@ -1,4 +1,4 @@
-import { Report } from '../../src/packages/db/entities/Report';
+import { Report } from '../..//packages/db/entities/Report';
 
 export const default_reports: Report[] = [
 	{

@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Character } from './Character';
 import { Corporation } from './Corporation';
@@ -38,6 +38,15 @@ export class House {
 
 	@Column('boolean', { name: 'locked', default: () => 'false', nullable: false })
 	locked?: boolean;
+
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 
 	@ManyToOne(() => Interior, (interior) => interior.houses)
 	interior!: number;

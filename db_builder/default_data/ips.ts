@@ -1,4 +1,4 @@
-import { Ip } from '../../src/packages/db/entities/Ip';
+import { Ip } from '../..//packages/db/entities/Ip';
 
 export const default_ips: Ip[] = [
 	{

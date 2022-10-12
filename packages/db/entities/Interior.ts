@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { House } from './House';
 
@@ -15,6 +15,15 @@ export class Interior {
 
 	@Column({ length: 50 })
 	name!: string;
+
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 
 	@OneToMany(() => House, (house) => house.interior)
 	houses?: number[];

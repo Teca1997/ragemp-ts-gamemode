@@ -1,4 +1,4 @@
-import { AccountSerial } from '../../src/packages/db/entities/AccountSerial';
+import { AccountSerial } from '../../packages/db/entities/AccountSerial';
 
 export const default_acount_serials: AccountSerial[] = [
 	{

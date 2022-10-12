@@ -1,5 +1,23 @@
 import '@types';
 declare global {
+	interface Position {
+		x: number;
+		y: number;
+		z: number;
+	}
+
+	interface VehiclePosition {
+		position: Position;
+		heading: number;
+		dimension: number;
+	}
+
+	interface VehicleMod {
+		modType: number;
+		description: string;
+		value: number;
+	}
+
 	namespace NodeJS {
 		interface ProcessEnv {
 			PRODUCTION_MODE: string;

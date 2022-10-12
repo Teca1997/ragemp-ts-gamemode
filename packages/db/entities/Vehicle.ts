@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Character } from './Character';
 import { Corporation } from './Corporation';
@@ -37,6 +37,15 @@ export class Vehicle {
 	@Column({ type: 'jsonb', nullable: true })
 	location!: VehiclePosition;
 
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
+
 	@Index()
 	@ManyToOne(() => Character, (character) => character.characterVehicle, { nullable: true })
 	characterOwner?: number;
@@ -48,7 +57,4 @@ export class Vehicle {
 	@Index()
 	@ManyToOne(() => Group, (group) => group.groupVehicle, { nullable: true })
 	groupOwner?: number;
-
-	@Column({ default: () => 'CURRENT_TIMESTAMP' })
-	createdAt?: Date;
 }

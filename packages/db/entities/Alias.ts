@@ -1,4 +1,4 @@
-import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 import { Character } from './Character';
 
@@ -16,4 +16,13 @@ export class Alias {
 
 	@Column({ length: 50 })
 	alias!: string;
+
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 }

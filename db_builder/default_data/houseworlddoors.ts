@@ -1,4 +1,4 @@
-import { HouseWorldDoor } from '../../src/packages/db/entities/HouseWorldDoor';
+import { HouseWorldDoor } from '../../packages/db/entities/HouseWorldDoor';
 
 export const default_house_world_doors: HouseWorldDoor[] = [
 	{

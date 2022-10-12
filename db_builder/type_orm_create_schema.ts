@@ -2,27 +2,27 @@ import 'reflect-metadata';
 
 import { blue, greenBright, red } from 'colorette';
 
-import { Account } from '../src/packages/db/entities/Account';
-import { AccountIp } from '../src/packages/db/entities/AccountIp';
-import { AccountSerial } from '../src/packages/db/entities/AccountSerial';
-import { AccountSocialId } from '../src/packages/db/entities/AccountSocialId';
-import { Alias } from '../src/packages/db/entities/Alias';
-import { Character } from '../src/packages/db/entities/Character';
-import { CharacterPunishment } from '../src/packages/db/entities/CharacterPunishment';
-import { Corporation } from '../src/packages/db/entities/Corporation';
+import { Account } from '../packages/db/entities/Account';
+import { AccountIp } from '../packages/db/entities/AccountIp';
+import { AccountSerial } from '../packages/db/entities/AccountSerial';
+import { AccountSocialId } from '../packages/db/entities/AccountSocialId';
+import { Alias } from '../packages/db/entities/Alias';
+import { Character } from '../packages/db/entities/Character';
+import { CharacterPunishment } from '../packages/db/entities/CharacterPunishment';
+import { Corporation } from '../packages/db/entities/Corporation';
 import { DataSource } from 'typeorm';
-import { Group } from '../src/packages/db/entities/Group';
-import { House } from '../src/packages/db/entities/House';
-import { HouseWorldDoor } from '../src/packages/db/entities/HouseWorldDoor';
-import { Interior } from '../src/packages/db/entities/Interior';
-import { Ip } from '../src/packages/db/entities/Ip';
-import { Punishment } from '../src/packages/db/entities/Punishment';
-import { Report } from '../src/packages/db/entities/Report';
-import { ReportType } from '../src/packages/db/entities/ReportType';
-import { Role } from '../src/packages/db/entities/Role';
-import { Serial } from '../src/packages/db/entities/Serial';
-import { SocialId } from '../src/packages/db/entities/SocialId';
-import { Vehicle } from '../src/packages/db/entities/Vehicle';
+import { Group } from '../packages/db/entities/Group';
+import { House } from '../packages/db/entities/House';
+import { HouseWorldDoor } from '../packages/db/entities/HouseWorldDoor';
+import { Interior } from '../packages/db/entities/Interior';
+import { Ip } from '../packages/db/entities/Ip';
+import { Punishment } from '../packages/db/entities/Punishment';
+import { Report } from '../packages/db/entities/Report';
+import { ReportType } from '../packages/db/entities/ReportType';
+import { Role } from '../packages/db/entities/Role';
+import { Serial } from '../packages/db/entities/Serial';
+import { SocialId } from '../packages/db/entities/SocialId';
+import { Vehicle } from '../packages/db/entities/Vehicle';
 import { config } from 'dotenv';
 import { default_acount_ips } from './default_data/accountips';
 import { default_acount_serials } from './default_data/accountserials';
@@ -58,7 +58,7 @@ const AppDataSource = new DataSource({
 	database: process.env.DB_DATABASE,
 	password: process.env.DB_SUPERPASSWORD,
 	schema: process.env.DB_SCHEMA,
-	entities: ['../src/packages/db/entities/*.ts'],
+	entities: ['./packages/db/entities/*.ts'],
 	migrations: ['./db_builder/migrations/*.ts'],
 	logging: process.env.DB_LOGGING === 'true' ? true : false
 });

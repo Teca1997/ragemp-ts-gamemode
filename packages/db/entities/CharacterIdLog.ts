@@ -1,4 +1,4 @@
-import { Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 import { Character } from './Character';
 
@@ -13,4 +13,13 @@ export class CharacterIdLog {
 
 	@PrimaryColumn({ type: 'int8' })
 	assignedId!: number;
+
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 }

@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 import { Account } from './Account';
 
@@ -9,6 +9,15 @@ export class Serial {
 
 	@Column({ default: () => 'CURRENT_TIMESTAMP' })
 	timeAdded?: Date;
+
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 
 	@OneToMany(() => Account, (account) => account.accountSerials, { nullable: false })
 	accountSerial?: string[];

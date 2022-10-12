@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
 import { Character } from './Character';
 import { ReportType } from './ReportType';
@@ -19,6 +19,15 @@ export class Report {
 
 	@Column({ type: 'text' })
 	reportText!: string;
+
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 
 	@ManyToOne(() => Character, (character) => character.characterReportedBy, { nullable: false })
 	reportedBy!: number;

@@ -1,4 +1,4 @@
-import { Character } from '../../src/packages/db/entities/Character';
+import { Character } from '../../packages/db/entities/Character';
 
 export const default_characters: Character[] = [
 	{

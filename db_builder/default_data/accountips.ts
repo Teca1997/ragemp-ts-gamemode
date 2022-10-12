@@ -1,4 +1,4 @@
-import { AccountIp } from '../../src/packages/db/entities/AccountIp';
+import { AccountIp } from '../../packages/db/entities/AccountIp';
 
 export const default_acount_ips: AccountIp[] = [
 	{ ip: '111.111.111.111', account: 1 },

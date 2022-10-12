@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 import { Account } from './Account';
 import { Ip } from './Ip';
@@ -13,6 +13,12 @@ export class AccountIp {
 	@ManyToOne(() => Ip, (ip) => ip.accountIp, { nullable: false })
 	ip!: string;
 
-	@Column({ default: () => 'CURRENT_TIMESTAMP' })
-	loginTimestamp?: Date;
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 }

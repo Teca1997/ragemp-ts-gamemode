@@ -24,16 +24,6 @@ declare global {
 		value: number;
 	}
 
-	export interface PostgresInterval {
-		years?: number;
-		months?: number;
-		days?: number;
-		hours?: number;
-		minutes?: number;
-		seconds?: number;
-		milliseconds?: number;
-	}
-
 	namespace NodeJS {
 		interface ProcessEnv {
 			PRODUCTION_MODE: string;

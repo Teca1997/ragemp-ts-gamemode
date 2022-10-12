@@ -1,4 +1,4 @@
-import { Account } from '../../src/packages/db/entities/Account';
+import { Account } from '../../packages/db/entities/Account';
 
 export const default_acounts: Account[] = [
 	{
