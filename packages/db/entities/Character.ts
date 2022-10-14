@@ -14,10 +14,10 @@ import { default_female_clothes, default_male_clothes } from '../../constants/de
 
 import { Account } from './Account';
 import { Alias } from './Alias';
+import { CharacterCorporationRole } from './CharacterCorporationRole';
+import { CharacterGroupRole } from './CharacterGroupRole';
 import { CharacterIdLog } from './CharacterIdLog';
 import { CharacterPunishment } from './CharacterPunishment';
-import { CorporationRole } from './CorporationRole';
-import { Group } from './Group';
 import { House } from './House';
 import { Report } from './Report';
 import { Vehicle } from './Vehicle';
@@ -89,17 +89,11 @@ export class Character {
 	@ManyToOne(() => Account, (account) => account.characters)
 	account!: Account | number;
 
-	@ManyToOne(() => Group, (group) => group.members, { nullable: true })
-	group?: Group | number;
-
 	@OneToMany(() => Alias, (alias) => alias.aliasing, { nullable: false, eager: true })
 	aliasedCharacters?: Alias[];
 
 	@OneToMany(() => Alias, (alias) => alias.aliased, { nullable: false, eager: true })
 	aliasedByCharacters?: Alias[];
-
-	@ManyToOne(() => CorporationRole, (corporationRole) => corporationRole.characters)
-	corporationRole?: CorporationRole | number;
 
 	@OneToMany(() => CharacterIdLog, (characterIdLog) => characterIdLog.character, { nullable: false, eager: true })
 	characterIdLog?: CharacterIdLog[];
@@ -122,10 +116,15 @@ export class Character {
 	@OneToMany(() => CharacterPunishment, (characterPunishment) => characterPunishment.characterIssuedPunishment, { nullable: false, eager: true })
 	characterIssuedPunishments?: CharacterPunishment[];
 
+	@OneToMany(() => CharacterCorporationRole, (characterCorporationRole) => characterCorporationRole.character)
+	corporationRole?: CharacterCorporationRole | number;
+
+	@OneToMany(() => CharacterGroupRole, (characterGroupRole) => characterGroupRole.character)
+	groupRole?: CharacterGroupRole | number;
+
 	//event listners
 	@BeforeInsert()
 	setDefaultCLothes?(): void {
-		console.log('called before insert');
 		if (this.gender == 1) {
 			this.clothes = default_male_clothes;
 		} else {

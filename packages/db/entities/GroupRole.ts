@@ -1,16 +1,16 @@
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
 
-import { CharacterCorporationRole } from './CharacterCorporationRole';
-import { Corporation } from './Corporation';
+import { CharacterGroupRole } from './CharacterGroupRole';
+import { Group } from './Group';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-@Unique('unique_corporation_role_name', ['name', 'corporation'])
-export class CorporationRole {
+@Unique('unique_group_role_name', ['name', 'group'])
+export class GroupRole {
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
 
-	@ManyToOne(() => Corporation, (corporation) => corporation.corporationRoles)
-	corporation!: Corporation | number;
+	@ManyToOne(() => Group, (group) => group.groupRoles)
+	group!: Group | number;
 
 	@Column({ type: 'varchar', length: 50 })
 	name!: string;
@@ -27,6 +27,6 @@ export class CorporationRole {
 	@UpdateDateColumn({ type: 'timestamptz' })
 	dateUpdated?: Date;
 
-	@OneToMany(() => CharacterCorporationRole, (characterCorporationRole) => characterCorporationRole.character)
-	characterCorporationRoles?: CharacterCorporationRole[];
+	@OneToMany(() => CharacterGroupRole, (characterGroupRoles) => characterGroupRoles.character)
+	characterGroupRoles?: CharacterGroupRole[];
 }

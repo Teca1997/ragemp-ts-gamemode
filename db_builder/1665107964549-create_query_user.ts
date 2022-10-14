@@ -23,7 +23,8 @@ export class createQueryUser1665107964549 implements MigrationInterface {
 
 	async down(queryRunner: QueryRunner): Promise<void> {
 		await queryRunner.query(`REVOKE ALL ON DATABASE ${process.env.DB_DATABASE} FROM ${process.env.DB_USERNAME};`);
-		await queryRunner.query(`revoke select, update, delete, insert on all tables in ${process.env.DB_SCHEMA} test ${process.env.DB_USERNAME};`);
+		await queryRunner.query(`revoke all on all tables in SCHEMA ${process.env.DB_SCHEMA} FROM ${process.env.DB_USERNAME};`);
+		await queryRunner.query(`REVOKE USAGE ON SCHEMA ${process.env.DB_SCHEMA} FROM ${process.env.DB_USERNAME};`);
 		await queryRunner.query(`DROP USER ${process.env.DB_USERNAME};`);
 		console.log(`user ${process.env.DB_USERNAME} deleted`);
 	}

@@ -11,7 +11,6 @@ import { Alias } from '../packages/db/entities/Alias';
 import { Character } from '../packages/db/entities/Character';
 import { CharacterPunishment } from '../packages/db/entities/CharacterPunishment';
 import { Corporation } from '../packages/db/entities/Corporation';
-import { CorporationRole } from '../packages/db/entities/CorporationRole';
 import { Group } from '../packages/db/entities/Group';
 import { House } from '../packages/db/entities/House';
 import { HouseWorldDoor } from '../packages/db/entities/HouseWorldDoor';
@@ -25,7 +24,6 @@ import { Serial } from '../packages/db/entities/Serial';
 import { SocialId } from '../packages/db/entities/SocialId';
 import { Vehicle } from '../packages/db/entities/Vehicle';
 import { config } from 'dotenv';
-import { createQueryUser1665107964549 } from './migrations/1665107964549-create_query_user';
 import { default_acount_ips } from './default_data/accountips';
 import { default_acount_serials } from './default_data/accountserials';
 import { default_acount_socialids } from './default_data/accountsocialids';
@@ -33,7 +31,6 @@ import { default_acounts } from './default_data/account';
 import { default_aliases } from './default_data/aliases';
 import { default_character_punishments } from './default_data/characterpunishments';
 import { default_characters } from './default_data/characters';
-import { default_corporation_roles } from './default_data/corporationroles';
 import { default_corporations } from './default_data/corporations';
 import { default_groups } from './default_data/groups';
 import { default_house_world_doors } from './default_data/houseworlddoors';
@@ -83,7 +80,7 @@ AppDataSource.initialize()
 			await new setReportClaimedTimeTrigger1665107964552().down(queryRunner);
 			await new nextHouseNumberTrigger1665107964551().down(queryRunner);
 			await new newVehiclePlateGenerationTrigger1665107964550().down(queryRunner);
-			await new createQueryUser1665107964549().down(queryRunner);
+			//await new createQueryUser1665107964549().down(queryRunner);
 		}
 		AppDataSource.synchronize(process.env.DB_SYNCHRONISE === 'true' ? true : false)
 			.then(() => {
@@ -322,24 +319,6 @@ export async function insert_default_data() {
 			});
 			console.log(greenBright('---------------------------------------------'));
 			console.log(greenBright('--------corporations data inserted-----------'));
-			console.log(greenBright('---------------------------------------------'));
-		});
-
-	await AppDataSource.createQueryBuilder()
-		.insert()
-		.into(CorporationRole)
-		.values(default_corporation_roles)
-		.returning(`*`)
-		.execute()
-		.then((result) => {
-			console.log(greenBright('---------------------------------------------'));
-			console.log(greenBright('-------corporationroles data inserted--------'));
-			console.log(greenBright('---------------------------------------------'));
-			result.raw.map((row: CorporationRole) => {
-				console.log(row);
-			});
-			console.log(greenBright('---------------------------------------------'));
-			console.log(greenBright('-------corporationroles data inserted--------'));
 			console.log(greenBright('---------------------------------------------'));
 		});
 	await AppDataSource.createQueryBuilder()

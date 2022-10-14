@@ -27,7 +27,7 @@ export class House {
 	corporationOwner?: number;
 
 	@Index()
-	@ManyToOne(() => Group, (group) => group.houses, { nullable: true })
+	@ManyToOne(() => Group, (group) => group.groupHouses, { nullable: true })
 	groupOwner?: number;
 
 	@Column('varchar', { length: 100 })

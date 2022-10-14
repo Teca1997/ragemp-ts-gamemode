@@ -51,8 +51,7 @@ export const default_characters: Character[] = [
 			{ overlayId: 8, index: 255, opacity: 100, firstColor: 0, secondColor: 0 },
 			{ overlayId: 9, index: 255, opacity: 100, firstColor: 0, secondColor: 0 },
 			{ overlayId: 10, index: 255, opacity: 100, firstColor: 0, secondColor: 0 }
-		],
-		group: 1
+		]
 	},
 	{
 		firstname: 'Jane',
