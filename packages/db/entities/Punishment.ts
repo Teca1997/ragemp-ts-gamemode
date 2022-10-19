@@ -1,9 +1,10 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Character } from './Character';
+import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class Punishment {
+export class Punishment extends TimestampEntity {
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
 
@@ -15,13 +16,4 @@ export class Punishment {
 
 	@OneToMany(() => Character, (character) => character.characterIssuedPunishments, { nullable: false })
 	characterPunishments?: number[];
-
-	@CreateDateColumn({ type: 'timestamptz' })
-	dateCreated?: Date;
-
-	@DeleteDateColumn({ type: 'timestamptz' })
-	dateDeleted?: Date;
-
-	@UpdateDateColumn({ type: 'timestamptz' })
-	dateUpdated?: Date;
 }

@@ -6,17 +6,14 @@ import { Punishment } from './Punishment';
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
 export class CharacterPunishment {
 	@PrimaryColumn({ type: 'int8', name: 'punishmentId' })
-	@ManyToOne(() => Punishment, (punishment) => punishment.characterPunishments, { nullable: false })
+	@ManyToOne(() => Punishment, (punishment) => punishment.characterPunishments)
 	punishment!: number;
 
 	@PrimaryColumn({ type: 'int8', name: 'characterRecievedPunishmentId' })
-	@ManyToOne(() => Character, (character) => character.characterPunishments, { nullable: false })
+	@ManyToOne(() => Character, (character) => character.characterPunishments)
 	characterRecievedPunishment!: number;
 
-	@ManyToOne(() => Character, (character) => character.characterIssuedPunishments, { nullable: true })
-	characterIssuedPunishment?: number;
-
-	@CreateDateColumn({ type: 'timestamptz', name: 'dateCreated', primary: true })
+	@CreateDateColumn({ type: 'timestamptz', primary: true })
 	dateCreated?: Date;
 
 	@DeleteDateColumn({ type: 'timestamptz' })
@@ -24,4 +21,7 @@ export class CharacterPunishment {
 
 	@UpdateDateColumn({ type: 'timestamptz' })
 	dateUpdated?: Date;
+
+	@ManyToOne(() => Character, (character) => character.characterIssuedPunishments, { nullable: true })
+	characterIssuedPunishment?: number;
 }

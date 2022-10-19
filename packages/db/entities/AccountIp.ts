@@ -1,24 +1,17 @@
-import { CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { Account } from './Account';
 import { Ip } from './Ip';
+import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class AccountIp {
+export class AccountIp extends TimestampEntity {
 	@PrimaryColumn('int8', { name: 'accountId' })
 	@ManyToOne(() => Account, (account) => account.accountIps, { nullable: false })
 	account!: number;
 
-	@PrimaryColumn({ type: 'varchar', length: 15, name: 'ipIp' })
 	@ManyToOne(() => Ip, (ip) => ip.accountIp, { nullable: false })
+	@PrimaryColumn({ type: 'varchar', length: 15, name: 'ipIp' })
+	@JoinColumn()
 	ip!: string;
-
-	@CreateDateColumn({ type: 'timestamptz' })
-	dateCreated?: Date;
-
-	@DeleteDateColumn({ type: 'timestamptz' })
-	dateDeleted?: Date;
-
-	@UpdateDateColumn({ type: 'timestamptz' })
-	dateUpdated?: Date;
 }

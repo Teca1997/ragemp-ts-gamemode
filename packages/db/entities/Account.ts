@@ -1,13 +1,14 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { AccountIp } from './AccountIp';
 import { AccountSerial } from './AccountSerial';
 import { AccountSocialId } from './AccountSocialId';
 import { Character } from './Character';
 import { Role } from './Role';
+import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class Account {
+export class Account extends TimestampEntity {
 	@Index()
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
@@ -26,15 +27,6 @@ export class Account {
 
 	@Column({ type: 'timestamptz', nullable: true })
 	lastLogin?: Date;
-
-	@CreateDateColumn({ type: 'timestamptz' })
-	dateCreated?: Date;
-
-	@DeleteDateColumn({ type: 'timestamptz' })
-	dateDeleted?: Date;
-
-	@UpdateDateColumn({ type: 'timestamptz' })
-	dateUpdated?: Date;
 
 	@Index()
 	@Column({ type: 'number', name: 'roleId' })

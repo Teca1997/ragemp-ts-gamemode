@@ -1,9 +1,10 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, Index, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, Index, ManyToOne, PrimaryColumn } from 'typeorm';
 
 import { Character } from './Character';
+import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class Alias {
+export class Alias extends TimestampEntity {
 	@Index()
 	@PrimaryColumn({ name: 'aliasingId', type: 'int8' })
 	@ManyToOne(() => Character, (character) => character.aliasedCharacters)
@@ -16,13 +17,4 @@ export class Alias {
 
 	@Column({ length: 50 })
 	alias!: string;
-
-	@CreateDateColumn({ type: 'timestamptz' })
-	dateCreated?: Date;
-
-	@DeleteDateColumn({ type: 'timestamptz' })
-	dateDeleted?: Date;
-
-	@UpdateDateColumn({ type: 'timestamptz' })
-	dateUpdated?: Date;
 }

@@ -1,15 +1,4 @@
-import {
-	BeforeInsert,
-	Column,
-	CreateDateColumn,
-	DeleteDateColumn,
-	Entity,
-	Index,
-	ManyToOne,
-	OneToMany,
-	PrimaryGeneratedColumn,
-	UpdateDateColumn
-} from 'typeorm';
+import { BeforeInsert, Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { default_female_clothes, default_male_clothes } from '../../constants/defaultChacterClothes';
 
 import { Account } from './Account';
@@ -20,10 +9,11 @@ import { CharacterIdLog } from './CharacterIdLog';
 import { CharacterPunishment } from './CharacterPunishment';
 import { House } from './House';
 import { Report } from './Report';
+import { TimestampEntity } from './TimestampEntity';
 import { Vehicle } from './Vehicle';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class Character {
+export class Character extends TimestampEntity {
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
 
@@ -74,15 +64,6 @@ export class Character {
 
 	@Column({ type: 'jsonb', default: { armour: 0, health: 100, hunger: 100, thirst: 100 } })
 	vitals?: CharacterVitals;
-
-	@CreateDateColumn({ type: 'timestamptz' })
-	dateCreated?: Date;
-
-	@DeleteDateColumn({ type: 'timestamptz' })
-	dateDeleted?: Date;
-
-	@UpdateDateColumn({ type: 'timestamptz' })
-	dateUpdated?: Date;
 
 	@Index()
 	@Column({ type: 'number', name: 'accountId' })

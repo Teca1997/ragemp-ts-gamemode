@@ -1,10 +1,11 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Character } from './Character';
 import { ReportType } from './ReportType';
+import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class Report {
+export class Report extends TimestampEntity {
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
 
@@ -19,15 +20,6 @@ export class Report {
 
 	@Column({ type: 'text' })
 	reportText!: string;
-
-	@CreateDateColumn({ type: 'timestamptz' })
-	dateCreated?: Date;
-
-	@DeleteDateColumn({ type: 'timestamptz' })
-	dateDeleted?: Date;
-
-	@UpdateDateColumn({ type: 'timestamptz' })
-	dateUpdated?: Date;
 
 	@ManyToOne(() => Character, (character) => character.characterReportedBy, { nullable: false })
 	reportedBy!: number;

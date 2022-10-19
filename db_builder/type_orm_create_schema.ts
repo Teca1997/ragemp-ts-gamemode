@@ -88,7 +88,9 @@ AppDataSource.initialize()
 					.then(async () => {
 						if (process.env.DB_INSERTDATA === 'true' ? true : false) {
 							await insert_default_data()
-								.then(async () => {})
+								.then(async () => {
+									return;
+								})
 								.catch((error) => {
 									console.log(red('Error inserting data\n') + error);
 								});
@@ -465,5 +467,5 @@ export async function insert_default_data() {
 	console.log(greenBright('-----------vehicles data inserted-------------'));
 	console.log(greenBright('----------------------------------------------'));
 
-	return;
+	return null;
 }

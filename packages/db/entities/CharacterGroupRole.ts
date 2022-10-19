@@ -2,9 +2,10 @@ import { Entity, JoinColumn, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm'
 
 import { Character } from '../entities/Character';
 import { GroupRole } from './GroupRole';
+import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class CharacterGroupRole {
+export class CharacterGroupRole extends TimestampEntity {
 	@PrimaryColumn({ type: 'int', name: 'characterId' })
 	@OneToOne(() => Character, (character) => character.groupRole)
 	@JoinColumn()

@@ -1,11 +1,12 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique, UpdateDateColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 import { CharacterGroupRole } from './CharacterGroupRole';
 import { Group } from './Group';
+import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
 @Unique('unique_group_role_name', ['name', 'group'])
-export class GroupRole {
+export class GroupRole extends TimestampEntity {
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
 
@@ -17,15 +18,6 @@ export class GroupRole {
 
 	@Column({ type: 'int', nullable: true })
 	roleLevel?: number;
-
-	@CreateDateColumn({ type: 'timestamptz' })
-	dateCreated?: Date;
-
-	@DeleteDateColumn({ type: 'timestamptz' })
-	dateDeleted?: Date;
-
-	@UpdateDateColumn({ type: 'timestamptz' })
-	dateUpdated?: Date;
 
 	@OneToMany(() => CharacterGroupRole, (characterGroupRoles) => characterGroupRoles.character)
 	characterGroupRoles?: CharacterGroupRole[];
