@@ -1,3 +1,2 @@
-mp.events.add('playerReady', () => {
-	mp.gui.chat.push('hello player.');
-});
+import './fly';
+import './sit_anywhere';

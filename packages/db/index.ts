@@ -1,8 +1,5 @@
 import * as util from 'util';
 
-import { green, greenBright, red } from 'colorette';
-
-import { Account } from './entities/Account';
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv';
 import path from 'path';
@@ -26,6 +23,7 @@ export const db = new DataSource({
 
 util.inspect.defaultOptions.depth = null;
 
+/*
 db.initialize().then(async () => {
 	console.log(green('Database initialized.'));
 	await db
@@ -49,3 +47,4 @@ async function map_result_to_console(result: any[]): Promise<boolean> {
 	);
 	return true;
 }
+*/

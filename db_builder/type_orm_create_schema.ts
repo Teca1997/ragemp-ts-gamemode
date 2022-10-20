@@ -87,14 +87,13 @@ AppDataSource.initialize()
 				AppDataSource.runMigrations()
 					.then(async () => {
 						if (process.env.DB_INSERTDATA === 'true' ? true : false) {
-							await insert_default_data()
-								.then(async () => {
-									return;
-								})
-								.catch((error) => {
-									console.log(red('Error inserting data\n') + error);
-								});
+							try {
+								await insert_default_data();
+							} catch (error) {
+								console.log(red('Error inserting data\n') + error);
+							}
 						}
+						process.exit(0);
 					})
 					.catch((error) => console.log(red(error)));
 			})
@@ -467,5 +466,5 @@ export async function insert_default_data() {
 	console.log(greenBright('-----------vehicles data inserted-------------'));
 	console.log(greenBright('----------------------------------------------'));
 
-	return null;
+	return true;
 }

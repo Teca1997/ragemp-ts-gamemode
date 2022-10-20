@@ -4,6 +4,7 @@ import { default_female_clothes, default_male_clothes } from '../../constants/de
 import { Account } from './Account';
 import { Alias } from './Alias';
 import { CharacterCorporationRole } from './CharacterCorporationRole';
+import { CharacterDeathLog } from './CharacterDeathLog';
 import { CharacterGroupRole } from './CharacterGroupRole';
 import { CharacterIdLog } from './CharacterIdLog';
 import { CharacterPunishment } from './CharacterPunishment';
@@ -102,6 +103,12 @@ export class Character extends TimestampEntity {
 
 	@OneToMany(() => CharacterGroupRole, (characterGroupRole) => characterGroupRole.character)
 	groupRole?: CharacterGroupRole | number;
+
+	@OneToMany(() => CharacterDeathLog, (characterDeathLog) => characterDeathLog.victim)
+	characterVictim?: CharacterDeathLog | number;
+
+	@OneToMany(() => CharacterDeathLog, (characterDeathLog) => characterDeathLog.killer)
+	characterKiller?: CharacterDeathLog | number;
 
 	//event listners
 	@BeforeInsert()
