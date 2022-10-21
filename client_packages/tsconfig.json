@@ -3,7 +3,11 @@
 	"extends": "../tsconfig.base.json",
 	"compilerOptions": {
 		// [RELATIVE_PATH_TO_NODE_MODULES]/@ragempcommunity/types-client
-		"types": ["../../node_modules/@ragempcommunity/types-client", "./@types"]
+		"types": ["../../node_modules/@ragempcommunity/types-client", "./@types"],
+		"baseUrl": "./",
+		"paths": {
+			"@/*": ["./*"]
+		  }
 	},
 	"include": ["./**/*.ts", "fly.js"],
 }
