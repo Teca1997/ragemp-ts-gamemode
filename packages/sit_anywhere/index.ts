@@ -24,7 +24,7 @@ mp.events.add('playerJoin', () => {
 	});
 });
 
-mp.events.add('consoleLog', (_: PlayerMp, data: string) => {
+mp.events.add('consoleLog', (_player: PlayerMp, data: string) => {
 	console.log(data);
 });
 
@@ -49,12 +49,4 @@ mp.events.add('sit:cancelSit', (_: PlayerMp, seatString: string) => {
 	const seat = JSON.parse(seatString);
 	takenSeats.splice(takenSeats.indexOf(seat), 1);
 	console.log(takenSeats);
-});
-
-mp.events.addCommand('flag', (player) => {
-	mp.objects.new('apa_prop_flag_portugal', player.position, {
-		rotation: player.position,
-		alpha: 1000,
-		dimension: player.dimension
-	});
 });

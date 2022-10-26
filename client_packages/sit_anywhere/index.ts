@@ -1,32 +1,35 @@
 import 'sit_anywhere/scenarionBrowser';
 
+import { rayc } from 'raycasting';
 import { sittableObjects } from 'sit_anywhere/config';
 
-const gameplayCam = mp.cameras.new('gameplay');
-const distance = 10;
 let target: any;
 let oldTarget: any = undefined;
 let currentSeatChoice: { vector: Vector3; headingOffset: number } | undefined;
 let currentSeat: { vector: Vector3; headingOffset: number } | undefined;
-let sittableObject: undefined | any = undefined;
+let scenario: string | undefined;
 
 //let currentObject: number | null = null;
 
 mp.events.add('render', () => {
-	target = getEntityBeingLookedAt();
+	target = rayc.getEntityBeingLookedAt();
 	if (target != oldTarget) {
 		currentSeatChoice = undefined;
-		sittableObject = undefined;
 		oldTarget = target;
 	}
 	if (currentSeat != undefined) return;
 	if (target == undefined) {
 		oldTarget = undefined;
 		currentSeatChoice = undefined;
-		sittableObject = undefined;
 		return;
 	}
 	mp.game.ui.showHudComponentThisFrame(14);
+	const pos = mp.game.invokeVector3(
+		RageEnums.Natives.ENTITY.GET_ENTITY_COORDS,
+		target.entity.handle == undefined ? target.entity : target.entity.handle,
+		true
+	);
+	mp.game.graphics.drawMarker(28, pos.x, pos.y, pos.z, 0, 0, 0, 0, 0, 0, 0.2, 0.2, 0.2, 0, 255, 0, 64, false, false, 2, false, null, null, false);
 	mp.game.graphics.drawText(
 		`Object model: ${mp.game.invoke(
 			RageEnums.Natives.ENTITY.GET_ENTITY_MODEL,
@@ -41,32 +44,50 @@ mp.events.add('render', () => {
 		}
 	);
 
-	if (sittableObject == undefined) {
-		//mp.gui.chat.push('searching for sittable object ' + Date.now());
-		sittableObject = sittableObjects.find(
-			(sittableObjects) =>
-				sittableObjects.propHash ==
-				mp.game.invoke(RageEnums.Natives.ENTITY.GET_ENTITY_MODEL, target.entity.handle == undefined ? target.entity : target.entity.handle)
-		);
-	}
-	if (sittableObject == undefined) return;
+	mp.game.graphics.drawText(`Offset from Z axis: ${rayc.getOffsetFromZAxis(pos.z).toFixed(3)}`, [0.5, 0.085], {
+		font: 0,
+		color: [255, 255, 255, 185],
+		scale: [0.3, 0.3],
+		outline: true
+	});
 
-	const seatCoordinates: { vector: Vector3; headingOffset: number }[] = [];
-	sittableObject.seats.forEach((seat: any) => {
-		seatCoordinates.push({
+	const targetModel: string = mp.game.invoke(
+		RageEnums.Natives.ENTITY.GET_ENTITY_MODEL,
+		target.entity.handle == undefined ? target.entity : target.entity.handle
+	);
+	if (sittableObjects[targetModel] == undefined) return;
+
+	scenario = sittableObjects[targetModel].scenario;
+	if (sittableObjects[targetModel].seats.length == 1) {
+		currentSeatChoice = {
 			vector: mp.game.invokeVector3(
 				RageEnums.Natives.ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS,
 				target.entity.handle == undefined ? target.entity : target.entity.handle,
-				seat.offsetX,
-				seat.offsetY,
-				seat.offsetZ
+				sittableObjects[targetModel].seats[0].offsetX,
+				sittableObjects[targetModel].seats[0].offsetY,
+				sittableObjects[targetModel].seats[0].offsetZ
 			),
-			headingOffset: seat.headingOffset
+			headingOffset: sittableObjects[targetModel].seats[0].headingOffset
+		};
+	} else {
+		const seatCoordinates: { vector: Vector3; headingOffset: number }[] = [];
+		sittableObjects[targetModel].seats.forEach((seat: any) => {
+			seatCoordinates.push({
+				vector: mp.game.invokeVector3(
+					RageEnums.Natives.ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS,
+					target.entity.handle == undefined ? target.entity : target.entity.handle,
+					seat.offsetX,
+					seat.offsetY,
+					seat.offsetZ
+				),
+				headingOffset: seat.headingOffset
+			});
 		});
-	});
 
-	currentSeatChoice = getShortesDistanceBetweenNCoordiates(target.position, seatCoordinates);
-	const { x, y, z } = currentSeatChoice.vector;
+		currentSeatChoice = getShortesDistanceBetweenNCoordiates(target.position, seatCoordinates);
+	}
+
+	const { x, y, z } = currentSeatChoice!.vector;
 	mp.game.graphics.drawText('Press ~r~E ~w~to sit', [x, y, z], {
 		font: 1,
 		color: [255, 255, 255, 185],
@@ -75,17 +96,6 @@ mp.events.add('render', () => {
 		centre: true
 	});
 });
-
-function getEntityBeingLookedAt(): any {
-	let startPosition = mp.players.local.getBoneCoords(12844, 0.5, 0, 0);
-	const direction = gameplayCam.getDirection();
-	const endPosition = new mp.Vector3(
-		direction.x * distance + startPosition.x,
-		direction.y * distance + startPosition.y,
-		direction.z * distance + startPosition.z
-	);
-	return mp.raycasting.testCapsule(startPosition, endPosition, 0.25, mp.players.local, 18);
-}
 
 function getShortesDistanceBetweenNCoordiates(
 	startCoord: Vector3,
@@ -119,8 +129,8 @@ mp.events.add('sit:sit', () => {
 	const heading: number =
 		mp.game.invokeFloat(RageEnums.Natives.ENTITY.GET_ENTITY_HEADING, target.entity.handle == undefined ? target.entity : target.entity.handle) +
 		currentSeat.headingOffset;
-	//mp.events.callRemote('consoleLog', x + ',' + y + ',' + z + ',' + objectHeading);
-	mp.players.local.taskStartScenarioAtPosition(sittableObject.scenario, x, y, z, heading, 0, true, false);
+	if (scenario == undefined) return;
+	mp.players.local.taskStartScenarioAtPosition(scenario!, x, y, z, heading, 0, true, false);
 });
 
 mp.keys.bind(0x45, true, function () {
@@ -139,22 +149,22 @@ mp.events.add('playerReady', () => {
 });
 
 function spawnTestObjects() {
-	for (let i = 0; i < sittableObjects.length / 4; i++) {
+	for (let i = 0; i < Object.keys(sittableObjects).length / 4; i++) {
 		for (let j = 0; j < 4; j++) {
-			if (i * 4 + j >= sittableObjects.length) return;
-			let object = mp.objects.new(sittableObjects[i * 4 + j].propHash, new mp.Vector3(-1526 + i * 4, -3191 + j * 4, 12.94), {
+			if (i * 4 + j >= Object.keys(sittableObjects).length) return;
+			let object = mp.objects.new(Number(Object.keys(sittableObjects)[i * 4 + j]), new mp.Vector3(-1526 + i * 4, -3191 + j * 4, 15), {
 				rotation: new mp.Vector3(0, 0, 0),
 				alpha: 255,
 				dimension: 0
 			});
-			let objectDimensions = mp.game.gameplay.getModelDimensions(sittableObjects[i * 4 + j].propHash);
-			let width = objectDimensions.minimum.x - objectDimensions.maximum.x;
-			let lenght = objectDimensions.minimum.y - objectDimensions.maximum.y;
-			let height = objectDimensions.minimum.z - objectDimensions.maximum.z;
+			let { maximum, minimum } = mp.game.gameplay.getModelDimensions(Number(Object.keys(sittableObjects)[i * 4 + j]));
+			let width = maximum.x - minimum.x;
+			let lenght = maximum.y - minimum.y;
+			let height = maximum.z - minimum.z;
 			mp.labels.new(
-				sittableObjects[i * 4 + j].prop +
+				sittableObjects[Number(Object.keys(sittableObjects)[i * 4 + j])].prop +
 					'\n' +
-					sittableObjects[i * 4 + j].propHash +
+					Number(Object.keys(sittableObjects)[i * 4 + j]) +
 					'\n width: ' +
 					width +
 					'\n lenght: ' +
@@ -168,7 +178,8 @@ function spawnTestObjects() {
 					drawDistance: 2
 				}
 			);
-			if (object) {
+
+			if (object != undefined) {
 				object.notifyStreaming = true;
 			}
 		}

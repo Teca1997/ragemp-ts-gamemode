@@ -13,4 +13,17 @@ declare global {
 		scenario: string;
 		seats: SittableObjectSeat[];
 	}
+
+	interface SittableObjects {
+		[key: string]: {
+			prop: string;
+			scenario: string;
+			seats: SittableObjectSeat[];
+		};
+	}
+
+	interface AnimationListItem {
+		DictionaryName: string;
+		Animations: string[];
+	}
 }
