@@ -27,7 +27,7 @@ let coords = null;
 function pointingAt(distance) {
 	const farAway = new mp.Vector3(direction.x * distance + coords.x, direction.y * distance + coords.y, direction.z * distance + coords.z);
 
-	const result = mp.raycasting.testPointToPoint(coords, farAway, [1, 16]);
+	const result = mp.raycasting.testPointToPoint(coords, farAway, mp.players.local, [1, 2, 4, 8, 16]);
 	if (result === undefined) {
 		return 'undefined';
 	}
@@ -46,14 +46,20 @@ mp.events.add('render', () => {
 		scale: [0.3, 0.3],
 		outline: true
 	});
-
-	let pointingPosition = mp.game.graphics.drawText(`pointAtCoord: ${JSON.stringify(pointingAt(fly.point_distance).position)}`, [0.5, 0.025], {
-		font: 0,
-		color: [255, 255, 255, 185],
-		scale: [0.3, 0.3],
-		outline: true
-	});
-
+	let pointingPosition = pointingAt(fly.point_distance).position;
+	if (pointingPosition != undefined) {
+		mp.game.graphics.drawText(
+			`pointAtCoord: ${pointingPosition.x.toFixed(2)} ${pointingPosition.y.toFixed(2)} ${pointingPosition.z.toFixed(2)}`,
+			[pointingPosition.x, pointingPosition.y, pointingPosition.z],
+			{
+				font: 0,
+				color: [255, 255, 255, 185],
+				scale: [0.3, 0.3],
+				outline: true
+			}
+		);
+		mp.game.graphics.drawMarker(28, pointingPosition.x, pointingPosition.y, pointingPosition.z, 0, 0, 0, 0, 0, 0, 0.305, 0.305, 0.305, 255, 0, 0, 64, false, false, 2, false, null, null, false);
+	}
 	if (controls.isControlJustPressed(0, controlsIds.F5)) {
 		fly.flying = !fly.flying;
 

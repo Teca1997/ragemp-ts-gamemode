@@ -1,8 +1,11 @@
 import 'anim_player';
+import 'casino';
+import 'dev_tools';
 import 'fly';
+import 'hunting';
 import 'object_editor';
 import 'sit_anywhere';
-import './casino';
+import 'vehicle';
 
 mp.keys.bind(0x71, true, function () {
 	if (mp.gui.cursor.visible) {

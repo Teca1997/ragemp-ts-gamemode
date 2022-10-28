@@ -11,8 +11,34 @@ mp.events.add('casino:trySit', (player: PlayerMp, seatString: string) => {
 });
 
 mp.events.add('casino:cancelSit', (_: PlayerMp, seatString: string) => {
-	console.log('Stood up' + seatString);
 	const seat = JSON.parse(seatString);
 	takenSeats.splice(takenSeats.indexOf(seat), 1);
 	console.log(takenSeats);
+});
+
+import * as util from 'util';
+
+import { blackjackPeds, roulettePeds } from './casinoPeds';
+
+let string = '';
+util.inspect.defaultOptions.depth = null;
+mp.events.add('consoleLogCasinoPed', (_player: PlayerMp, data: string) => {
+	const object = JSON.parse(data);
+	string += `\n{\n\tposition: new mp.Vector3(${object.position.x}, ${object.position.y}, ${object.position.z}), \n\theading: ${object.headingOffset}, \n\thash: 0x1422d45b\n},`;
+	console.log(string);
+});
+
+mp.events.add('consoleLog', (_player: PlayerMp, data: string) => {
+	const object = JSON.parse(data);
+	console.log(object);
+});
+
+mp.events.add('packagesLoaded', () => {
+	blackjackPeds.forEach((ped) => {
+		mp.peds.new(ped.hash, ped.position, { dimension: 0, heading: ped.heading });
+	});
+
+	roulettePeds.forEach((ped) => {
+		mp.peds.new(ped.hash, ped.position, { dimension: 0, heading: ped.heading });
+	});
 });

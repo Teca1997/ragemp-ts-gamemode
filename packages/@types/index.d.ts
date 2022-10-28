@@ -6,6 +6,12 @@ declare global {
 		customMethod(message: String): void;
 	}
 
+	interface CasinoPed {
+		position: Vector3;
+		heading: number;
+		hash: number;
+	}
+
 	interface Vector {
 		x: number;
 		y: number;

@@ -23,33 +23,6 @@ mp.events.add('render', () => {
 		currentSeatChoice = undefined;
 		return;
 	}
-	mp.game.ui.showHudComponentThisFrame(14);
-	const pos = mp.game.invokeVector3(
-		RageEnums.Natives.ENTITY.GET_ENTITY_COORDS,
-		target.entity.handle == undefined ? target.entity : target.entity.handle,
-		true
-	);
-	mp.game.graphics.drawMarker(28, pos.x, pos.y, pos.z, 0, 0, 0, 0, 0, 0, 0.2, 0.2, 0.2, 0, 255, 0, 64, false, false, 2, false, null, null, false);
-	mp.game.graphics.drawText(
-		`Object model: ${mp.game.invoke(
-			RageEnums.Natives.ENTITY.GET_ENTITY_MODEL,
-			target.entity.handle == undefined ? target.entity : target.entity.handle
-		)}`,
-		[0.5, 0.065],
-		{
-			font: 0,
-			color: [255, 255, 255, 185],
-			scale: [0.3, 0.3],
-			outline: true
-		}
-	);
-
-	mp.game.graphics.drawText(`Offset from Z axis: ${rayc.getOffsetFromZAxis(pos.z).toFixed(3)}`, [0.5, 0.085], {
-		font: 0,
-		color: [255, 255, 255, 185],
-		scale: [0.3, 0.3],
-		outline: true
-	});
 
 	const targetModel: string = mp.game.invoke(
 		RageEnums.Natives.ENTITY.GET_ENTITY_MODEL,
