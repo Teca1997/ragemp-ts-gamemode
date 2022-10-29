@@ -6,6 +6,34 @@ declare global {
 		customMethod(message: String): void;
 	}
 
+	interface NewVehicleData {
+		position: Vector3;
+		heading: number;
+		spawnable: number;
+	}
+
+	interface NPC_LIST {
+		Active_NPC: NPCObject[];
+	}
+
+	interface NPCObject {
+		id: number;
+		ped: PedMp;
+		veh: VehicleMp;
+		blip: BlipMp;
+	}
+
+	interface ReservePos {
+		position: Vector3;
+		heading: number;
+	}
+
+	interface NPCVehicleParkingSpot {
+		position: Vector3;
+		heading: number;
+		spawnable: number;
+	}
+
 	interface CasinoPed {
 		position: Vector3;
 		heading: number;

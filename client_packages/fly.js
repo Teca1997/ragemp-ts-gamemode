@@ -13,6 +13,7 @@ global.fly = {
 	f: 1.0,
 	w: 2.0,
 	h: 2.0,
+	l: 8.0,
 	point_distance: 500
 };
 global.gameplayCam = mp.cameras.new('gameplay');

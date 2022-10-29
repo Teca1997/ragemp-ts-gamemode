@@ -3,6 +3,7 @@ import 'casino';
 import 'dev_tools';
 import 'fly';
 import 'hunting';
+import 'npc';
 import 'object_editor';
 import 'sit_anywhere';
 import 'vehicle';

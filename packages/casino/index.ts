@@ -18,8 +18,6 @@ mp.events.add('casino:cancelSit', (_: PlayerMp, seatString: string) => {
 
 import * as util from 'util';
 
-import { blackjackPeds, roulettePeds } from './casinoPeds';
-
 let string = '';
 util.inspect.defaultOptions.depth = null;
 mp.events.add('consoleLogCasinoPed', (_player: PlayerMp, data: string) => {
@@ -34,11 +32,12 @@ mp.events.add('consoleLog', (_player: PlayerMp, data: string) => {
 });
 
 mp.events.add('packagesLoaded', () => {
+	/*
 	blackjackPeds.forEach((ped) => {
 		mp.peds.new(ped.hash, ped.position, { dimension: 0, heading: ped.heading });
 	});
 
 	roulettePeds.forEach((ped) => {
 		mp.peds.new(ped.hash, ped.position, { dimension: 0, heading: ped.heading });
-	});
+	});*/
 });

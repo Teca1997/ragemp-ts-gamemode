@@ -3,49 +3,50 @@ import { rayc } from 'raycasting';
 const textScale = 0.5;
 const textSpacing = 0.03;
 
-let showEntityBeingLookedAtInfo = true;
+let showEntityBeingLookedAtInfo = false;
 let showPlayerInfo = true;
+let showStreamedPedsMarkers = false;
 
 mp.events.add('render', () => {
+	if (showStreamedPedsMarkers) {
+		mp.peds.forEach((ped) => {
+			mp.game.graphics.drawMarker(1, ped.position.x, ped.position.y, ped.position.z, 0, 0, 0, 0, 0, 0, 1, 1, 250, 0, 255, 0, 64, false, false, 2, false, null, null, false);
+		});
+	}
+
 	const target = rayc.getEntityBeingLookedAt();
 	if (mp.keys.isDown(0x11) && mp.keys.isDown(0x48)) {
-		mp.game.graphics.drawText(
-			`
-			Press CTRL+E to toggle entity info panel\n
-			Press CTRL+P to toggle player info panel\n
-			Press CTRL+B+LMB to add new roulette table\n
-			Press CTRL+C+LMB to add new blackjack table\n
-			`,
-			[0.5, 0.05],
-			{
-				font: 0,
-				color: [255, 255, 255, 255],
-				scale: [textScale, textScale],
-				outline: true,
-				centre: true
-			}
-		);
+		const helpInfo = [
+			'Press CTRL+E to toggle entity info panel',
+			'Press CTRL+P to toggle player info panel',
+			'Press CTRL+B+LMB to add new roulette table',
+			'Press CTRL+C+LMB to add new blackjack table',
+			'Press ALT+P to toggle streamed ped markers'
+		];
+		drawTextToScreen(helpInfo, 0.5, 0.05);
 		return;
 	}
 	if (showPlayerInfo) {
 		mp.game.ui.showHudComponentThisFrame(14);
-		mp.game.graphics.drawText(
-			`Player coords: ${mp.players.local.position.x.toFixed(4)} ${mp.players.local.position.y.toFixed(4)} ${mp.players.local.position.z.toFixed(4)}`,
-			[0.5, 0.05 + textSpacing * 0],
-			{
-				font: 0,
-				color: [255, 255, 255, 255],
-				scale: [textScale, textScale],
-				outline: true
+		var pedsInStreamRange = 0;
+		mp.peds.forEach((_ped) => {
+			if (_ped.getIsTaskActive(151) || _ped.getIsTaskActive(150)) {
+				pedsInStreamRange++;
 			}
-		);
-
-		mp.game.graphics.drawText(`Player heading: ${mp.players.local.getHeading().toFixed(4)}`, [0.5, 0.05 + textSpacing * 1], {
-			font: 0,
-			color: [255, 255, 255, 255],
-			scale: [textScale, textScale],
-			outline: true
 		});
+		var vehiclesInStreamRange = 0;
+		mp.vehicles.forEach((_ped) => {
+			vehiclesInStreamRange++;
+		});
+		let InfoToDisplay = [
+			`Player coords: ${mp.players.local.position.x.toFixed(4)} ${mp.players.local.position.y.toFixed(4)} ${mp.players.local.position.z.toFixed(4)}`,
+			`Player heading: ${mp.players.local.getHeading().toFixed(4)}`,
+			`Peds in vehicle: ${pedsInStreamRange} / ${mp.peds.length}`,
+			`Peds playing task: ${vehiclesInStreamRange} / ${mp.peds.length}`
+		];
+
+		drawTextToScreen(InfoToDisplay, 0.5, 0.05);
+
 		let n = 0;
 		for (let i = 0; i < 1000; i++) {
 			if (mp.players.local.getIsTaskActive(i)) {
@@ -88,6 +89,24 @@ mp.events.add('render', () => {
 			[objectPos.x, objectPos.y, objectPos.z + 2 - 0.35],
 			textSettings
 		);
+	}
+});
+
+function drawTextToScreen(text: string[], x: number, y: number) {
+	for (let i = 0; i < text.length; i++) {
+		mp.game.graphics.drawText(text[i], [x, y + textSpacing * i], {
+			font: 0,
+			color: [255, 255, 255, 255],
+			scale: [textScale, textScale],
+			outline: true
+		});
+	}
+}
+
+//alt + e
+mp.keys.bind(0x50, true, function () {
+	if (mp.keys.isDown(0x12)) {
+		showStreamedPedsMarkers = !showStreamedPedsMarkers;
 	}
 });
 
