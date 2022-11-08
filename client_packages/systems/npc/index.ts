@@ -1,0 +1,1 @@
+import 'systems/npc/NPCHandler';

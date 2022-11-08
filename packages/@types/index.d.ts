@@ -1,9 +1,28 @@
 import '@types';
+
 declare global {
 	interface PlayerMp {
-		customProperty: number;
+		__weaponComponents: WeaponComponents;
+		__weaponTints: WeaponTints;
 
-		customMethod(message: String): void;
+		giveWeaponComponent(weaponHash: number, componentHash: number): void;
+		hasWeaponComponent(weaponHash: number, componentHash: number): boolean;
+		getWeaponComponents(weaponHash: number, componentHash: number): number[];
+		removeWeaponComponent(weaponHash: number, componentHash: number): void;
+		removeAllWeaponComponents(weaponHash: number, componentHash: number): void;
+		resetAllWeaponComponents(): void;
+		setWeaponTint(weaponHash: number, tintIndex: number): void;
+		getWeaponTint(weaponHash: number): number;
+		getAllWeaponTints(): WeaponTints;
+		resetAllWeaponTints(): void;
+	}
+
+	interface WeaponTints {
+		[weaponHash: number]: number;
+	}
+
+	interface WeaponComponents {
+		[weaponHash: number]: Set<number>;
 	}
 
 	interface NewVehicleData {
@@ -29,6 +48,13 @@ declare global {
 	}
 
 	interface NPCVehicleParkingSpot {
+		position: Vector3;
+		heading: number;
+		spawnable: number;
+	}
+
+	interface NPCVehicleParkingSpot2 {
+		id: number;
 		position: Vector3;
 		heading: number;
 		spawnable: number;

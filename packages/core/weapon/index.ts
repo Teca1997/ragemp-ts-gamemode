@@ -1,0 +1,2 @@
+import './componentSync';
+import './tintSync';

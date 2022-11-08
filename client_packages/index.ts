@@ -1,12 +1,6 @@
-import 'anim_player';
-import 'casino';
-import 'dev_tools';
-import 'fly';
-import 'hunting';
-import 'npc';
-import 'object_editor';
-import 'sit_anywhere';
-import 'vehicle';
+import 'core';
+import 'interaction_menu_API';
+import 'systems';
 
 mp.keys.bind(0x71, true, function () {
 	if (mp.gui.cursor.visible) {
