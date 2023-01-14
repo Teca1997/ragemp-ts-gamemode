@@ -5,4 +5,5 @@ import './db';
 import './devTools';
 import './npc';
 import './object_editor';
+import './playerToPlayerAnims';
 import './sit_anywhere';

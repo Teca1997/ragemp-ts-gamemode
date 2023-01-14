@@ -7,7 +7,6 @@ function getEntityBeingLookedAt(): any {
 	const endPosition = new mp.Vector3(direction.x * distance + startPosition.x, direction.y * distance + startPosition.y, direction.z * distance + startPosition.z);
 	return mp.raycasting.testCapsule(startPosition, endPosition, 0.25, mp.players.local, 30);
 }
-
 function getOffsetFromZAxis(objectZ: number) {
 	let startPosition = mp.players.local.getBoneCoords(12844, 0.5, 0, 0);
 	const direction = gameplayCam.getDirection();

@@ -1,4 +1,4 @@
-import { CorporationRole } from '../../packages/db/entities/CorporationRole';
+import { CorporationRole } from '../../packages/systems/db/entities/CorporationRole';
 
 export const default_corporation_roles: CorporationRole[] = [
 	{

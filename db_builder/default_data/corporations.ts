@@ -1,4 +1,4 @@
-import { Corporation } from '../../packages/db/entities/Corporation';
+import { Corporation } from '../../packages/systems/db/entities/Corporation';
 
 export const default_corporations: Corporation[] = [
 	{

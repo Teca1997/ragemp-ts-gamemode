@@ -1,4 +1,4 @@
-import { AccountSocialId } from '../../packages/db/entities/AccountSocialId';
+import { AccountSocialId } from '../../packages/systems/db/entities/AccountSocialId';
 
 export const default_acount_socialids: AccountSocialId[] = [
 	{

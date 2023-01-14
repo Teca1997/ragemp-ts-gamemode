@@ -1,4 +1,4 @@
-import { Interior } from '../../packages/db/entities/Interior';
+import { Interior } from '../../packages/systems/db/entities/Interior';
 
 export const default_interiors: Interior[] = [
 	{

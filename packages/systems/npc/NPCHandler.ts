@@ -19,8 +19,8 @@ NPCs = {};
 NPCsFoot = {};
 mp.events.add('playerJoin', (player: PlayerMp) => {
 	player.position = new mp.Vector3(-1445, -3210, 13);
-	player.model = mp.joaat('mp_f_freemode_01');
-	player.setHeadBlend(33, 0, 0, 0, 0, 0, 1, 0, 0);
+	//player.model = mp.joaat('mp_f_freemode_01');
+	//player.setHeadBlend(33, 0, 0, 0, 0, 0, 1, 0, 0);
 	//player.position = new mp.Vector3(948.9796, 53.5095, 75.9912);
 	//Object.assign(player.id, {});
 	NPCs[player.id] = { activeNPCs: [] };

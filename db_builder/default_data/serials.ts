@@ -1,4 +1,4 @@
-import { Serial } from '../../packages/db/entities/Serial';
+import { Serial } from '../../packages/systems/db/entities/Serial';
 
 export const default_serials: Serial[] = [
 	{

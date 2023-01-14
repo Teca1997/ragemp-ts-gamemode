@@ -1,4 +1,4 @@
-import { ReportType } from '../../packages/db/entities/ReportType';
+import { ReportType } from '../../packages/systems/db/entities/ReportType';
 
 export const default_report_types: ReportType[] = [
 	{

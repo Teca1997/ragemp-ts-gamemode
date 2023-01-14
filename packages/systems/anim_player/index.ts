@@ -1,4 +1,3 @@
-console.log('using animplayer');
 mp.events.add({
 	animationEvent: (player: PlayerMp, toggle, dirt: string, name: string, flag: number) => {
 		if (!toggle) player.stopAnimation();

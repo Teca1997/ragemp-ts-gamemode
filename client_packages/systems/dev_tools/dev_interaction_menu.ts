@@ -86,15 +86,32 @@ const devPedSubMenuToggleClothes = new Menu(13, 5, 6.5, 0.2, [245, 205, 145, 155
 devPedSubMenuToggleClothes.add('Back to ped menu', 'commonmenu', 'shop_box_cross', false, false, [245, 205, 145, 255], [255, 75, 45, 255], () => {
 	DevMenuManager.switch(devPedSubMenu);
 });
+devPedSubMenuToggleClothes.add('Toggle all off', 'commonmenu', 'shop_box_cross', false, false, [245, 205, 145, 255], [255, 75, 45, 255], () => {
+	for (let i = 0; i < 12; i++) {
+		const model = mp.players.local.model;
+		if (model == mp.game.joaat('mp_f_freemode_01')) {
+			mp.players.local.setComponentVariation(i, hasComponent[i] ? femaleNoClothes[i] : 0, 0, 0);
+			hasComponent[i] = !hasComponent[i];
+		}
+		if (model == mp.game.joaat('mp_m_freemode_01')) {
+			mp.players.local.setComponentVariation(i, maleNoClothes[i], 0, 0);
+			hasComponent[i] = !hasComponent[i];
+		}
+	}
+});
 interactionMenuPedComponents.forEach((component, index) => {
 	devPedSubMenuToggleClothes.add('Toggle ' + component + ' commponent', 'commonmenu', 'shop_clothing_icon_b', false, false, [245, 205, 145, 255], [255, 75, 45, 255], async () => {
-		if (!mp.players.local.isModel(mp.game.joaat('mp_f_freemode_01')) && mp.players.local.isModel(mp.game.joaat('mp_m_freemode_01'))) return;
-		if (mp.players.local.isModel(mp.game.joaat('mp_f_freemode_01'))) {
+		const model = mp.players.local.model;
+		if (model != mp.game.joaat('mp_f_freemode_01') && model != mp.game.joaat('mp_m_freemode_01')) return;
+
+		if (model == mp.game.joaat('mp_f_freemode_01')) {
 			mp.players.local.setComponentVariation(index, hasComponent[index] ? femaleNoClothes[index] : 0, 0, 0);
 			hasComponent[index] = !hasComponent[index];
 		}
-		if (mp.players.local.isModel(mp.game.joaat('mp_m_freemode_01'))) {
+
+		if (model == mp.game.joaat('mp_m_freemode_01')) {
 			mp.players.local.setComponentVariation(index, maleNoClothes[index], 0, 0);
+			hasComponent[index] = !hasComponent[index];
 		}
 	});
 });

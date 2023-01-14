@@ -1,4 +1,4 @@
-import { Alias } from '../../packages/db/entities/Alias';
+import { Alias } from '../../packages/systems/db/entities/Alias';
 
 export const default_aliases: Alias[] = [
 	{ aliasing: 1, aliased: 2, alias: 'alias from char 1 to char 2' },

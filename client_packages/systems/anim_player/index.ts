@@ -34,7 +34,13 @@ class AnimationPlayer {
 
 	play(toggle = true) {
 		if (this.launched) {
-			mp.events.callRemote('animationEvent', toggle, this.currentList[this.dist].DictionaryName, this.currentList[this.dist].Animations[this.name], this.flag);
+			mp.events.callRemote(
+				'animationEvent',
+				toggle,
+				this.currentList[this.dist].DictionaryName,
+				this.currentList[this.dist].Animations[this.name],
+				this.flag
+			);
 		}
 	}
 
@@ -68,7 +74,7 @@ class AnimationPlayer {
 		}
 	}
 
-	setFlag(value: string) {
+	setFlag(value: any) {
 		if (this.launched) {
 			if (value === 'up') this.flag += 1;
 			else if (value === 'down' && this.flag - 1 !== 0) this.flag -= 1;
@@ -99,6 +105,10 @@ class AnimationPlayer {
 }
 
 const AP = new AnimationPlayer();
+
+mp.events.add('animflag', (flag: number) => {
+	if (AP.launched) AP.setFlag(flag);
+});
 
 mp.events.add({
 	render: () => {

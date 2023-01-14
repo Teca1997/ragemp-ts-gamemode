@@ -1,4 +1,4 @@
-import { CharacterPunishment } from '../../packages/db/entities/CharacterPunishment';
+import { CharacterPunishment } from '../../packages/systems/db/entities/CharacterPunishment';
 
 export const default_character_punishments: CharacterPunishment[] = [
 	{

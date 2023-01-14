@@ -1,4 +1,4 @@
-import { Role } from '../../packages/db/entities/Role';
+import { Role } from '../../packages/systems/db/entities/Role';
 
 export const default_roles: Role[] = [
 	{

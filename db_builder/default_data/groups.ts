@@ -1,4 +1,4 @@
-import { Group } from '../../packages/db/entities/Group';
+import { Group } from '../../packages/systems/db/entities/Group';
 
 export const default_groups: Group[] = [
 	{

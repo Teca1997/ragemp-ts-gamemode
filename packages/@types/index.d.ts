@@ -4,7 +4,7 @@ declare global {
 	interface PlayerMp {
 		__weaponComponents: WeaponComponents;
 		__weaponTints: WeaponTints;
-
+		__dualAnimData: any;
 		giveWeaponComponent(weaponHash: number, componentHash: number): void;
 		hasWeaponComponent(weaponHash: number, componentHash: number): boolean;
 		getWeaponComponents(weaponHash: number, componentHash: number): number[];

@@ -3,26 +3,26 @@ import 'reflect-metadata';
 import { DataSource, Repository } from 'typeorm';
 import { greenBright, red } from 'colorette';
 
-import { Account } from '../packages/db/entities/Account';
-import { AccountIp } from '../packages/db/entities/AccountIp';
-import { AccountSerial } from '../packages/db/entities/AccountSerial';
-import { AccountSocialId } from '../packages/db/entities/AccountSocialId';
-import { Alias } from '../packages/db/entities/Alias';
-import { Character } from '../packages/db/entities/Character';
-import { CharacterPunishment } from '../packages/db/entities/CharacterPunishment';
-import { Corporation } from '../packages/db/entities/Corporation';
-import { Group } from '../packages/db/entities/Group';
-import { House } from '../packages/db/entities/House';
-import { HouseWorldDoor } from '../packages/db/entities/HouseWorldDoor';
-import { Interior } from '../packages/db/entities/Interior';
-import { Ip } from '../packages/db/entities/Ip';
-import { Punishment } from '../packages/db/entities/Punishment';
-import { Report } from '../packages/db/entities/Report';
-import { ReportType } from '../packages/db/entities/ReportType';
-import { Role } from '../packages/db/entities/Role';
-import { Serial } from '../packages/db/entities/Serial';
-import { SocialId } from '../packages/db/entities/SocialId';
-import { Vehicle } from '../packages/db/entities/Vehicle';
+import { Account } from '../packages/systems/db/entities/Account';
+import { AccountIp } from '../packages/systems/db/entities/AccountIp';
+import { AccountSerial } from '../packages/systems/db/entities/AccountSerial';
+import { AccountSocialId } from '../packages/systems/db/entities/AccountSocialId';
+import { Alias } from '../packages/systems/db/entities/Alias';
+import { Character } from '../packages/systems/db/entities/Character';
+import { CharacterPunishment } from '../packages/systems/db/entities/CharacterPunishment';
+import { Corporation } from '../packages/systems/db/entities/Corporation';
+import { Group } from '../packages/systems/db/entities/Group';
+import { House } from '../packages/systems/db/entities/House';
+import { HouseWorldDoor } from '../packages/systems/db/entities/HouseWorldDoor';
+import { Interior } from '../packages/systems/db/entities/Interior';
+import { Ip } from '../packages/systems/db/entities/Ip';
+import { Punishment } from '../packages/systems/db/entities/Punishment';
+import { Report } from '../packages/systems/db/entities/Report';
+import { ReportType } from '../packages/systems/db/entities/ReportType';
+import { Role } from '../packages/systems/db/entities/Role';
+import { Serial } from '../packages/systems/db/entities/Serial';
+import { SocialId } from '../packages/systems/db/entities/SocialId';
+import { Vehicle } from '../packages/systems/db/entities/Vehicle';
 import { config } from 'dotenv';
 import { default_acount_ips } from './default_data/accountips';
 import { default_acount_serials } from './default_data/accountserials';
@@ -62,7 +62,7 @@ const AppDataSource = new DataSource({
 	database: process.env.DB_DATABASE,
 	password: process.env.DB_SUPERPASSWORD,
 	schema: process.env.DB_SCHEMA,
-	entities: ['./packages/db/entities/*.ts'],
+	entities: ['./packages/systems/db/entities/*.ts'],
 	migrations: ['./db_builder/migrations/*.ts'],
 	logging: process.env.DB_LOGGING === 'true' ? true : false
 });
