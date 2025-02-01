@@ -9,7 +9,7 @@ export class CharacterDeathLog {
 	victim!: Character | number;
 
 	@ManyToOne(() => Character, (character) => character.characterKiller)
-	killer!: Character | number;
+	killer!: Character | number | undefined;
 
 	@Column({ type: 'int8' })
 	reason!: number;
@@ -22,4 +22,10 @@ export class CharacterDeathLog {
 
 	@UpdateDateColumn({ type: 'timestamptz' })
 	dateUpdated?: Date;
+
+	constructor(victim: Character | number, killer: Character | number | undefined, reason: number) {
+		this.victim = victim;
+		this.killer = killer;
+		this.reason = reason;
+	}
 }

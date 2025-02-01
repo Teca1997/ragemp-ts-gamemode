@@ -3,13 +3,8 @@ import { default_female_clothes, default_male_clothes } from '../../../shared/de
 
 import { Account } from './Account';
 import { Alias } from './Alias';
-import { CharacterCorporationRole } from './CharacterCorporationRole';
 import { CharacterDeathLog } from './CharacterDeathLog';
-import { CharacterGroupRole } from './CharacterGroupRole';
 import { CharacterIdLog } from './CharacterIdLog';
-import { CharacterPunishment } from './CharacterPunishment';
-import { House } from './House';
-import { Report } from './Report';
 import { TimestampEntity } from './TimestampEntity';
 import { Vehicle } from './Vehicle';
 
@@ -82,27 +77,6 @@ export class Character extends TimestampEntity {
 
 	@OneToMany(() => Vehicle, (vehicle) => vehicle.characterOwner, { nullable: false, eager: true })
 	characterVehicle?: Vehicle[];
-
-	@OneToMany(() => Report, (report) => report.claimedBy, { nullable: false, eager: true })
-	characterClaimedBy?: Report[];
-
-	@OneToMany(() => Report, (aliased) => aliased.reportedBy, { nullable: false, eager: true })
-	characterReportedBy?: Report[];
-
-	@OneToMany(() => House, (house) => house.characterOwner, { nullable: false, eager: true })
-	houses?: House[];
-
-	@OneToMany(() => CharacterPunishment, (characterPunishment) => characterPunishment.characterRecievedPunishment, { nullable: false, eager: true })
-	characterPunishments?: CharacterPunishment[];
-
-	@OneToMany(() => CharacterPunishment, (characterPunishment) => characterPunishment.characterIssuedPunishment, { nullable: false, eager: true })
-	characterIssuedPunishments?: CharacterPunishment[];
-
-	@OneToMany(() => CharacterCorporationRole, (characterCorporationRole) => characterCorporationRole.character)
-	corporationRole?: CharacterCorporationRole | number;
-
-	@OneToMany(() => CharacterGroupRole, (characterGroupRole) => characterGroupRole.character)
-	groupRole?: CharacterGroupRole | number;
 
 	@OneToMany(() => CharacterDeathLog, (characterDeathLog) => characterDeathLog.victim)
 	characterVictim?: CharacterDeathLog | number;

@@ -13,5 +13,5 @@
 		"skipLibCheck": true
 	},
 	"files": ["../../node_modules/@ragempcommunity/types-server/index.d.ts", "./@types/index.d.ts"],
-	"include": ["./**/*", "../shared/"]
+	"include": ["./**/*", "../shared/", "../../save/default_data"]
 }

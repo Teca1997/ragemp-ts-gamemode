@@ -1,8 +1,6 @@
 import { BeforeInsert, Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Character } from './Character';
-import { Corporation } from './Corporation';
-import { Group } from './Group';
 import { TimestampEntity } from './TimestampEntity';
 import { randomBytes } from 'crypto';
 
@@ -42,14 +40,6 @@ export class Vehicle extends TimestampEntity {
 	@Index()
 	@ManyToOne(() => Character, (character) => character.characterVehicle, { nullable: true })
 	characterOwner?: number;
-
-	@Index()
-	@ManyToOne(() => Corporation, (corporation) => corporation.corporationVehicles, { nullable: true })
-	corporationOwner?: number;
-
-	@Index()
-	@ManyToOne(() => Group, (group) => group.groupVehicle, { nullable: true })
-	groupOwner?: number;
 
 	@BeforeInsert()
 	beforeInsert?() {

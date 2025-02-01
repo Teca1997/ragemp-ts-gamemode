@@ -7,10 +7,10 @@ import { TimestampEntity } from './TimestampEntity';
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
 export class AccountSerial extends TimestampEntity {
 	@PrimaryColumn('int8', { name: 'accountId' })
-	@ManyToOne(() => Account, (account) => account.accountIps, { nullable: false })
+	@ManyToOne(() => Account, (account) => account.id)
 	account!: number;
 
-	@PrimaryColumn({ type: 'char', length: 128, name: 'serialSerial' })
-	@ManyToOne(() => Serial, (serial) => serial.accountSerial, { nullable: false })
+	@PrimaryColumn('varchar', { length: 128, name: 'serialId' })
+	@ManyToOne(() => Serial, (serial) => serial.id, { nullable: false })
 	serial!: string;
 }

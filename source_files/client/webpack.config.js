@@ -4,40 +4,42 @@ const dotenv = require('dotenv');
 const webpack = require('webpack');
 dotenv.config();
 
-const outputPath = path.join(__dirname, '../../compiled_server_files/client_packages');
+const outputPath = path.join(__dirname, '../../client_packages');
 
 const pathToModules = path.join(__dirname, '../../node_modules');
+const nodeExternals = require('webpack-node-externals');
 
 const entryPath = path.join(__dirname, './index.ts');
 const configPath = path.join(__dirname, './tsconfig.json');
 const sourcePath = path.join(__dirname, './');
-console.log(outputPath);
 
 module.exports = {
 	entry: {
-		app: entryPath
+		client: entryPath
 	},
 	devtool: 'inline-source-map',
 	target: 'node',
 	mode: 'development',
+	externals: [
+		nodeExternals({
+			modulesDir: pathToModules
+		})
+	],
 	module: {
 		rules: [
 			{
-				test: /\.tsx?$/,
+				test: /\.ts?$/,
 				use: 'ts-loader',
 				exclude: pathToModules
 			}
 		]
 	},
+	resolve: {
+		extensions: ['.ts', '.js'],
+		modules: [pathToModules]
+	},
 	output: {
 		path: outputPath,
-		filename: '[name].js',
-		chunkFilename: '[name].bundle.js',
-		clean: true
-	},
-	optimization: {
-		splitChunks: {
-			chunks: 'all'
-		}
+		filename: 'index.js'
 	}
 };

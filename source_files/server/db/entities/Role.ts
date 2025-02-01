@@ -18,5 +18,5 @@ export class Role extends TimestampEntity {
 	color!: string;
 
 	@OneToMany(() => Account, (account) => account.role)
-	accounts?: Account[] | null;
+	accounts?: Account[] | number[] | null;
 }

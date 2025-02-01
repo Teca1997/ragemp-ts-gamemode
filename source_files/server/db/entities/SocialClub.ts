@@ -1,15 +1,15 @@
 import { Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
-import { AccountSerial } from './AccountSerial';
+import { AccountSocialClub } from './AccountSocialClub';
 import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class Serial extends TimestampEntity {
+export class SocialClub extends TimestampEntity {
 	@PrimaryColumn({ type: 'varchar', length: 128 })
 	id!: string;
 
-	@OneToMany(() => AccountSerial, (accountSerial) => accountSerial.serial)
-	accountSerials?: AccountSerial[] | number[];
+	@OneToMany(() => AccountSocialClub, (accountSocialClub) => accountSocialClub.socialClub)
+	accountSocialClubs?: AccountSocialClub[] | string[];
 
 	constructor(id: string) {
 		super();

@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Character } from './Character';
+import { Account } from './Account';
 import { ReportType } from './ReportType';
 import { TimestampEntity } from './TimestampEntity';
 
@@ -21,10 +21,10 @@ export class Report extends TimestampEntity {
 	@Column({ type: 'text' })
 	reportText!: string;
 
-	@ManyToOne(() => Character, (character) => character.characterReportedBy, { nullable: false })
+	@ManyToOne(() => Account, (account) => account.accountReportedBy, { nullable: false })
 	reportedBy!: number;
 
-	@ManyToOne(() => Character, (character) => character.characterClaimedBy)
+	@ManyToOne(() => Account, (account) => account.accountClaimedBy)
 	claimedBy?: number;
 
 	@ManyToOne(() => ReportType, (reportType) => reportType.reports, { nullable: false })

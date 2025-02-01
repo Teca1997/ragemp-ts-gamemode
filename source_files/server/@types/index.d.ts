@@ -1,6 +1,13 @@
 import '@types';
+import { Account } from '../db/entities/Account';
+import { Character } from '../db/entities/Character';
 
 declare global {
+	interface PlayerMp {
+		account?: Account;
+		activeCharacter?: Character;
+	}
+
 	interface Vector {
 		x: number;
 		y: number;

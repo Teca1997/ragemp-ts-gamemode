@@ -4,13 +4,13 @@ const dotenv = require('dotenv');
 const nodeExternals = require('webpack-node-externals');
 dotenv.config();
 
+const entryPath = path.join(__dirname, './index.ts');
 const outputPath = path.join(__dirname, '../../packages/gamemode');
-
 const pathToModules = path.join(__dirname, '../../node_modules');
 
 module.exports = {
 	entry: {
-		server: path.join(__dirname, './index.ts')
+		server: entryPath
 	},
 	devtool: 'inline-source-map',
 	target: 'node',
