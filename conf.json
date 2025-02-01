@@ -2,9 +2,8 @@
 	"maxplayers" : 100,
 	"name" : "RAGE:MP Unofficial server", 
 	"gamemode" : "freeroam", 
-	"stream-distance" : 400,
+	"stream-distance" : 300.0,
 	"announce" : false,
 	"csharp" : "disabled",
-	"port": 22005,
-	"sync-rate":300
+	"port": 22005
 }

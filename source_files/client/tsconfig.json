@@ -1,0 +1,9 @@
+{
+	// NOTE: This tsconfig will work assuming your project is structured as described above.
+	"extends": "../../tsconfig.base.json",
+	"compilerOptions": {
+		"outDir": "../../compiled_server_files/client_packages/"
+	},
+	"files": ["../../node_modules/@ragempcommunity/types-client/index.d.ts"],
+	"include": ["./**/*"]
+}

@@ -1,3 +1,12 @@
 node_modules
-compiled_server_files
+client_packages
+plugins
+conf.json
+BugTrap-x64.dll
+packages
+maps
+dlcpacks
 .env
+package-lock.jcon
+bin
+ragemp-server.exe
