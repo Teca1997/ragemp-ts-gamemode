@@ -1,4 +1,13 @@
-import { BeforeInsert, Column, CreateDateColumn, DeleteDateColumn, Entity, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import {
+	BeforeInsert,
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	ManyToOne,
+	PrimaryColumn,
+	UpdateDateColumn
+} from 'typeorm';
 
 import { Account } from './Account';
 import { Punishment } from './Punishment';
@@ -25,10 +34,16 @@ export class AccountPunishment {
 	@UpdateDateColumn({ type: 'timestamptz' })
 	dateUpdated?: Date;
 
-	@ManyToOne(() => Account, (account) => account.accountPunishments, { nullable: false })
-	received!: Account;
+	@ManyToOne(() => Account, (account) => account.accountPunishments, {
+		nullable: false,
+		eager: false
+	})
+	received!: Account | number;
 
-	@ManyToOne(() => Account, (account) => account.accountIssuedPunishments, { nullable: true })
+	@ManyToOne(() => Account, (account) => account.accountIssuedPunishments, {
+		nullable: true,
+		eager: false
+	})
 	issued?: number | Account;
 
 	@Column({ type: 'timestamptz' })

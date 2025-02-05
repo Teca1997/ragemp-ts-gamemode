@@ -13,7 +13,7 @@ export class PunishmentService {
 
 	private constructor() {
 		mp.events.add('playerJoin', this.playerJoin);
-		console.log(`${yellow('[INFO]')} Punishment service started...`);
+		console.log(`${yellow('[INFO]')} Punishment service started................`);
 	}
 
 	private async playerJoin(player: PlayerMp) {

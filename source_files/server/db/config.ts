@@ -33,7 +33,6 @@ export const databaseConfig: DataSourceOptions = {
 	database: process.env.DB_DATABASE,
 	password: process.env.DB_PASSWORD,
 	schema: process.env.DB_SCHEMA,
-	synchronize: process.env.DB_SYNCHRONISE === 'true' ? true : false,
 	entities: [
 		Account,
 		AccountIp,

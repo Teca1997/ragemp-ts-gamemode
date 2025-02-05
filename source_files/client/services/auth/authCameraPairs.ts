@@ -1,0 +1,62 @@
+type AuthCamera = {
+	position: Vector3;
+	pointAt: Vector3;
+};
+
+type AuthCameraPair = {
+	startCamera: AuthCamera;
+	endCamera: AuthCamera;
+};
+
+export const authCamerasData: AuthCameraPair[] = [
+	{
+		startCamera: {
+			position: new mp.Vector3(388.6559143066406, 128.60646057128906, 121.6744384765625),
+			pointAt: new mp.Vector3(330.716796875, 152.83770751953125, 102.46179962158203)
+		},
+		endCamera: {
+			position: new mp.Vector3(63.85446548461914, 245.0865020751953, 121.6744384765625),
+			pointAt: new mp.Vector3(14.014591217041016, 260.20166015625, 108.55534362792969)
+		}
+	},
+	{
+		startCamera: {
+			position: new mp.Vector3(217.75306701660156, -702.0223999023438, 65.84686279296875),
+			pointAt: new mp.Vector3(251.878173828125, -617.9606323242188, 40.91117858886719)
+		},
+		endCamera: {
+			position: new mp.Vector3(290.3429260253906, -518.5593872070312, 65.84686279296875),
+			pointAt: new mp.Vector3(317.5993957519531, -447.070068359375, 42.801918029785156)
+		}
+	},
+	{
+		startCamera: {
+			position: new mp.Vector3(406.0520935058594, -857.5234375, 43.09203338623047),
+			pointAt: new mp.Vector3(401.8367919921875, -923.4051513671875, 28.418827056884766)
+		},
+		endCamera: {
+			position: new mp.Vector3(397.6266784667969, -1056.994384765625, 39.110042572021484),
+			pointAt: new mp.Vector3(397.7633361816406, -1101.7662353515625, 28.445798873901367)
+		}
+	},
+	{
+		startCamera: {
+			position: new mp.Vector3(-1417.9232177734375, -728.6300048828125, 63.4100456237793),
+			pointAt: new mp.Vector3(-1492.4378662109375, -819.3526000976562, 22.81652069091797)
+		},
+		endCamera: {
+			position: new mp.Vector3(-1792.5860595703125, -1180.82763671875, 56.47673416137695),
+			pointAt: new mp.Vector3(-1833.0531005859375, -1218.141845703125, 12.01727294921875)
+		}
+	},
+	{
+		startCamera: {
+			position: new mp.Vector3(-2220.635986328125, -570.1066284179688, 47.86963653564453),
+			pointAt: new mp.Vector3(-2110.522705078125, -500.49127197265625, 2.5300941467285156)
+		},
+		endCamera: {
+			position: new mp.Vector3(-1335.42041015625, -1834.283203125, 43.826786041259766),
+			pointAt: new mp.Vector3(-1312.84375, -1664.4605712890625, 1.8110427856445312)
+		}
+	}
+];

@@ -22,11 +22,11 @@ export class Report extends TimestampEntity {
 	reportText!: string;
 
 	@ManyToOne(() => Account, (account) => account.accountReportedBy, { nullable: false })
-	reportedBy!: number;
+	reportedBy!: number | Account;
 
 	@ManyToOne(() => Account, (account) => account.accountClaimedBy)
-	claimedBy?: number;
+	claimedBy?: number | Account;
 
 	@ManyToOne(() => ReportType, (reportType) => reportType.reports, { nullable: false })
-	reportType?: number;
+	reportType?: number | ReportType;
 }

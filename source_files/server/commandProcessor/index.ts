@@ -52,5 +52,4 @@ export default class CommandProcessor {
 
 (async () => {
 	CommandProcessor.init();
-	console.log(CommandProcessor.aliasList);
 })();

@@ -1,8 +1,6 @@
 import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { AccountPunishment } from './AccountPunishment';
-import { AccountSerial } from './AccountSerial';
-import { AccountSocialClub } from './AccountSocialClub';
 import { Character } from './Character';
 import { Report } from './Report';
 import { Role } from './Role';
@@ -14,16 +12,16 @@ export class Account extends TimestampEntity {
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
 
-	@Column({ length: 30, unique: true })
+	@Column({ length: 30, unique: true, nullable: false })
 	username!: string;
 
-	@Column({ length: 50, unique: true })
+	@Column({ length: 50, unique: true, nullable: false })
 	email!: string;
 
-	@Column({ type: 'char', length: 60 })
+	@Column({ type: 'char', length: 128, nullable: false })
 	password!: string;
 
-	@Column({ type: 'char', length: 60 })
+	@Column({ type: 'char', length: 64, nullable: false })
 	salt!: string;
 
 	@Column({ type: 'timestamptz', nullable: true })
@@ -37,23 +35,49 @@ export class Account extends TimestampEntity {
 	role!: number | Role;
 
 	@OneToMany(() => Character, (character) => character.account, { eager: true })
-	characters?: number[];
+	characters?: Character[];
 
-	@OneToMany(() => AccountPunishment, (accountPunishment) => accountPunishment.received, { eager: true })
+	@OneToMany(() => AccountPunishment, (accountPunishment) => accountPunishment.received, {
+		eager: true
+	})
 	accountPunishments?: AccountPunishment[] | number[];
 
-	@OneToMany(() => AccountPunishment, (accountPunishment) => accountPunishment.issued, { eager: true })
+	@OneToMany(() => AccountPunishment, (accountPunishment) => accountPunishment.issued, {
+		eager: true
+	})
 	accountIssuedPunishments?: AccountPunishment[] | number[];
 
-	@OneToMany(() => AccountSerial, (accountSerial) => accountSerial.serial, { eager: true })
+	/* @OneToMany(() => AccountSerial, (accountSerial) => accountSerial.serial, { eager: true })
 	accountSerials?: AccountSerial[] | number[];
 
-	@OneToMany(() => AccountSocialClub, (accountSocialClub) => accountSocialClub.socialClub, { eager: true })
+	@OneToMany(() => AccountSocialClub, (accountSocialClub) => accountSocialClub.socialClub, {
+		eager: false
+	})
 	accountSocialClubs?: AccountSocialClub[] | number[];
+
+	@OneToMany(() => AccountIp, (accountIp) => accountIp.ip, {
+		eager: false
+	})
+	accountIps?: AccountIp[] | number[]; */
 
 	@OneToMany(() => Report, (report) => report.claimedBy, { eager: true })
 	accountClaimedBy?: Report[] | number[];
 
 	@OneToMany(() => Report, (report) => report.reportedBy, { eager: true })
 	accountReportedBy?: Report[] | number[];
+
+	constructor(
+		username: string,
+		email: string,
+		password: string,
+		salt: string,
+		role: Role | number = 1
+	) {
+		super();
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.salt = salt;
+		this.role = role;
+	}
 }

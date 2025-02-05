@@ -1,4 +1,4 @@
-export const default_male_clothes: CharacterClothingItem[] = [
+export const default_male_clothes: any[] = [
 	{
 		id: 1,
 		drawable: 0,
@@ -61,7 +61,7 @@ export const default_male_clothes: CharacterClothingItem[] = [
 	}
 ];
 
-export const default_female_clothes: CharacterClothingItem[] = [
+export const default_female_clothes: any[] = [
 	{
 		id: 1,
 		drawable: 0,

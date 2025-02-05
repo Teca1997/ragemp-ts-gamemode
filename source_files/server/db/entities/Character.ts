@@ -1,5 +1,12 @@
-import { BeforeInsert, Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { default_female_clothes, default_male_clothes } from '../../../shared/defaultChacterClothes';
+import {
+	CharacterClothingItem,
+	CharacterColors,
+	CharacterHair,
+	CharacterHeadOverlay,
+	CharacterParents,
+	CharacterVitals
+} from '@shared';
+import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Account } from './Account';
 import { Alias } from './Alias';
@@ -35,7 +42,7 @@ export class Character extends TimestampEntity {
 	headOverlay!: CharacterHeadOverlay[];
 
 	@Column({ type: 'jsonb' })
-	clothes?: CharacterClothingItem[];
+	clothes!: CharacterClothingItem[];
 
 	@Column({ type: 'jsonb' })
 	hair!: CharacterHair;
@@ -63,7 +70,7 @@ export class Character extends TimestampEntity {
 
 	@Index()
 	@Column({ type: 'number', name: 'accountId' })
-	@ManyToOne(() => Account, (account) => account.characters)
+	@ManyToOne(() => Account, (account) => account.characters, { nullable: true, eager: false })
 	account!: Account | number;
 
 	@OneToMany(() => Alias, (alias) => alias.aliasing, { nullable: false, eager: true })
@@ -72,10 +79,16 @@ export class Character extends TimestampEntity {
 	@OneToMany(() => Alias, (alias) => alias.aliased, { nullable: false, eager: true })
 	aliasedByCharacters?: Alias[];
 
-	@OneToMany(() => CharacterIdLog, (characterIdLog) => characterIdLog.character, { nullable: false, eager: true })
+	@OneToMany(() => CharacterIdLog, (characterIdLog) => characterIdLog.character, {
+		nullable: false,
+		eager: false
+	})
 	characterIdLog?: CharacterIdLog[];
 
-	@OneToMany(() => Vehicle, (vehicle) => vehicle.characterOwner, { nullable: false, eager: true })
+	@OneToMany(() => Vehicle, (vehicle) => vehicle.characterOwner, {
+		nullable: false,
+		eager: true
+	})
 	characterVehicle?: Vehicle[];
 
 	@OneToMany(() => CharacterDeathLog, (characterDeathLog) => characterDeathLog.victim)
@@ -84,7 +97,7 @@ export class Character extends TimestampEntity {
 	@OneToMany(() => CharacterDeathLog, (characterDeathLog) => characterDeathLog.killer)
 	characterKiller?: CharacterDeathLog | number;
 
-	//event listners
+	/* //event listners
 	@BeforeInsert()
 	setDefaultCLothes?(): void {
 		if (this.gender == 1) {
@@ -92,5 +105,5 @@ export class Character extends TimestampEntity {
 		} else {
 			this.clothes = default_female_clothes;
 		}
-	}
+	} */
 }

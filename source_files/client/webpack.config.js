@@ -2,6 +2,7 @@ const path = require('path');
 const fs = require('fs');
 const dotenv = require('dotenv');
 const webpack = require('webpack');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 dotenv.config();
 
 const outputPath = path.join(__dirname, '../../client_packages');
@@ -30,11 +31,12 @@ module.exports = {
 			{
 				test: /\.ts?$/,
 				use: 'ts-loader',
-				exclude: pathToModules
+				exclude: [pathToModules]
 			}
 		]
 	},
 	resolve: {
+		plugins: [new TsconfigPathsPlugin({ configFile: configPath, baseUrl: sourcePath })],
 		extensions: ['.ts', '.js'],
 		modules: [pathToModules]
 	},

@@ -2,8 +2,11 @@
 	// NOTE: This tsconfig will work assuming your project is structured as described above.
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"outDir": "../../compiled_server_files/client_packages/"
+		"outDir": "../../client_packages/",
+		"paths": {
+			"@shared": ["../shared/index.ts"]
+		}
 	},
-	"files": ["../../node_modules/@ragempcommunity/types-client/index.d.ts"],
-	"include": ["./**/*"]
+	"files": ["../../node_modules/@ragempcommunity/types-client/index.d.ts", "../shared/index.ts"],
+	"include": ["./**/*", "../shared/index.ts"]
 }

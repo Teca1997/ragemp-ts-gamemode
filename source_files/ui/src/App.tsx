@@ -1,35 +1,47 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './components/Toast/ToastManager';
+import './styles/index.css';
+
+import { Bounce, ToastContainer } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+
+import Auth from './pages/Auth/Auth';
+import { CEF } from '@shared';
+import CharacterCreator from './pages/CharacterCreator/CharacterCreator';
+import CharacterSelector from './pages/CharacterSelector/CharacterSelector';
+import Hud from './pages/Hud/Hud';
+import { RootState } from './redux/store';
+import { pageManagerActions } from './redux/slices/pageManagerSlice';
 
 function App() {
-  const [count, setCount] = useState(0)
+	const dispatch = useDispatch();
+	const currentPage = useSelector((state: RootState) => state.pageManager.currentPage);
 
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+	if (window.mp) {
+		mp.events.add(CEF.Events.PageManager.SetPage, (page: string) =>
+			dispatch(pageManagerActions.setPage(page))
+		);
+	}
+	return (
+		<>
+			{currentPage === CEF.Pages.Auth && <Auth />}
+			{currentPage === CEF.Pages.CharacterSelector && <CharacterSelector />}
+			{currentPage === CEF.Pages.CharacterCreator && <CharacterCreator />}
+			{currentPage === CEF.Pages.Hud && <Hud />}
+			<ToastContainer
+				position="top-right"
+				autoClose={5000}
+				hideProgressBar={false}
+				newestOnTop={false}
+				closeOnClick={false}
+				rtl={false}
+				pauseOnFocusLoss
+				draggable
+				pauseOnHover
+				theme="dark"
+				transition={Bounce}
+			/>
+		</>
+	);
 }
 
-export default App
+export default App;

@@ -10,8 +10,15 @@
 		"pretty": true,
 		"allowJs": true,
 		"esModuleInterop": true,
-		"skipLibCheck": true
+		"skipLibCheck": true,
+		"paths": {
+			"@shared": ["../shared/index.ts"]
+		}
 	},
-	"files": ["../../node_modules/@ragempcommunity/types-server/index.d.ts", "./@types/index.d.ts"],
-	"include": ["./**/*", "../shared/", "../../save/default_data"]
+	"files": [
+		"../../node_modules/@ragempcommunity/types-server/index.d.ts",
+		"./@types/index.d.ts",
+		"../shared/index.ts"
+	],
+	"include": ["./**/*", "../shared/index.ts"]
 }

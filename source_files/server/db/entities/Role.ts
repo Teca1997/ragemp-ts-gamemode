@@ -19,4 +19,11 @@ export class Role extends TimestampEntity {
 
 	@OneToMany(() => Account, (account) => account.role)
 	accounts?: Account[] | number[] | null;
+
+	constructor(name: string, description: string, color: string) {
+		super();
+		this.name = name;
+		this.description = description;
+		this.color = color;
+	}
 }

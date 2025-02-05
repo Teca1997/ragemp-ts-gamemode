@@ -1,10 +1,9 @@
-import '@types';
 import { Account } from '../db/entities/Account';
 import { Character } from '../db/entities/Character';
 
 declare global {
 	interface PlayerMp {
-		account?: Account;
+		account?: Account | null;
 		activeCharacter?: Character;
 	}
 
@@ -15,7 +14,7 @@ declare global {
 	}
 
 	interface Position {
-		location: Vector;
+		location: Vector3;
 		heading: number;
 		dimension: number;
 	}
@@ -24,50 +23,6 @@ declare global {
 		modType: number;
 		description: string;
 		value: number;
-	}
-
-	interface CharacterVitals {
-		armour: number;
-		health: number;
-		hunger: number;
-		thirst: number;
-	}
-
-	interface CharacterParents {
-		father: number;
-		mother: number;
-		similarity: number;
-		skinSimilarity: number;
-	}
-
-	interface CharacterHeadOverlay {
-		overlayId: number;
-		index: number;
-		opacity: number;
-		firstColor: number;
-		secondColor: number;
-	}
-
-	interface CharacterClothingItem {
-		id: number;
-		drawable: number;
-		texture: number;
-		palette: number;
-	}
-
-	interface CharacterHair {
-		hair: number;
-		color: number;
-		highlightColor: number;
-	}
-
-	interface CharacterColors {
-		eyebrowColor: number;
-		beardColor: number;
-		eyeColor: number;
-		blushColor: number;
-		lipstickColor: number;
-		chestHairColor: number;
 	}
 
 	namespace NodeJS {
