@@ -4,7 +4,8 @@ import {
 	CharacterHair,
 	CharacterHeadOverlay,
 	CharacterParents,
-	CharacterVitals
+	CharacterVitals,
+	Types
 } from '@shared';
 import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -48,7 +49,7 @@ export class Character extends TimestampEntity {
 	hair!: CharacterHair;
 
 	@Column({ type: 'jsonb' })
-	position!: Position;
+	position!: Types.Position;
 
 	@Column({ type: 'date' })
 	dateOfBirth!: string;

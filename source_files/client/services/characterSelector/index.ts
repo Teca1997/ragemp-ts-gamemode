@@ -42,7 +42,6 @@ export class CharacterSelector {
 		a.a;
 		const { gender, parents, hair, clothes, faceFeatures, colors, headOverlay } =
 			account.characters[index];
-		mp.console.logInfo(JSON.stringify(account.characters[index]));
 		//set player model clientside
 		mp.players.local.model = this.freemodeCharacters[gender];
 		//set parents clientside

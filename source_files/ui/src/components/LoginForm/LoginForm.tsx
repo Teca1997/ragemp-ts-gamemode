@@ -2,15 +2,22 @@ import { Button, Stack, Typography } from '@mui/material';
 import { Client, Types } from '@shared';
 import { Form, Formik, FormikHelpers } from 'formik';
 
-import { AuthFormWrapper } from '../StyledComponents';
-import { LoginValidationSchema } from '../../utils/validations/validationSchemas';
 import TextField from '@mui/material/TextField';
-import { ToastManager } from '../Toast/ToastManager';
-import { authActions } from '../../redux/slices/authSlice';
 import { useDispatch } from 'react-redux';
+import { authActions } from '../../redux/slices/authSlice';
+import { LoginValidationSchema } from '../../utils/validations/validationSchemas';
+import { AuthFormWrapper } from '../StyledComponents';
+import { ToastManager } from '../Toast/ToastManager';
 
 function LoginForm() {
 	const dispatch = useDispatch();
+
+	async () => {
+		await mp.events.callProc(
+			Client.Events.Auth.Login,
+			JSON.stringify({ username: 'test1', password: 'password' })
+		);
+	};
 
 	return (
 		<AuthFormWrapper>

@@ -1,8 +1,8 @@
 import { CEF, Client, Server } from '@shared';
 
-import { AuthCameraPair } from './AuthCameraPair';
 import { ControlsService } from '../controls';
 import { UIService } from '../ui';
+import { AuthCameraPair } from './AuthCameraPair';
 
 export class AuthService {
 	private static _instance: AuthService = new AuthService();
@@ -34,8 +34,6 @@ export class AuthService {
 
 	private playerReady() {
 		this.startAuthCameras();
-		UIService.instance.showGameUI(false);
-		mp.gui.chat.show(false);
 	}
 
 	private async logout() {

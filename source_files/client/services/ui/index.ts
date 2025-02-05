@@ -10,7 +10,13 @@ export class UIService {
 	private browser: BrowserMp = mp.browsers.new('localhost:3000');
 
 	private constructor() {
+		mp.events.add('playerReady', this.playerReady.bind(this));
 		mp.console.logInfo('[INFO] UI service started...');
+	}
+
+	private playerReady() {
+		this.showGameUI(true);
+		mp.gui.chat.show(true);
 	}
 
 	setAccountData(accountData: string) {

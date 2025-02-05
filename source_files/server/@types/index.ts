@@ -2,27 +2,9 @@ import { Account } from '../db/entities/Account';
 import { Character } from '../db/entities/Character';
 
 declare global {
-	interface PlayerMp {
+	export interface PlayerMp {
 		account?: Account | null;
 		activeCharacter?: Character;
-	}
-
-	interface Vector {
-		x: number;
-		y: number;
-		z: number;
-	}
-
-	interface Position {
-		location: Vector3;
-		heading: number;
-		dimension: number;
-	}
-
-	interface VehicleMod {
-		modType: number;
-		description: string;
-		value: number;
 	}
 
 	namespace NodeJS {

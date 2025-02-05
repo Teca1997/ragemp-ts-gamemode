@@ -1,5 +1,5 @@
-import { Database } from './db';
 import { yellow } from 'colorette';
+import { Database } from './db';
 
 import('./commandProcessor');
 import('./service');

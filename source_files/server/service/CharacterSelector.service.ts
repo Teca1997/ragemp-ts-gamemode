@@ -1,7 +1,7 @@
 import { CharacterClothingItem, Server } from '@shared';
 
-import { ServerConfig } from '../config';
 import { yellow } from 'colorette';
+import { ServerConfig } from '../config';
 
 export class CharacterSelector {
 	private static _instance: CharacterSelector = new CharacterSelector();

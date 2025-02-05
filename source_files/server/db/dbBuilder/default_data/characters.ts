@@ -5,12 +5,18 @@ import {
 
 import { Character } from '../../entities/Character';
 
+type Vector3 = {
+	x: number;
+	y: number;
+	z: number;
+};
+
 export const default_characters: Character[] = [
 	{
 		firstname: 'John',
 		lastname: 'Doe',
 		position: {
-			location: new Vector3(-241.94448852539062, 6325.61865234375, 32.426177978515625),
+			location: new mp.Vector3(-241.94448852539062, 6325.61865234375, 32.426177978515625),
 			heading: -144.61412048339844,
 			dimension: 0
 		},
@@ -59,7 +65,7 @@ export const default_characters: Character[] = [
 		firstname: 'Jane',
 		lastname: 'Doe',
 		position: {
-			location: new Vector3(-241.94448852539062, 6325.61865234375, 32.426177978515625),
+			location: new mp.Vector3(-241.94448852539062, 6325.61865234375, 32.426177978515625),
 			heading: -144.61412048339844,
 			dimension: 0
 		},
@@ -108,7 +114,7 @@ export const default_characters: Character[] = [
 		firstname: 'Jane',
 		lastname: 'Doe',
 		position: {
-			location: new Vector3(-241.94448852539062, 6325.61865234375, 32.426177978515625),
+			location: new mp.Vector3(-241.94448852539062, 6325.61865234375, 32.426177978515625),
 			heading: -144.61412048339844,
 			dimension: 0
 		},

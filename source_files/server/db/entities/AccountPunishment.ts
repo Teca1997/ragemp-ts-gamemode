@@ -9,9 +9,9 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
+import * as moment from 'moment';
 import { Account } from './Account';
 import { Punishment } from './Punishment';
-import moment from 'moment';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
 export class AccountPunishment {

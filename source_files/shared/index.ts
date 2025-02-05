@@ -9,6 +9,24 @@ declare global {
 }
 
 export namespace Types {
+	export interface Vector {
+		x: number;
+		y: number;
+		z: number;
+	}
+
+	export interface Position {
+		location: Vector3;
+		heading: number;
+		dimension: number;
+	}
+
+	export interface VehicleMod {
+		modType: number;
+		description: string;
+		value: number;
+	}
+
 	export type AccountData = Omit<
 		Account,
 		'password' | 'salt' | 'dateCreated' | 'dateUpdated' | 'dateDeleted'

@@ -17,7 +17,7 @@
 	},
 	"files": [
 		"../../node_modules/@ragempcommunity/types-server/index.d.ts",
-		"./@types/index.d.ts",
+		"./@types/index.ts",
 		"../shared/index.ts"
 	],
 	"include": ["./**/*", "../shared/index.ts"]
