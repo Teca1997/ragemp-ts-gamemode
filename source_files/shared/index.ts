@@ -16,7 +16,7 @@ export namespace Types {
 	}
 
 	export interface Position {
-		location: Vector3;
+		location: Vector;
 		heading: number;
 		dimension: number;
 	}
@@ -80,6 +80,12 @@ export namespace Client {
 			Start = 'client:characterSelector:start',
 			ApplyCharacter = 'client:characterSelector:apply',
 			Play = 'client:characterSelector:play'
+		}
+
+		export enum CharacterCreator {
+			Start = 'client:characterCreator:start',
+			ApplyCharacter = 'client:characterCreator:apply',
+			Save = 'client:characterCreator:save'
 		}
 	}
 }

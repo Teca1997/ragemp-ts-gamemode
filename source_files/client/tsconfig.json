@@ -3,6 +3,7 @@
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"outDir": "../../client_packages/",
+		"esModuleInterop": true,
 		"paths": {
 			"@shared": ["../shared/index.ts"]
 		}

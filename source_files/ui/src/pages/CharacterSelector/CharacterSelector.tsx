@@ -1,16 +1,19 @@
 import { Box, Button, IconButton, Paper, Stack, Typography, useTheme } from '@mui/material';
 
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import { Client } from '@shared';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { RootState } from '../../redux/store';
-import { useSelector } from 'react-redux';
+import { CEF, Client } from '@shared';
 import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { pageManagerActions } from '../../redux/slices/pageManagerSlice';
+import { RootState } from '../../redux/store';
 
 function CharacterSelector() {
+	const dispatch = useDispatch();
 	const theme = useTheme();
 	const authStore = useSelector((state: RootState) => state.auth.authInfo);
 
@@ -157,6 +160,15 @@ function CharacterSelector() {
 					sx={{ color: 'white' }}
 				>
 					<LogoutIcon />
+				</IconButton>
+				<IconButton
+					onClick={() => {
+						dispatch(pageManagerActions.setPage(CEF.Pages.CharacterCreator));
+						mp.trigger(Client.Events.CharacterCreator.Start);
+					}}
+					sx={{ color: 'white' }}
+				>
+					<AddCircleOutlineIcon />
 				</IconButton>
 			</Box>
 		</Box>

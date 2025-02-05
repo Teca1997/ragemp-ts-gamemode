@@ -9,7 +9,7 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
-import * as moment from 'moment';
+import moment from 'moment';
 import { Account } from './Account';
 import { Punishment } from './Punishment';
 

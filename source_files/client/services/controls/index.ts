@@ -9,8 +9,9 @@ export class ControlsService {
 		return this._allControlActionsState;
 	}
 	public set allControlActionsState(value) {
+		this._allControlActionsState = value;
 		if (!value) {
-			this._allControlActionsState = value;
+			mp.console.logInfo('started disabling controls');
 			this.startDisableAllControlActions();
 		}
 	}
@@ -27,9 +28,12 @@ export class ControlsService {
 
 	private async startDisableAllControlActions() {
 		if (!this.allControlActionsState) {
+			//mp.gui.chat.push(Date.now().toString());
 			mp.game.controls.disableAllControlActions(0);
-			await mp.game.waitAsync(2);
+			await mp.game.waitAsync(5);
 			this.startDisableAllControlActions();
+		} else {
+			mp.console.logInfo('stopped disabling');
 		}
 	}
 }

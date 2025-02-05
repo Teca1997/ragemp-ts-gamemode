@@ -7,6 +7,8 @@ import { AuthCameraPair } from './AuthCameraPair';
 export class AuthService {
 	private static _instance: AuthService = new AuthService();
 
+	private authCameraChain: AuthCameraPair = AuthCameraPair.setupAuthCameras();
+
 	public static get instance(): AuthService {
 		return AuthService._instance;
 	}
@@ -22,14 +24,11 @@ export class AuthService {
 	}
 
 	private startAuthCameras() {
-		AuthCameraPair.setupAuthCameras().startInterp();
+		this.authCameraChain.startCameraLoop();
 	}
 
 	private stopAuthCameras() {
-		mp.game.cam.renderScriptCams(false, false, 0, true, false, 0);
-		mp.cameras.forEach((camera) => {
-			camera.destroy();
-		});
+		this.authCameraChain.stopCameraLoop();
 	}
 
 	private playerReady() {

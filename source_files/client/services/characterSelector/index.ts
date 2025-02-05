@@ -26,10 +26,14 @@ export class CharacterSelector {
 	}
 
 	private async play(characterIndex: number) {
-		await mp.events.callRemoteProc(Server.Events.CharaterSelector.Play, characterIndex);
+		const result = await mp.events.callRemoteProc(
+			Server.Events.CharaterSelector.Play,
+			characterIndex
+		);
+		mp.console.logInfo(JSON.stringify(result));
 		ControlsService.instance.allControlActionsState = true;
 		mp.game.cam.renderScriptCams(false, false, 0, true, false, 0);
-		UIService.instance.setPage('hud');
+		UIService.instance.setPage('');
 	}
 
 	private applyCharacter(index: number) {

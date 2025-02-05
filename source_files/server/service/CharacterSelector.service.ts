@@ -18,7 +18,7 @@ export class CharacterSelector {
 		console.log(`${yellow('[INFO]')} Character selector service started...`);
 	}
 
-	private play(player: PlayerMp, characterIndex: number) {
+	private async play(player: PlayerMp, characterIndex: number) {
 		if (
 			player.account == undefined ||
 			player.account == null ||
@@ -29,7 +29,7 @@ export class CharacterSelector {
 		player.position = player.account!.characters[characterIndex].position.location;
 		player.dimension = player.account!.characters[characterIndex].position.dimension;
 		player.heading = player.account!.characters[characterIndex].position.heading;
-		return;
+		return true;
 	}
 
 	private async applyCharacter(player: PlayerMp, characterIndex: number) {

@@ -1,6 +1,8 @@
 import { authCamerasData } from './authCameraPairs';
 
 export class AuthCameraPair {
+	private static _continueInterp: boolean = false;
+
 	private _startCamera: CameraMp;
 	public get startCamera(): CameraMp {
 		return this._startCamera;
@@ -41,7 +43,9 @@ export class AuthCameraPair {
 		this._endCamera = endCamera;
 		this._duration = duration;
 		this._nextAuthCameraPair = next;
-		this.startInterp.bind(this);
+		this.startCameraLoop.bind(this);
+		this.stopCameraLoop.bind(this);
+		this.cameraLoop.bind(this);
 	}
 
 	static setupAuthCameras(): AuthCameraPair {
@@ -91,13 +95,27 @@ export class AuthCameraPair {
 		return authCameraPairs[0];
 	}
 
-	startInterp() {
-		if (this.nextAuthCameraPair?.endCamera) {
-			this.endCamera.setActiveWithInterp(this.startCamera.handle, this.duration >>> 0, 0, 0);
-			mp.game.cam.renderScriptCams(true, true, 0, true, false, 0);
-			setTimeout(() => {
-				this.nextAuthCameraPair?.startInterp();
-			}, this.duration >>> 0);
+	stopCameraLoop() {
+		if (AuthCameraPair._continueInterp) {
+			mp.game.cam.renderScriptCams(false, false, 0, true, false, 0);
+			AuthCameraPair._continueInterp = false;
+		}
+	}
+
+	private cameraLoop() {
+		this.endCamera.setActiveWithInterp(this.startCamera.handle, this.duration >>> 0, 0, 0);
+		mp.game.cam.renderScriptCams(true, true, 0, true, false, 0);
+		setTimeout(() => {
+			if (AuthCameraPair._continueInterp) {
+				this.nextAuthCameraPair?.cameraLoop();
+			}
+		}, this.duration >>> 0);
+	}
+
+	startCameraLoop() {
+		if (!AuthCameraPair._continueInterp) {
+			AuthCameraPair._continueInterp = true;
+			this.cameraLoop();
 		}
 	}
 }
