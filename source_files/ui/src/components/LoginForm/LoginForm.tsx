@@ -12,11 +12,35 @@ import { ToastManager } from '../Toast/ToastManager';
 function LoginForm() {
 	const dispatch = useDispatch();
 
-	async () => {
-		await mp.events.callProc(
-			Client.Events.Auth.Login,
-			JSON.stringify({ username: 'test1', password: 'password' })
-		);
+	const handleFormSubmit = async (
+		values: Types.LoginFormValues,
+		{ resetForm }: FormikHelpers<Types.LoginFormValues>
+	) => {
+		if (window.mp) {
+			const result: { account: any; msgs: string[] } = JSON.parse(
+				await mp.events.callProc(Client.Events.Auth.Login, JSON.stringify(values))
+			);
+			if (result.account) {
+				mp.trigger(Client.Events.Auth.StopAuthCameras);
+				mp.trigger(Client.Events.CharacterSelector.Start);
+
+				dispatch(
+					authActions.setAuthInfo({
+						username: result.account.username,
+						email: result.account.email,
+						role: result.account.role,
+						characters: result.account.characters
+					})
+				);
+
+				ToastManager.instance.success('Logged in!');
+			} else {
+				result.msgs.map((msg) => {
+					ToastManager.instance.warning(msg);
+				});
+			}
+		}
+		resetForm();
 	};
 
 	return (
@@ -28,40 +52,8 @@ function LoginForm() {
 			</Stack>
 
 			<Formik
-				initialValues={{ username: '', password: '' }}
-				onSubmit={async (
-					values: Types.LoginFormValues,
-					{ resetForm }: FormikHelpers<Types.LoginFormValues>
-				) => {
-					if (window.mp) {
-						const result: { account: any; msgs: string[] } = JSON.parse(
-							await mp.events.callProc(
-								Client.Events.Auth.Login,
-								JSON.stringify(values)
-							)
-						);
-						if (result.account) {
-							mp.trigger(Client.Events.Auth.StopAuthCameras);
-							mp.trigger(Client.Events.CharacterSelector.Start);
-
-							dispatch(
-								authActions.setAuthInfo({
-									username: result.account.username,
-									email: result.account.email,
-									role: result.account.role,
-									characters: result.account.characters
-								})
-							);
-
-							ToastManager.instance.success('Logged in!');
-						} else {
-							result.msgs.map((msg) => {
-								ToastManager.instance.warning(msg);
-							});
-						}
-					}
-					resetForm();
-				}}
+				initialValues={{ username: 'test1', password: 'password' }}
+				onSubmit={handleFormSubmit}
 				validationSchema={LoginValidationSchema}
 			>
 				{(formik) => (
@@ -72,7 +64,7 @@ function LoginForm() {
 									id="outlined-error-helper-text1"
 									size="small"
 									label="Username"
-									type="username"
+									type="text"
 									name="username"
 									placeholder="Username....."
 									value={formik.values.username}

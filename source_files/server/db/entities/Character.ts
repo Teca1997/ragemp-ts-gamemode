@@ -1,12 +1,4 @@
-import {
-	CharacterClothingItem,
-	CharacterColors,
-	CharacterHair,
-	CharacterHeadOverlay,
-	CharacterParents,
-	CharacterVitals,
-	Types
-} from '@shared';
+import { Types } from '@shared';
 import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Account } from './Account';
@@ -22,52 +14,52 @@ export class Character extends TimestampEntity {
 	id?: number;
 
 	@Column({ length: 30 })
-	firstname!: string;
+	firstName!: string;
 
 	@Column({ length: 30 })
-	lastname!: string;
+	lastName!: string;
 
 	@Column({ type: 'jsonb' })
-	colors!: CharacterColors;
+	colors!: Types.CharacterColors;
 
 	@Column({ type: 'int' })
 	gender!: number;
 
 	@Column({ type: 'jsonb', nullable: false })
-	parents!: CharacterParents;
+	parents!: Types.CharacterParents;
 
 	@Column('int', { array: true })
 	faceFeatures!: number[];
 
 	@Column({ type: 'jsonb' })
-	headOverlay!: CharacterHeadOverlay[];
+	headOverlays!: Types.CharacterHeadOverlay[];
 
 	@Column({ type: 'jsonb' })
-	clothes!: CharacterClothingItem[];
+	clothes!: Types.CharacterClothingItem[];
 
 	@Column({ type: 'jsonb' })
-	hair!: CharacterHair;
+	hairColors!: Types.CharacterHair;
 
 	@Column({ type: 'jsonb' })
 	position!: Types.Position;
 
-	@Column({ type: 'date' })
+	/* @Column({ type: 'date' })
 	dateOfBirth!: string;
 
 	@Column({ length: 25 })
 	nationality!: string;
 
 	@Column({ type: 'text' })
-	story!: string;
+	story!: string; */
 
 	@Column({ type: 'int8', default: 0 })
-	timePlayed?: number;
+	timePlayed?: number = 0;
 
 	@Column({ type: 'jsonb' })
 	inventory!: any;
 
 	@Column({ type: 'jsonb', default: { armour: 0, health: 100, hunger: 100, thirst: 100 } })
-	vitals?: CharacterVitals;
+	vitals?: Types.CharacterVitals = { armour: 0, health: 100, hunger: 100, thirst: 100 };
 
 	@Index()
 	@Column({ type: 'number', name: 'accountId' })

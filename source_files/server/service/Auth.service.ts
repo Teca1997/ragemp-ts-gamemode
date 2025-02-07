@@ -6,7 +6,6 @@ import { Like } from 'typeorm';
 import { ServerConfig } from '../config';
 import { Database } from '../db';
 import { Account } from '../db/entities/Account';
-import { Character } from '../db/entities/Character';
 
 export class AuthService {
 	private static _instance: AuthService = new AuthService();
@@ -54,30 +53,7 @@ export class AuthService {
 
 					player.account = account;
 					player.setOwnVariable(Variables.Player.Account, player.account);
-					player.account!.characters![0].position.location = new mp.Vector3(
-						-241.94448852539062,
-						6325.61865234375,
-						32.426177978515625
-					);
-					player.account!.characters![1].position.location = new mp.Vector3(
-						-241.94448852539062,
-						6325.61865234375,
-						32.426177978515625
-					);
-					player.account!.characters![2].position.location = new mp.Vector3(
-						-241.94448852539062,
-						6325.61865234375,
-						32.426177978515625
-					);
-					await Database.datasource
-						.getRepository(Character)
-						.save(player.account!.characters![0]);
-					await Database.datasource
-						.getRepository(Character)
-						.save(player.account!.characters![1]);
-					await Database.datasource
-						.getRepository(Character)
-						.save(player.account!.characters![2]);
+
 					return JSON.stringify({
 						account: {
 							username,

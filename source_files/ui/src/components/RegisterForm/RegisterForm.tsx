@@ -1,11 +1,11 @@
 import { Button, Stack, Typography } from '@mui/material';
 import { Form, Formik, FormikHelpers } from 'formik';
 
-import { AuthFormWrapper } from '../StyledComponents';
-import { Client } from '@shared';
-import { LoginValidationSchema } from '../../utils/validations/validationSchemas';
 import TextField from '@mui/material/TextField';
+import { Client } from '@shared';
 import { Types } from '../../../../shared';
+import { LoginValidationSchema } from '../../utils/validations/validationSchemas';
+import { AuthFormWrapper } from '../StyledComponents';
 
 function RegisterForm() {
 	return (
@@ -40,7 +40,7 @@ function RegisterForm() {
 									id="outlined-error-helper-text1"
 									size="small"
 									label="Username"
-									type="username"
+									type="text"
 									name="username"
 									placeholder="Username....."
 									value={formik.values.username}
@@ -56,7 +56,7 @@ function RegisterForm() {
 									id="outlined-error-helper-text2"
 									size="small"
 									label="Email"
-									type="email"
+									type="text"
 									name="email"
 									placeholder="Email....."
 									value={formik.values.email}

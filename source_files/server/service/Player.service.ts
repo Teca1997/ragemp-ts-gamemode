@@ -1,6 +1,6 @@
-import { CharacterDeathLog } from '../db/entities/CharacterDeathLog';
-import { Database } from '../db';
 import { yellow } from 'colorette';
+import { Database } from '../db';
+import { CharacterDeathLog } from '../db/entities/CharacterDeathLog';
 
 export class PlayerService {
 	private static _instance: PlayerService = new PlayerService();

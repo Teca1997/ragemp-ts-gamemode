@@ -1,17 +1,11 @@
-import * as fs from 'fs';
-
-import { Command } from './command';
-import path from 'path';
 import { yellow } from 'colorette';
-
-const directoryPath = path.join(__dirname);
-
-const files = fs.readdirSync(directoryPath).filter((file) => file.endsWith('.cmd.ts'));
+import { Command } from './command';
+import { VehicleCommand } from './commands/vehicle';
 
 export default class CommandProcessor {
-	private next: Command | null = null;
+	private commandChain: Command | null = null;
 
-	static aliasList: string[] = new Array();
+	private aliasList: string[] = new Array();
 
 	private static _instance: CommandProcessor = new CommandProcessor();
 
@@ -19,25 +13,10 @@ export default class CommandProcessor {
 		return CommandProcessor._instance;
 	}
 
-	private constructor() {}
-
-	process(player: PlayerMp, cmd: string): void {
-		this.next?.run(player, cmd);
-	}
-
-	static async init() {
+	private constructor() {
 		const handlers: Command[] = [];
 
-		for (let file of files) {
-			try {
-				const module = await import('./commands/' + file);
-				for (let key in module) {
-					handlers.push(new module[key]());
-				}
-			} catch (e) {
-				console.log(e);
-			}
-		}
+		handlers.push(new VehicleCommand());
 
 		for (let i = 0; i < handlers.length; i++) {
 			if (i < handlers.length - 1) {
@@ -45,11 +24,18 @@ export default class CommandProcessor {
 				handlers[i].setNextHandler(handlers[i + 1]);
 			}
 		}
-		this.instance.next = handlers[0];
+
+		if (handlers.length > 0) {
+			this.commandChain = handlers[0];
+			mp.events.add('playerCommand', this.process.bind(this));
+		} else {
+			console.log('No commands loaded');
+		}
+
 		console.log(`${yellow('[INFO]')} Command processor initialized...`);
 	}
-}
 
-(async () => {
-	CommandProcessor.init();
-})();
+	process(player: PlayerMp, cmd: string): void {
+		this.commandChain?.run(player, cmd);
+	}
+}

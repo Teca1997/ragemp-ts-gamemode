@@ -2,19 +2,19 @@ import './components/Toast/ToastManager';
 import './styles/index.css';
 
 import { Bounce, ToastContainer } from 'react-toastify';
-import { useDispatch, useSelector } from 'react-redux';
 
-import Auth from './pages/Auth/Auth';
 import { CEF } from '@shared';
+import Auth from './pages/Auth/Auth';
 import CharacterCreator from './pages/CharacterCreator/CharacterCreator';
 import CharacterSelector from './pages/CharacterSelector/CharacterSelector';
 import Hud from './pages/Hud/Hud';
-import { RootState } from './redux/store';
+import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { pageManagerActions } from './redux/slices/pageManagerSlice';
+import { RootState } from './redux/store';
 
 function App() {
-	const dispatch = useDispatch();
-	const currentPage = useSelector((state: RootState) => state.pageManager.currentPage);
+	const dispatch = useAppDispatch();
+	const currentPage = useAppSelector((state: RootState) => state.pageManager.currentPage);
 
 	if (window.mp) {
 		mp.events.add(CEF.Events.PageManager.SetPage, (page: string) =>

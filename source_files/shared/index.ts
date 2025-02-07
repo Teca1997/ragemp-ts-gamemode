@@ -2,10 +2,12 @@ import { Account } from '../server/db/entities/Account';
 import { Character } from '../server/db/entities/Character';
 import { Role } from '../server/db/entities/Role';
 
-declare global {
-	enum a {
-		a = 'a'
-	}
+export namespace Config {
+	export const CharacterSelector = {
+		PlayerPosition: { x: -38.28577423095703, y: -589.6845703125, z: 78.83023071289062 },
+		PlayerHeading: -27.438535690307617,
+		CameraDistance: 3
+	};
 }
 
 export namespace Types {
@@ -27,13 +29,22 @@ export namespace Types {
 		value: number;
 	}
 
+	export type RoleData = Pick<Role, 'name' | 'description' | 'color'>;
+
+	export type CharacterData = Omit<Character, 'dateUpdated' | 'dateDeleted' | 'account'>;
+
 	export type AccountData = Omit<
 		Account,
 		'password' | 'salt' | 'dateCreated' | 'dateUpdated' | 'dateDeleted'
 	> & {
-		role: Pick<Role, 'name' | 'description' | 'color'>;
-		characters: Omit<Character, 'dateUpdated' | 'dateDeleted'>[] | [] | null | undefined;
+		role: RoleData;
+		characters: CharacterData[] | [] | null | undefined;
 	};
+
+	export type PlayerServiceData = Pick<
+		CharacterData,
+		'faceFeatures' | 'colors' | 'gender' | 'hairColors' | 'headOverlays' | 'parents' | 'clothes'
+	>;
 }
 
 export namespace Variables {
@@ -50,6 +61,10 @@ export namespace CEF {
 		Hud = 'hud'
 	}
 	export namespace Events {
+		export enum CharacterCreator {
+			SetCharacterData = 'cef:characterCreator:setCharacterData'
+		}
+
 		export enum Auth {
 			SetAccountData = 'cef:auth:setAccountData'
 		}
@@ -85,7 +100,13 @@ export namespace Client {
 		export enum CharacterCreator {
 			Start = 'client:characterCreator:start',
 			ApplyCharacter = 'client:characterCreator:apply',
-			Save = 'client:characterCreator:save'
+			Save = 'client:characterCreator:save',
+			GetNumParentPedsOfType = 'client:characterCreator:getNumParentPedsOfType',
+			UpdateGander = 'client:characterCreator:updateGander',
+			UpdateParents = 'client:characterCreator:updateParents',
+			UpdateFaceFeature = 'client:characterCreator:updateFaceFeatures',
+			UpdateHeadOverlay = 'client:characterCreator:updateHeadOverlay',
+			GetNumHeadOverlayValues = 'client:characterCreator:getNumHeadOverlayValues'
 		}
 	}
 }
@@ -118,48 +139,256 @@ export namespace Types {
 		password: string;
 		repeatPassword: string;
 	};
+	export interface CharacterVitals {
+		armour: number;
+		health: number;
+		hunger: number;
+		thirst: number;
+	}
+
+	export interface CharacterParents {
+		father: number;
+		mother: number;
+		similarity: number;
+		skinSimilarity: number;
+	}
+
+	export interface CharacterHeadOverlay {
+		index: number;
+		value: number;
+		opacity: number;
+		firstColor: number;
+		secondColor: number;
+	}
+
+	export interface CharacterClothingItem {
+		id: number;
+		drawable: number;
+		texture: number;
+		palette: number;
+	}
+
+	export interface CharacterHair {
+		color: number;
+		highlightColor: number;
+	}
+
+	export interface CharacterColors {
+		eyebrowColor: number;
+		beardColor: number;
+		eyeColor: number;
+		blushColor: number;
+		lipstickColor: number;
+		chestHairColor: number;
+	}
 }
 
-export interface CharacterVitals {
-	armour: number;
-	health: number;
-	hunger: number;
-	thirst: number;
-}
+export const default_male_clothes: Types.CharacterClothingItem[] = [
+	{
+		id: 1,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 3,
+		drawable: 15,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 4,
+		drawable: 43,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 5,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 6,
+		drawable: 49,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 7,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 8,
+		drawable: 15,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 9,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 10,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 11,
+		drawable: 22,
+		texture: 0,
+		palette: 2
+	}
+];
 
-export interface CharacterParents {
-	father: number;
-	mother: number;
-	similarity: number;
-	skinSimilarity: number;
-}
+export const default_female_clothes: Types.CharacterClothingItem[] = [
+	{
+		id: 1,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 3,
+		drawable: 15,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 4,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 5,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 6,
+		drawable: 49,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 7,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 8,
+		drawable: 34,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 9,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 10,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
+		id: 11,
+		drawable: 23,
+		texture: 0,
+		palette: 2
+	}
+];
 
-export interface CharacterHeadOverlay {
-	overlayId: number;
-	index: number;
-	opacity: number;
-	firstColor: number;
-	secondColor: number;
-}
+export const defaultParents: Types.CharacterParents = {
+	father: 0,
+	mother: 0,
+	similarity: 0.5,
+	skinSimilarity: 0.5
+};
 
-export interface CharacterClothingItem {
-	id: number;
-	drawable: number;
-	texture: number;
-	palette: number;
-}
+export const defaultFaceFeatures: number[] = [
+	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+];
 
-export interface CharacterHair {
-	hair: number;
-	color: number;
-	highlightColor: number;
-}
+export const defaultHeadOverlays: Types.CharacterHeadOverlay[] = [
+	{ index: 0, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 1, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 2, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 3, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 4, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 5, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 6, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 7, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 8, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 9, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 10, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 11, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 12, value: 255, opacity: 0, firstColor: 0, secondColor: 0 },
+	{ index: 13, value: 255, opacity: 0, firstColor: 0, secondColor: 0 }
+];
 
-export interface CharacterColors {
-	eyebrowColor: number;
-	beardColor: number;
-	eyeColor: number;
-	blushColor: number;
-	lipstickColor: number;
-	chestHairColor: number;
-}
+export const defaultMaleCharacter: Types.CharacterData = {
+	gender: 1,
+	firstName: '',
+	lastName: '',
+	inventory: {},
+	position: {
+		location: { x: 0, y: 0, z: 0 },
+		heading: 0,
+		dimension: 0
+	},
+	parents: defaultParents,
+	faceFeatures: defaultFaceFeatures,
+	hairColors: {
+		color: 0,
+		highlightColor: 0
+	},
+	colors: {
+		eyebrowColor: 0,
+		beardColor: 0,
+		eyeColor: 0,
+		blushColor: 0,
+		lipstickColor: 0,
+		chestHairColor: 0
+	},
+	headOverlays: defaultHeadOverlays,
+	clothes: default_male_clothes
+};
+
+export const defaultFemaleCharacter: Types.CharacterData = {
+	gender: 0,
+	firstName: '',
+	lastName: '',
+	inventory: {},
+	parents: defaultParents,
+	faceFeatures: defaultFaceFeatures,
+	position: {
+		location: { x: 0, y: 0, z: 0 },
+		heading: 0,
+		dimension: 0
+	},
+	hairColors: {
+		color: 0,
+		highlightColor: 0
+	},
+	colors: {
+		eyebrowColor: 0,
+		beardColor: 0,
+		eyeColor: 0,
+		blushColor: 0,
+		lipstickColor: 0,
+		chestHairColor: 0
+	},
+	headOverlays: defaultHeadOverlays,
+	clothes: default_female_clothes
+};

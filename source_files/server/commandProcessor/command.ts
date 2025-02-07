@@ -2,11 +2,12 @@ export abstract class Command {
 	abstract alias: string;
 	next: Command | null = null;
 
-	abstract process(player: PlayerMp, cmd: string): void;
+	abstract process(player: PlayerMp, args: string[]): void;
 
 	run(player: PlayerMp, cmd: string) {
-		if (cmd.split(' ')[0] == this.alias) {
-			this.process(player, cmd);
+		const [alias, ...args] = cmd.split(' ');
+		if (alias == this.alias) {
+			this.process(player, args);
 		} else if (this.next != null) {
 			this.next.run(player, cmd);
 		} else {

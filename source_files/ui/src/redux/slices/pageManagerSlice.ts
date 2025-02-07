@@ -8,7 +8,7 @@ const pageManagerSlice = createSlice({
 	name: 'pageManager',
 	initialState,
 	reducers: {
-		setPage: (state: any, action: PayloadAction<any>) => {
+		setPage: (state: any, action: PayloadAction<string>) => {
 			state.currentPage = action.payload;
 		}
 	}

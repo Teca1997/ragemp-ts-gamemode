@@ -1,15 +1,15 @@
-import { CEF, Client, Server, Types, Variables } from '@shared';
+import { CEF, Client, Config, Server, Types } from '@shared';
 
-import { ClientConfig } from '../../config';
 import { ControlsService } from '../controls';
+import { PlayerService } from '../player';
 import { UIService } from '../ui';
 
 export class CharacterSelector {
 	private static _instance: CharacterSelector = new CharacterSelector();
-	private freemodeCharacters = [
-		mp.game.joaat('mp_m_freemode_01'),
-		mp.game.joaat('mp_f_freemode_01')
-	];
+
+	private selectorCamera: CameraMp;
+
+	private userCharacters: Types.CharacterData[] = [];
 
 	public static get instance(): CharacterSelector {
 		return CharacterSelector._instance;
@@ -25,98 +25,51 @@ export class CharacterSelector {
 		mp.console.logInfo(`[INFO] Character selector service started...`);
 	}
 
-	private async play(characterIndex: number) {
-		const result = await mp.events.callRemoteProc(
-			Server.Events.CharaterSelector.Play,
-			characterIndex
-		);
-		mp.console.logInfo(JSON.stringify(result));
-		ControlsService.instance.allControlActionsState = true;
-		mp.game.cam.renderScriptCams(false, false, 0, true, false, 0);
-		UIService.instance.setPage('');
+	private applyCharacter(index: number) {
+		PlayerService.instance.applyCharacter(this.userCharacters[index]);
 	}
 
-	private applyCharacter(index: number) {
-		const account: Types.AccountData | null = mp.players.local.getVariable(
-			Variables.Player.Account
-		);
-
-		if (account == null || account.characters == null) return;
-		if (account.characters.length == 0) return;
-		a.a;
-		const { gender, parents, hair, clothes, faceFeatures, colors, headOverlay } =
-			account.characters[index];
-		//set player model clientside
-		mp.players.local.model = this.freemodeCharacters[gender];
-		//set parents clientside
-		mp.players.local.setHeadBlendData(
-			// shape
-			parents.mother >>> 0,
-			parents.father >>> 0,
-			0,
-			// skin
-			parents.mother >>> 0,
-			parents.father >>> 0,
-			0,
-			// mixes
-			parents.similarity >>> 0,
-			parents.skinSimilarity >>> 0,
-			0.0,
-			false
-		);
-		//set face features
-		faceFeatures.forEach((feature, index) => {
-			mp.players.local.setFaceFeature(index, feature);
-		});
-
-		//set appearance
-		headOverlay.forEach((element) => {
-			mp.players.local.setHeadOverlay(
-				element.overlayId,
-				element.index == 0 ? 255 : element.index,
-				element.opacity,
-				element.firstColor,
-				element.secondColor
-			);
-		});
-
-		//set clothes
-		clothes.forEach((element) => {
-			mp.players.local.setComponentVariation(
-				element.id,
-				element.drawable,
-				element.texture,
-				element.palette
-			);
-		});
-		mp.players.local.setComponentVariation(2, hair.hair, 0, 2);
-		//set colors
-		mp.players.local.setHairColor(hair.color, hair.highlightColor);
-		mp.players.local.setEyeColor(colors.eyeColor);
-		/* 		mp.players.local.setHeadOverlayColor(1, 1, colors.beardColor, 0);
-		mp.players.local.setHeadOverlayColor(2, 1, colors.eyebrowColor, 0);
-		mp.players.local.setHeadOverlayColor(5, 2, colors.blushColor, 0);
-		mp.players.local.setHeadOverlayColor(8, 2, colors.lipstickColor, 0);
-		mp.players.local.setHeadOverlayColor(10, 1, colors.chestHairColor, 0); */
+	private async play(characterIndex: number) {
+		await mp.events.callRemoteProc(Server.Events.CharaterSelector.Play, characterIndex);
+		ControlsService.instance.allControlActionsState = true;
+		UIService.instance.showGameUI(true);
+		mp.gui.chat.show(true);
+		mp.game.cam.renderScriptCams(false, false, 0, true, false, 0);
+		UIService.instance.setPage('hud');
 	}
 
 	private async start() {
-		const selectorCamera = mp.cameras.new(
+		const account: Types.AccountData | null = mp.players.local.getVariable('account');
+		if (account == undefined || account.characters == undefined) return;
+
+		mp.players.local.position = new mp.Vector3(
+			Config.CharacterSelector.PlayerPosition.x,
+			Config.CharacterSelector.PlayerPosition.y,
+			Config.CharacterSelector.PlayerPosition.z
+		);
+		mp.players.local.setHeading(Config.CharacterSelector.PlayerHeading);
+		const headingInRadians = (mp.players.local.getHeading() + 90) * (Math.PI / 180);
+		const headPosition = mp.players.local.getBoneCoords(RageEnums.Ped.Bones.SKEL_HEAD, 0, 0, 0);
+		const cameraPosition = new mp.Vector3(
+			Math.cos(headingInRadians) * Config.CharacterSelector.CameraDistance + headPosition.x,
+			Math.sin(headingInRadians) * Config.CharacterSelector.CameraDistance + headPosition.y,
+			headPosition.z
+		);
+
+		this.selectorCamera = mp.cameras.new(
 			'selectorCamera',
-			ClientConfig.Selector.cameraPosition,
+			cameraPosition,
 			new mp.Vector3(0, 0, 0),
 			40
 		);
-		selectorCamera.pointAtCoord(
-			ClientConfig.Selector.cameraPointAt.x,
-			ClientConfig.Selector.cameraPointAt.y,
-			ClientConfig.Selector.cameraPointAt.z
-		);
+		this.selectorCamera.pointAtCoord(headPosition.x, headPosition.y, headPosition.z);
 		mp.game.cam.renderScriptCams(true, true, 0, true, false, 0);
-		mp.events.callRemote(Server.Events.CharaterSelector.Start);
-		UIService.instance.setAccountData(JSON.stringify(mp.players.local.getVariable('account')));
-		UIService.instance.setPage(CEF.Pages.CharacterSelector);
 
-		this.applyCharacter(0);
+		this.userCharacters = account.characters;
+		UIService.instance.setAccountData(JSON.stringify(account));
+		UIService.instance.setPage(CEF.Pages.CharacterSelector);
+		if (this.userCharacters.length > 0) {
+			PlayerService.instance.applyCharacter(this.userCharacters[0]);
+		}
 	}
 }

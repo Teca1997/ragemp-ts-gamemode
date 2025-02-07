@@ -6,14 +6,12 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { CEF, Client } from '@shared';
+import { Client } from '@shared';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { pageManagerActions } from '../../redux/slices/pageManagerSlice';
+import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 
 function CharacterSelector() {
-	const dispatch = useDispatch();
 	const theme = useTheme();
 	const authStore = useSelector((state: RootState) => state.auth.authInfo);
 
@@ -133,16 +131,6 @@ function CharacterSelector() {
 								authStore?.characters[currentCharacterIndex].lastname}
 					</Typography>
 					<Typography color="primary" fontSize={'16'}>
-						Date of birth:{' '}
-						{authStore.characters &&
-							authStore?.characters[currentCharacterIndex].dateOfBirth}
-					</Typography>
-					<Typography color="primary" fontSize={'16'}>
-						Nationality:{' '}
-						{authStore.characters &&
-							authStore?.characters[currentCharacterIndex].nationality}
-					</Typography>
-					<Typography color="primary" fontSize={'16'}>
 						Time played:{' '}
 						{authStore.characters &&
 							authStore?.characters[currentCharacterIndex].timePlayed}
@@ -163,7 +151,6 @@ function CharacterSelector() {
 				</IconButton>
 				<IconButton
 					onClick={() => {
-						dispatch(pageManagerActions.setPage(CEF.Pages.CharacterCreator));
 						mp.trigger(Client.Events.CharacterCreator.Start);
 					}}
 					sx={{ color: 'white' }}

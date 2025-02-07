@@ -1,14 +1,29 @@
+import { DataSource } from 'typeorm';
 import { Account } from '../entities/Account';
 import { Character } from '../entities/Character';
-import { DataSource } from 'typeorm';
 import { Role } from '../entities/Role';
-import { databaseConfig } from '../config';
 import { default_accounts } from './default_data/account';
 import { default_characters } from './default_data/characters';
 import { default_roles } from './default_data/roles';
 
+import { config } from 'dotenv';
+import path from 'path';
+
+config({
+	path: path.resolve('.env')
+});
 (async () => {
-	const datasource = new DataSource(databaseConfig);
+	const datasource = new DataSource({
+		type: 'postgres',
+		host: process.env.DB_HOST,
+		port: parseInt(process.env.DB_PORT),
+		username: process.env.DB_USERNAME,
+		database: process.env.DB_DATABASE,
+		password: process.env.DB_PASSWORD,
+		schema: process.env.DB_SCHEMA,
+		entities: [__dirname + '/../entities/*.ts'],
+		logging: process.env.DB_LOGGING === 'true' ? true : false
+	});
 
 	try {
 		await datasource.initialize();

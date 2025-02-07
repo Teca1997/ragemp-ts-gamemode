@@ -1,19 +1,17 @@
-import { CharacterClothingItem, Server } from '@shared';
+import { Server, Types } from '@shared';
 
 import { yellow } from 'colorette';
-import { ServerConfig } from '../config';
 
 export class CharacterSelector {
 	private static _instance: CharacterSelector = new CharacterSelector();
 
-	private freemodeCharacters = [mp.joaat('mp_m_freemode_01'), mp.joaat('mp_f_freemode_01')];
+	private freemodeCharacters = [mp.joaat('mp_f_freemode_01'), mp.joaat('mp_m_freemode_01')];
 
 	public static get instance(): CharacterSelector {
 		return CharacterSelector._instance;
 	}
 
 	private constructor() {
-		mp.events.add(Server.Events.CharaterSelector.Start, this.start.bind(this));
 		mp.events.addProc(Server.Events.CharaterSelector.Play, this.play.bind(this));
 		console.log(`${yellow('[INFO]')} Character selector service started...`);
 	}
@@ -26,7 +24,8 @@ export class CharacterSelector {
 		)
 			return;
 		this.applyCharacter(player, characterIndex);
-		player.position = player.account!.characters[characterIndex].position.location;
+		const { x, y, z } = player.account!.characters[characterIndex].position.location;
+		player.position = new mp.Vector3(x, y, z);
 		player.dimension = player.account!.characters[characterIndex].position.dimension;
 		player.heading = player.account!.characters[characterIndex].position.heading;
 		return true;
@@ -39,7 +38,7 @@ export class CharacterSelector {
 			player.account.characters == null
 		)
 			return;
-		const { gender, parents, hair, clothes, faceFeatures, colors, headOverlay } =
+		const { gender, parents, hairColors, clothes, faceFeatures, colors, headOverlays } =
 			player.account.characters[characterIndex];
 
 		player.model = this.freemodeCharacters[gender];
@@ -55,28 +54,22 @@ export class CharacterSelector {
 			parents.skinSimilarity,
 			0.0,
 			colors.eyeColor,
-			hair.color,
-			hair.highlightColor,
+			hairColors.color,
+			hairColors.highlightColor,
 			faceFeatures
 		);
 
-		headOverlay.forEach((element) => {
-			player.setHeadOverlay(element.overlayId, [
-				element.index == 0 ? 255 : element.index,
+		headOverlays.forEach((element) => {
+			player.setHeadOverlay(element.index, [
+				element.value == 0 ? 255 : element.index,
 				element.opacity,
 				element.firstColor,
 				element.secondColor
 			]);
 		});
 
-		player.setClothes(2, hair.hair, 0, 2);
-		clothes.forEach((element: CharacterClothingItem) => {
+		clothes.forEach((element: Types.CharacterClothingItem) => {
 			player.setClothes(element.id, element.drawable, element.texture, element.palette);
 		});
-	}
-
-	private start(player: PlayerMp) {
-		player.position = ServerConfig.Selector.playerPosition;
-		player.heading = ServerConfig.Selector.playerHeading;
 	}
 }
