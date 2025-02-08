@@ -1,7 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { CEF } from '@shared';
 
 const initialState = {
-	currentPage: 'auth'
+	currentPage: CEF.Pages.Auth
 };
 
 const pageManagerSlice = createSlice({

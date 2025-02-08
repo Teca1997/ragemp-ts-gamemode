@@ -1,6 +1,6 @@
 import { BeforeInsert, Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Types } from '@shared';
+import { Position, VehicleMod } from '@shared';
 import { randomBytes } from 'crypto';
 import { Character } from './Character';
 import { TimestampEntity } from './TimestampEntity';
@@ -33,10 +33,10 @@ export class Vehicle extends TimestampEntity {
 	tank?: number;
 
 	@Column({ type: 'jsonb', nullable: true })
-	mods?: Types.VehicleMod[];
+	mods?: VehicleMod[];
 
 	@Column({ type: 'jsonb', nullable: true })
-	position!: Types.Position;
+	position!: Position;
 
 	@Index()
 	@ManyToOne(() => Character, (character) => character.characterVehicle, { nullable: true })

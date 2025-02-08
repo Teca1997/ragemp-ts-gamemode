@@ -1,4 +1,4 @@
-import { CEF, Client, Config, Server, Types } from '@shared';
+import { AccountData, CEF, CharacterData, Client, Config, Server, Variables } from '@shared';
 
 import { ControlsService } from '../controls';
 import { PlayerService } from '../player';
@@ -9,7 +9,7 @@ export class CharacterSelector {
 
 	private selectorCamera: CameraMp;
 
-	private userCharacters: Types.CharacterData[] = [];
+	private userCharacters: CharacterData[] = [];
 
 	public static get instance(): CharacterSelector {
 		return CharacterSelector._instance;
@@ -35,11 +35,11 @@ export class CharacterSelector {
 		UIService.instance.showGameUI(true);
 		mp.gui.chat.show(true);
 		mp.game.cam.renderScriptCams(false, false, 0, true, false, 0);
-		UIService.instance.setPage('hud');
+		UIService.instance.setPage(CEF.Pages.Hud);
 	}
 
 	private async start() {
-		const account: Types.AccountData | null = mp.players.local.getVariable('account');
+		const account: AccountData | null = mp.players.local.getVariable(Variables.Player.Account);
 		if (account == undefined || account.characters == undefined) return;
 
 		mp.players.local.position = new mp.Vector3(

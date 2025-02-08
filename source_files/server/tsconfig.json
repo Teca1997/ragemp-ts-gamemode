@@ -1,5 +1,4 @@
 {
-	// NOTE: This tsconfig will work assuming your project is structured as described above.
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
 		"outDir": "../../packages/gamemode",
@@ -20,5 +19,12 @@
 		"./@types/index.ts",
 		"../shared/index.ts"
 	],
-	"include": ["./**/*", "../shared/index.ts"]
+	"include": [
+		"./**/*",
+		"../shared/index.ts",
+		"../shared/data/accounts.ts",
+		"../shared/data/characters.ts",
+		"../shared/data/roles.ts",
+		"utils"
+	]
 }

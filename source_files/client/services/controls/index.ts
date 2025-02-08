@@ -28,7 +28,6 @@ export class ControlsService {
 
 	private async startDisableAllControlActions() {
 		if (!this.allControlActionsState) {
-			//mp.gui.chat.push(Date.now().toString());
 			mp.game.controls.disableAllControlActions(0);
 			await mp.game.waitAsync(5);
 			this.startDisableAllControlActions();

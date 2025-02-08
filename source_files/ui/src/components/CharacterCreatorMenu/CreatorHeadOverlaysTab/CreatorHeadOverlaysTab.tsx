@@ -1,6 +1,6 @@
 import { FormLabel, Slider, Stack } from '@mui/material';
-import { Client, defaultHeadOverlays } from '@shared';
-import { SyntheticEvent, useEffect, useState } from 'react';
+import { CEF, Client, defaultHeadOverlays } from '@shared';
+import { useEffect, useState } from 'react';
 import ExpandableMenu from '../../ExpandableMenu/ExpandableMenu';
 
 const initialHeadOverlays = [
@@ -51,10 +51,6 @@ const initialHeadOverlays = [
 	{
 		name: 'Body blemishes',
 		numHeadOverlayValues: 0
-	},
-	{
-		name: 'Add Body Blemishes',
-		numHeadOverlayValues: 0
 	}
 ];
 
@@ -64,6 +60,10 @@ export default function CreatorHeadOverlaysTab() {
 		{ name: string; numHeadOverlayValues: number }[] | null
 	>(null);
 
+	mp.events.add(CEF.Events.CharacterCreator.SetCharacterData, (data: string) => {
+		setUserHeadOverlays(JSON.parse(data));
+	});
+
 	useEffect(() => {
 		Promise.all(
 			initialHeadOverlays.map(
@@ -72,38 +72,23 @@ export default function CreatorHeadOverlaysTab() {
 					index: number
 				): Promise<{ name: string; numHeadOverlayValues: number }> => {
 					const result = await mp.events.callProc(
-						Client.Events.CharacterCreator.GetNumHeadOverlayValues,
+						Client.Events.PlayerService.GetNumHeadOverlayValues,
 						index
 					);
 					overlay.numHeadOverlayValues = result;
-					setHeadOverlays(initialHeadOverlays);
 					return overlay;
 				}
 			)
 		).then((result) => {
 			setHeadOverlays(result);
 		});
-	});
-
-	useEffect(() => {
-		console.log(userHeadOverlays);
-	}, [userHeadOverlays]);
+	}, []);
 
 	const handleChange =
-		(valueName: string, index: number) =>
-		(_: Event | SyntheticEvent<Element, Event>, value: number | number[]) => {
-			const nextOverlays = userHeadOverlays.map((overlay, i) => {
-				if (index == i) {
-					const newOverlay = JSON.parse(JSON.stringify(overlay));
-					newOverlay[valueName as keyof typeof overlay] = value as number;
-					return newOverlay;
-				}
-				return JSON.parse(JSON.stringify(overlay));
-			});
-			setUserHeadOverlays(nextOverlays);
+		(valueName: string, index: number) => (_: Event, value: number | number[]) => {
 			mp.trigger(
 				Client.Events.CharacterCreator.UpdateHeadOverlay,
-				JSON.stringify(nextOverlays[index])
+				JSON.stringify({ valueName, index, value })
 			);
 		};
 
@@ -118,7 +103,7 @@ export default function CreatorHeadOverlaysTab() {
 								<Slider
 									key={'headOverlaySliderValue' + index}
 									name={'headOverlaySliderValue' + index}
-									value={
+									defaultValue={
 										userHeadOverlays[index].value == 255
 											? -1
 											: userHeadOverlays[index].value
@@ -134,7 +119,7 @@ export default function CreatorHeadOverlaysTab() {
 									disabled={userHeadOverlays[index].value == -1}
 									key={'headOverlaySliderOpacity' + index}
 									name={'headOverlaySliderOpacity' + index}
-									value={userHeadOverlays[index].opacity}
+									defaultValue={userHeadOverlays[index].opacity}
 									aria-label="Always visible"
 									step={0.01}
 									min={0}
@@ -142,30 +127,43 @@ export default function CreatorHeadOverlaysTab() {
 									onChange={handleChange('opacity', index)}
 								/>
 								<FormLabel sx={{ textAlign: 'center' }}>Opacity</FormLabel>
-								<Slider
-									disabled={userHeadOverlays[index].value == -1}
-									key={'headOverlaySliderFirstColor' + index}
-									name={'headOverlaySliderValueFirstColor' + index}
-									value={userHeadOverlays[index].firstColor}
-									aria-label="Always visible"
-									step={1}
-									min={0}
-									max={63}
-									onChange={handleChange('firstColor', index)}
-								/>
-								<FormLabel sx={{ textAlign: 'center' }}>First color</FormLabel>
-								<Slider
-									disabled={userHeadOverlays[index].value == -1}
-									key={'headOverlaySliderSecondColor' + index}
-									name={'headOverlaySliderSecondColor' + index}
-									value={userHeadOverlays[index].secondColor}
-									aria-label="Always visible"
-									step={1}
-									min={0}
-									max={63}
-									onChange={handleChange('secondColor', index)}
-								/>
-								<FormLabel sx={{ textAlign: 'center' }}>Second color</FormLabel>
+
+								{typeof userHeadOverlays[index].color != 'undefined' && (
+									<>
+										<Slider
+											disabled={userHeadOverlays[index].value == -1}
+											key={'headOverlaySliderFirstColor' + index}
+											name={'headOverlaySliderValueFirstColor' + index}
+											defaultValue={userHeadOverlays[index].color}
+											aria-label="Always visible"
+											step={1}
+											min={0}
+											max={63}
+											onChange={handleChange('firstColor', index)}
+										/>
+										<FormLabel sx={{ textAlign: 'center' }}>
+											First color
+										</FormLabel>
+									</>
+								)}
+								{typeof userHeadOverlays[index].secondColor != 'undefined' && (
+									<>
+										<Slider
+											disabled={userHeadOverlays[index].value == -1}
+											key={'headOverlaySliderSecondColor' + index}
+											name={'headOverlaySliderSecondColor' + index}
+											defaultValue={userHeadOverlays[index].secondColor}
+											aria-label="Always visible"
+											step={1}
+											min={0}
+											max={63}
+											onChange={handleChange('secondColor', index)}
+										/>
+										<FormLabel sx={{ textAlign: 'center' }}>
+											Second color
+										</FormLabel>
+									</>
+								)}
 							</ExpandableMenu>
 						);
 					})}

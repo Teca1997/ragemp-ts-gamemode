@@ -1,10 +1,10 @@
 import { yellow } from 'colorette';
-import { Database } from './db';
+import { Datasource } from './db';
 
-import('./commandProcessor');
-import('./service');
+import './commandProcessor';
+import './services';
 
 (async () => {
-	await Database.init();
+	await Datasource.initialize();
 	console.log(`${yellow('[INFO]')} Packages started....`);
 })();

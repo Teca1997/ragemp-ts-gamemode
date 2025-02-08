@@ -1,8 +1,6 @@
+import { Vector } from '@shared';
 import { Column, PrimaryGeneratedColumn } from 'typeorm';
-
-import { Types } from '@shared';
 import { TimestampEntity } from './TimestampEntity';
-
 export class WorldDoor extends TimestampEntity {
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
@@ -14,10 +12,10 @@ export class WorldDoor extends TimestampEntity {
 	state!: boolean;
 
 	@Column('jsonb')
-	labelPosition!: Types.Vector;
+	labelPosition!: Vector;
 
 	@Column('jsonb')
-	interactionColshapePosition!: Types.Vector;
+	interactionColshapePosition!: Vector;
 
 	@Column('float')
 	interactionColshapeRadius!: number;

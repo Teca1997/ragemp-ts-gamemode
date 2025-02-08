@@ -1,11 +1,10 @@
-import { Server, Types, Variables } from '@shared';
+import { Config, RegisterFormValues, Server, Variables } from '@shared';
 
 import { yellow } from 'colorette';
 import crypto from 'crypto';
 import { Like } from 'typeorm';
-import { ServerConfig } from '../config';
-import { Database } from '../db';
-import { Account } from '../db/entities/Account';
+import { Datasource } from '../../db';
+import { Account } from '../../db/entities/Account';
 
 export class AuthService {
 	private static _instance: AuthService = new AuthService();
@@ -23,8 +22,8 @@ export class AuthService {
 	}
 
 	private playerReady(player: PlayerMp) {
-		player.position = ServerConfig.Auth.playerPosition;
-		player.dimension = ServerConfig.Auth.playerDimension;
+		player.position = new mp.Vector3(Config.Auth.playerPosition as Vector3);
+		player.dimension = Config.Auth.playerDimension;
 	}
 
 	private logout(player: PlayerMp) {
@@ -33,10 +32,10 @@ export class AuthService {
 	}
 
 	private async login(player: PlayerMp, values: string): Promise<string> {
-		const { username, password }: Types.LoginFormValues = JSON.parse(values);
+		const { username, password } = JSON.parse(values);
 
 		try {
-			const account = await Database.datasource.getRepository(Account).findOne({
+			const account = await Datasource.getRepository(Account).findOne({
 				where: { username: Like(username) }
 			});
 			if (account == null) {
@@ -46,9 +45,10 @@ export class AuthService {
 				});
 			} else {
 				if (this.comparePasswords(password, account.password, account.salt)) {
-					await Database.datasource
-						.getRepository(Account)
-						.update({ username: Like(account.username) }, { lastLogin: new Date() });
+					await Datasource.getRepository(Account).update(
+						{ username: Like(account.username) },
+						{ lastLogin: new Date() }
+					);
 					const { username, email, role, characters } = account;
 
 					player.account = account;
@@ -82,11 +82,11 @@ export class AuthService {
 	}
 
 	private async register(player: PlayerMp, values: string): Promise<string> {
-		const { username, email, password, repeatPassword }: Types.RegisterFormValues =
+		const { username, email, password, repeatPassword }: RegisterFormValues =
 			JSON.parse(values);
 
 		try {
-			const accounts = await Database.datasource.getRepository(Account).findBy({
+			const accounts = await Datasource.getRepository(Account).findBy({
 				username: Like(username + '::VARCHAR'),
 				email: Like(email + '::VARCHAR')
 			});
@@ -98,7 +98,7 @@ export class AuthService {
 			} else {
 				const { hash, salt } = this.hashPassword(password);
 				const newAccount = new Account(username, email, hash, salt);
-				await Database.datasource.getRepository(Account).save(newAccount);
+				await Datasource.getRepository(Account).save(newAccount);
 				return JSON.stringify({
 					success: true,
 					msgs: ['Username or email already in use!']

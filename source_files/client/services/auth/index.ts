@@ -33,7 +33,7 @@ export class AuthService {
 
 	private playerReady() {
 		this.startAuthCameras();
-		mp.gui.cursor.show(false, true);
+		mp.gui.cursor.show(true, true);
 	}
 
 	private async logout() {

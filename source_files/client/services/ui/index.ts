@@ -1,4 +1,4 @@
-import { CEF, Types } from '@shared';
+import { CEF, PlayerServiceData } from '@shared';
 
 export class UIService {
 	private static _instance: UIService = new UIService();
@@ -19,7 +19,7 @@ export class UIService {
 		mp.gui.chat.show(false);
 	}
 
-	setCharacterData(data: Types.PlayerServiceData) {
+	setCharacterData(data: PlayerServiceData) {
 		this.browser.call(CEF.Events.CharacterCreator.SetCharacterData, JSON.stringify(data));
 	}
 

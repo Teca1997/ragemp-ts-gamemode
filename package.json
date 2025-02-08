@@ -1,15 +1,13 @@
 {
 	"scripts": {
-		"builddb": "ts-node ./source_files/server/db/dbBuilder/index.ts",
 		"build_client": "npx webpack --config ./source_files/client/webpack.config.js",
 		"build_server": "npx webpack --config ./source_files/server/webpack.config.js",
 		"build_ui": "cd ./source_files/ui && npm run build",
 		"watch_client": "npx webpack --watch --config ./source_files/client/webpack.config.js",
 		"watch_server": "npx webpack --watch --config ./source_files/server/webpack.config.js",
 		"watch_cef": "cd ./source_files/ui && npm run watch",
-		"devCLientServer": "concurrently \"npm run watch_server\" \"npm run watch_client\" \"nodemon --watch ./packages/ --watch ./client_packages/ --exec ./ragemp-server.exe\"",
-		"devCef": "cd ./source_files/ui && npm run dev",
-		"dev": "concurrently \"npm run devCef\" \"npm run devCLientServer\" "
+		"dev": "concurrently \"cd ./source_files/ui && npm run dev\" \"npm run watch_client\" \"npm run watch_server\" \"nodemon --watch ./packages/ --watch ./client_packages/ --exec ./ragemp-server.exe\"",
+		"typeorm": "ts-node -P ./source_files/server/tsconfig.json -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./source_files/server/db/index.ts"
 	},
 	"devDependencies": {
 		"@ragempcommunity/types-client": "^2.1.3",
@@ -26,6 +24,17 @@
 		"webpack": "^5.97.1",
 		"webpack-cli": "^6.0.1",
 		"webpack-node-externals": "^3.0.0"
+	},
+	"dependencies": {
+		"@types/moment": "^2.13.0",
+		"bcrypt": "^5.1.1",
+		"colorette": "^2.0.19",
+		"lodash": "^4.17.21",
+		"moment": "^2.30.1",
+		"nodemon": "^3.1.9",
+		"ts-loader": "^9.5.2",
+		"ts-node": "^10.9.2",
+		"typeorm": "^0.3.14"
 	},
 	"prettier": {
 		"$schema": "http://json.schemastore.org/prettierrc",
@@ -46,16 +55,5 @@
 				}
 			}
 		]
-	},
-	"dependencies": {
-		"@types/moment": "^2.13.0",
-		"bcrypt": "^5.1.1",
-		"colorette": "^2.0.19",
-		"lodash": "^4.17.21",
-		"moment": "^2.30.1",
-		"nodemon": "^3.1.9",
-		"ts-loader": "^9.5.2",
-		"ts-node": "^10.9.2",
-		"typeorm": "^0.3.14"
 	}
 }

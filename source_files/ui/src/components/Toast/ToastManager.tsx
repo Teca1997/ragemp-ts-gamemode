@@ -7,6 +7,7 @@ export class ToastManager {
 
 	private constructor() {
 		if (window.mp) {
+			console.log(CEF.Events.Toast.Error);
 			mp.events.add(CEF.Events.Toast.Error, this.error);
 			mp.events.add(CEF.Events.Toast.Success, this.success);
 			mp.events.add(CEF.Events.Toast.Warning, this.warning);

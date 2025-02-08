@@ -173,7 +173,7 @@ export default function CreatorFaceFeaturesTab() {
 					return (
 						<>
 							<Slider
-								key={'faceFeatureSlider' + index} //unique mora bit
+								key={'faceFeatureSlider' + index}
 								name={index.toString()}
 								aria-label="Always visible"
 								defaultValue={defaultValue}

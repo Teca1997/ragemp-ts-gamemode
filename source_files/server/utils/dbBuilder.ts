@@ -1,17 +1,20 @@
 import { DataSource } from 'typeorm';
-import { Account } from '../entities/Account';
-import { Character } from '../entities/Character';
-import { Role } from '../entities/Role';
-import { default_accounts } from './default_data/account';
-import { default_characters } from './default_data/characters';
-import { default_roles } from './default_data/roles';
 
 import { config } from 'dotenv';
 import path from 'path';
+import { default_accounts } from '../../shared/data/accounts';
+import { default_characters } from '../../shared/data/characters';
+import { default_roles } from '../../shared/data/roles';
+import { Account } from '../db/entities/Account';
+import { Character } from '../db/entities/Character';
+import { Role } from '../db/entities/Role';
 
 config({
 	path: path.resolve('.env')
 });
+
+console.log(__dirname);
+
 (async () => {
 	const datasource = new DataSource({
 		type: 'postgres',
@@ -21,7 +24,7 @@ config({
 		database: process.env.DB_DATABASE,
 		password: process.env.DB_PASSWORD,
 		schema: process.env.DB_SCHEMA,
-		entities: [__dirname + '/../entities/*.ts'],
+		entities: [__dirname + '/../source_files/server/db/entities/*.ts'],
 		logging: process.env.DB_LOGGING === 'true' ? true : false
 	});
 

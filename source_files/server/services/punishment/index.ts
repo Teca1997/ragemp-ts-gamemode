@@ -1,8 +1,8 @@
-import { Database } from '../db';
-import { Ip } from '../db/entities/Ip';
-import { Serial } from '../db/entities/Serial';
-import { SocialClub } from '../db/entities/SocialClub';
 import { yellow } from 'colorette';
+import { Database } from '../../db';
+import { Ip } from '../../db/entities/Ip';
+import { Serial } from '../../db/entities/Serial';
+import { SocialClub } from '../../db/entities/SocialClub';
 
 export class PunishmentService {
 	private static _instance: PunishmentService = new PunishmentService();
@@ -13,7 +13,7 @@ export class PunishmentService {
 
 	private constructor() {
 		mp.events.add('playerJoin', this.playerJoin);
-		console.log(`${yellow('[INFO]')} Punishment service started...`)
+		console.log(`${yellow('[INFO]')} Punishment service started...`);
 	}
 
 	private async playerJoin(player: PlayerMp) {

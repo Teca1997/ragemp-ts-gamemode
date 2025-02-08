@@ -1,5 +1,5 @@
 import { Button, Stack, Typography } from '@mui/material';
-import { Client, Types } from '@shared';
+import { Client, LoginFormValues } from '@shared';
 import { Form, Formik, FormikHelpers } from 'formik';
 
 import TextField from '@mui/material/TextField';
@@ -13,15 +13,14 @@ function LoginForm() {
 	const dispatch = useDispatch();
 
 	const handleFormSubmit = async (
-		values: Types.LoginFormValues,
-		{ resetForm }: FormikHelpers<Types.LoginFormValues>
+		values: LoginFormValues,
+		{ resetForm }: FormikHelpers<LoginFormValues>
 	) => {
 		if (window.mp) {
 			const result: { account: any; msgs: string[] } = JSON.parse(
 				await mp.events.callProc(Client.Events.Auth.Login, JSON.stringify(values))
 			);
 			if (result.account) {
-				mp.trigger(Client.Events.Auth.StopAuthCameras);
 				mp.trigger(Client.Events.CharacterSelector.Start);
 
 				dispatch(

@@ -1,6 +1,6 @@
 import { yellow } from 'colorette';
-import { Database } from '../db';
-import { CharacterDeathLog } from '../db/entities/CharacterDeathLog';
+import { Datasource } from '../../db';
+import { CharacterDeathLog } from '../../db/entities/CharacterDeathLog';
 
 export class PlayerService {
 	private static _instance: PlayerService = new PlayerService();
@@ -23,7 +23,7 @@ export class PlayerService {
 			reason
 		);
 		try {
-			await Database.datasource.getRepository(CharacterDeathLog).save(deathLog);
+			await Datasource.getRepository(CharacterDeathLog).save(deathLog);
 		} catch (error) {
 			console.log(error);
 		}

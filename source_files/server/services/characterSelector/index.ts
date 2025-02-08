@@ -1,4 +1,4 @@
-import { Server, Types } from '@shared';
+import { CharacterClothingItem, CharacterHeadOverlay, Server } from '@shared';
 
 import { yellow } from 'colorette';
 
@@ -13,7 +13,19 @@ export class CharacterSelector {
 
 	private constructor() {
 		mp.events.addProc(Server.Events.CharaterSelector.Play, this.play.bind(this));
+		mp.events.add('setoverlay', this.setHeadOverlay.bind(this));
 		console.log(`${yellow('[INFO]')} Character selector service started...`);
+	}
+
+	private setHeadOverlay(player: PlayerMp, data: string) {
+		const {
+			index,
+			value,
+			opacity,
+			color = 0,
+			secondColor = 0
+		}: CharacterHeadOverlay = JSON.parse(data);
+		player.setHeadOverlay(index, [value, opacity, color, secondColor]);
 	}
 
 	private async play(player: PlayerMp, characterIndex: number) {
@@ -63,12 +75,12 @@ export class CharacterSelector {
 			player.setHeadOverlay(element.index, [
 				element.value == 0 ? 255 : element.index,
 				element.opacity,
-				element.firstColor,
-				element.secondColor
+				element.color ? element.color : 0,
+				element.secondColor ? element.secondColor : 0
 			]);
 		});
 
-		clothes.forEach((element: Types.CharacterClothingItem) => {
+		clothes.forEach((element: CharacterClothingItem) => {
 			player.setClothes(element.id, element.drawable, element.texture, element.palette);
 		});
 	}

@@ -22,13 +22,6 @@ export class CharacterCreator {
 			Client.Events.CharacterCreator.UpdateHeadOverlay,
 			this.updateHeadOverlay.bind(this)
 		);
-
-		mp.events.addProc(
-			Client.Events.CharacterCreator.GetNumHeadOverlayValues,
-			(overlayId: number) => {
-				return mp.game.ped.getNumHeadOverlayValues(overlayId);
-			}
-		);
 		mp.events.add(Client.Events.CharacterCreator.Save, this.save.bind(this));
 	}
 
@@ -42,8 +35,18 @@ export class CharacterCreator {
 	}
 
 	private updateHeadOverlay(data: string) {
-		const { index, value, opacity, firstColor, secondColor } = JSON.parse(data);
-		mp.players.local.setHeadOverlay(index, value, opacity, firstColor, secondColor);
+		const { valueName, index, value } = JSON.parse(data);
+		const overlay = this.character.headOverlays.find((overlay) => overlay.index == index);
+		if (overlay != undefined) {
+			overlay[valueName as keyof typeof overlay] = value;
+			mp.players.local.setHeadOverlay(
+				overlay.index,
+				overlay.value,
+				overlay.opacity,
+				overlay.color ? overlay.color : 0,
+				overlay.secondColor ? overlay.secondColor : 0
+			);
+		}
 	}
 
 	private updateGender(gender: number) {

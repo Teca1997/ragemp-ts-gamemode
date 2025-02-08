@@ -1,4 +1,12 @@
-import { Types } from '@shared';
+import {
+	CharacterClothingItem,
+	CharacterColors,
+	CharacterHair,
+	CharacterHeadOverlay,
+	CharacterParents,
+	CharacterVitals,
+	Position
+} from '@shared';
 import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Account } from './Account';
@@ -20,28 +28,28 @@ export class Character extends TimestampEntity {
 	lastName!: string;
 
 	@Column({ type: 'jsonb' })
-	colors!: Types.CharacterColors;
+	colors!: CharacterColors;
 
 	@Column({ type: 'int' })
 	gender!: number;
 
 	@Column({ type: 'jsonb', nullable: false })
-	parents!: Types.CharacterParents;
+	parents!: CharacterParents;
 
 	@Column('int', { array: true })
 	faceFeatures!: number[];
 
 	@Column({ type: 'jsonb' })
-	headOverlays!: Types.CharacterHeadOverlay[];
+	headOverlays!: CharacterHeadOverlay[];
 
 	@Column({ type: 'jsonb' })
-	clothes!: Types.CharacterClothingItem[];
+	clothes!: CharacterClothingItem[];
 
 	@Column({ type: 'jsonb' })
-	hairColors!: Types.CharacterHair;
+	hairColors!: CharacterHair;
 
 	@Column({ type: 'jsonb' })
-	position!: Types.Position;
+	position!: Position;
 
 	/* @Column({ type: 'date' })
 	dateOfBirth!: string;
@@ -59,7 +67,7 @@ export class Character extends TimestampEntity {
 	inventory!: any;
 
 	@Column({ type: 'jsonb', default: { armour: 0, health: 100, hunger: 100, thirst: 100 } })
-	vitals?: Types.CharacterVitals = { armour: 0, health: 100, hunger: 100, thirst: 100 };
+	vitals?: CharacterVitals = { armour: 0, health: 100, hunger: 100, thirst: 100 };
 
 	@Index()
 	@Column({ type: 'number', name: 'accountId' })
@@ -89,14 +97,4 @@ export class Character extends TimestampEntity {
 
 	@OneToMany(() => CharacterDeathLog, (characterDeathLog) => characterDeathLog.killer)
 	characterKiller?: CharacterDeathLog | number;
-
-	/* //event listners
-	@BeforeInsert()
-	setDefaultCLothes?(): void {
-		if (this.gender == 1) {
-			this.clothes = default_male_clothes;
-		} else {
-			this.clothes = default_female_clothes;
-		}
-	} */
 }
