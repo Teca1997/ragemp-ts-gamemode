@@ -1,11 +1,19 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
+} from 'typeorm';
 
+import { Exclude } from 'class-transformer';
 import { Account } from './Account';
 import { ReportType } from './ReportType';
-import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class Report extends TimestampEntity {
+export class Report {
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
 
@@ -20,6 +28,18 @@ export class Report extends TimestampEntity {
 
 	@Column({ type: 'text' })
 	reportText!: string;
+
+	@Exclude()
+	@CreateDateColumn({ type: 'timestamptz', primary: true })
+	dateCreated?: Date;
+
+	@Exclude()
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@Exclude()
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 
 	@ManyToOne(() => Account, (account) => account.accountReportedBy, { nullable: false })
 	reportedBy!: number | Account;

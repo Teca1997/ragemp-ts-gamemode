@@ -1,3 +1,5 @@
+import './dataHandlers';
+import './objectExtensions';
 import './services';
 
 mp.keys.bind(0x71, true, function () {

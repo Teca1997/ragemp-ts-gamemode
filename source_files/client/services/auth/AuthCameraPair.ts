@@ -103,12 +103,12 @@ export class AuthCameraPair {
 	}
 
 	private cameraLoop() {
+		if (!AuthCameraPair._continueInterp) return;
 		this.endCamera.setActiveWithInterp(this.startCamera.handle, this.duration >>> 0, 0, 0);
 		mp.game.cam.renderScriptCams(true, true, 0, true, false, 0);
+
 		setTimeout(() => {
-			if (AuthCameraPair._continueInterp) {
-				this.nextAuthCameraPair?.cameraLoop();
-			}
+			this.nextAuthCameraPair?.cameraLoop();
 		}, this.duration >>> 0);
 	}
 

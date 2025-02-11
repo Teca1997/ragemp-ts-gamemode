@@ -13,6 +13,12 @@ export const default_male_clothes: CharacterClothingItem[] = [
 		palette: 2
 	},
 	{
+		id: 2,
+		drawable: 0,
+		texture: 0,
+		palette: 2
+	},
+	{
 		id: 3,
 		drawable: 15,
 		texture: 0,
@@ -138,6 +144,16 @@ export const defaultParents: CharacterParents = {
 	skinSimilarity: 0.5
 };
 
+export const defaultCharcterPositon = {
+	location: {
+		x: -241.94448852539062,
+		y: 6325.61865234375,
+		z: 32.426177978515625
+	},
+	heading: -144.61412048339844,
+	dimension: 0
+};
+
 export const defaultFaceFeatures: number[] = [
 	0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
 ];
@@ -158,30 +174,21 @@ export const defaultHeadOverlays: CharacterHeadOverlay[] = [
 	{ index: 12, value: 255, opacity: 0 }
 ];
 
+export const defaultHairColors = {
+	color: 0,
+	highlightColor: 0
+};
+
 export const defaultMaleCharacter: CharacterData = {
 	gender: 1,
 	firstName: '',
 	lastName: '',
 	inventory: {},
-	position: {
-		location: { x: 0, y: 0, z: 0 },
-		heading: 0,
-		dimension: 0
-	},
+	position: defaultCharcterPositon,
 	parents: defaultParents,
 	faceFeatures: defaultFaceFeatures,
-	hairColors: {
-		color: 0,
-		highlightColor: 0
-	},
-	colors: {
-		eyebrowColor: 0,
-		beardColor: 0,
-		eyeColor: 0,
-		blushColor: 0,
-		lipstickColor: 0,
-		chestHairColor: 0
-	},
+	hairColors: defaultHairColors,
+	eyeColor: 0,
 	headOverlays: defaultHeadOverlays,
 	clothes: default_male_clothes
 };
@@ -193,23 +200,9 @@ export const defaultFemaleCharacter: CharacterData = {
 	inventory: {},
 	parents: defaultParents,
 	faceFeatures: defaultFaceFeatures,
-	position: {
-		location: { x: 0, y: 0, z: 0 },
-		heading: 0,
-		dimension: 0
-	},
-	hairColors: {
-		color: 0,
-		highlightColor: 0
-	},
-	colors: {
-		eyebrowColor: 0,
-		beardColor: 0,
-		eyeColor: 0,
-		blushColor: 0,
-		lipstickColor: 0,
-		chestHairColor: 0
-	},
+	position: defaultCharcterPositon,
+	hairColors: defaultHairColors,
+	eyeColor: 0,
 	headOverlays: defaultHeadOverlays,
 	clothes: default_female_clothes
 };

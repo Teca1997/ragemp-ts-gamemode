@@ -1,6 +1,7 @@
 import { config } from 'dotenv';
 import path from 'path';
-import { DataSource } from 'typeorm';
+import { DataSource, DataSourceOptions } from 'typeorm';
+import { SeederOptions } from 'typeorm-extension';
 import { Account } from './entities/Account';
 import { AccountIp } from './entities/AccountIp';
 import { AccountPunishment } from './entities/AccountPunishment';
@@ -17,15 +18,15 @@ import { ReportType } from './entities/ReportType';
 import { Role } from './entities/Role';
 import { Serial } from './entities/Serial';
 import { SocialClub } from './entities/SocialClub';
-import { TimestampEntity } from './entities/TimestampEntity';
 import { Vehicle } from './entities/Vehicle';
 import { WorldDoor } from './entities/WorldDoor';
+import { Mock } from './seeds/mockDataSeeder';
 
 config({
 	path: path.resolve('.env')
 });
 
-export const Datasource: DataSource = new DataSource({
+export const options: DataSourceOptions & SeederOptions = {
 	type: 'postgres',
 	host: process.env.DB_HOST,
 	port: parseInt(process.env.DB_PORT),
@@ -50,9 +51,12 @@ export const Datasource: DataSource = new DataSource({
 		Role,
 		Serial,
 		SocialClub,
-		TimestampEntity,
 		Vehicle,
 		WorldDoor
 	],
-	logging: process.env.DB_LOGGING === 'true' ? true : false
-});
+	logging: process.env.DB_LOGGING === 'true' ? true : false,
+	seeds: [Mock],
+	seedTracking: true
+};
+
+export const Database = new DataSource(options);

@@ -2,7 +2,15 @@ namespace ConfigNamespace {
 	export const CharacterSelector = {
 		PlayerPosition: { x: -38.28577423095703, y: -589.6845703125, z: 78.83023071289062 },
 		PlayerHeading: -27.438535690307617,
-		CameraDistance: 3
+		CameraDistance: 1,
+		CameraFOV: 40
+	};
+
+	export const CharacterCreator = {
+		PlayerPosition: { x: -38.28577423095703, y: -589.6845703125, z: 78.83023071289062 },
+		PlayerHeading: -27.438535690307617,
+		CameraDistance: 1,
+		CameraFOV: 40
 	};
 
 	export const Auth = {

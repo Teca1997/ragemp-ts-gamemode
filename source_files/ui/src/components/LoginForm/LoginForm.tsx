@@ -12,32 +12,38 @@ import { ToastManager } from '../Toast/ToastManager';
 function LoginForm() {
 	const dispatch = useDispatch();
 
-	const handleFormSubmit = async (
+	const handleFormSubmit = (
 		values: LoginFormValues,
 		{ resetForm }: FormikHelpers<LoginFormValues>
 	) => {
 		if (window.mp) {
-			const result: { account: any; msgs: string[] } = JSON.parse(
-				await mp.events.callProc(Client.Events.Auth.Login, JSON.stringify(values))
-			);
-			if (result.account) {
-				mp.trigger(Client.Events.CharacterSelector.Start);
+			console.log(Client.Events.Auth.Login);
+			console.log(values);
+			mp.events
+				.callProc(Client.Events.Auth.Login, JSON.stringify(values))
+				.then((resultString) => {
+					const result = JSON.parse(resultString);
+					if (result.account) {
+						mp.trigger(Client.Events.Auth.StopAuthCameras);
+						mp.trigger(Client.Events.CharacterSelector.Start);
 
-				dispatch(
-					authActions.setAuthInfo({
-						username: result.account.username,
-						email: result.account.email,
-						role: result.account.role,
-						characters: result.account.characters
-					})
-				);
+						dispatch(
+							authActions.setAuthInfo({
+								username: result.account.username,
+								email: result.account.email,
+								role: result.account.role,
+								characters: result.account.characters
+							})
+						);
 
-				ToastManager.instance.success('Logged in!');
-			} else {
-				result.msgs.map((msg) => {
-					ToastManager.instance.warning(msg);
-				});
-			}
+						ToastManager.instance.success('Logged in!');
+					} else {
+						result.msgs.map((msg: string) => {
+							ToastManager.instance.warning(msg);
+						});
+					}
+				})
+				.catch((error) => console.log(error));
 		}
 		resetForm();
 	};

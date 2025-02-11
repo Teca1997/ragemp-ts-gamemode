@@ -1,13 +1,23 @@
-import { Column, Entity, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	Index,
+	ManyToOne,
+	OneToMany,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
+} from 'typeorm';
 
+import { Exclude } from 'class-transformer';
 import { AccountPunishment } from './AccountPunishment';
 import { Character } from './Character';
 import { Report } from './Report';
 import { Role } from './Role';
-import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class Account extends TimestampEntity {
+export class Account {
 	@Index()
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
@@ -18,9 +28,11 @@ export class Account extends TimestampEntity {
 	@Column({ length: 50, unique: true, nullable: false })
 	email!: string;
 
+	@Exclude()
 	@Column({ type: 'char', length: 128, nullable: false })
 	password!: string;
 
+	@Exclude()
 	@Column({ type: 'char', length: 64, nullable: false })
 	salt!: string;
 
@@ -31,8 +43,19 @@ export class Account extends TimestampEntity {
 	lastLogin?: Date;
 
 	@Column({ type: 'int', name: 'roleId' })
-	@ManyToOne(() => Role, (role) => role.accounts, { nullable: false })
+	@ManyToOne(() => Role, (role) => role.accounts, { nullable: false, eager: true })
 	role!: number | Role;
+
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@Exclude()
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@Exclude()
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 
 	@OneToMany(() => Character, (character) => character.account, { eager: true })
 	characters?: Character[];
@@ -42,27 +65,17 @@ export class Account extends TimestampEntity {
 	})
 	accountPunishments?: AccountPunishment[] | number[];
 
+	@Exclude()
 	@OneToMany(() => AccountPunishment, (accountPunishment) => accountPunishment.issued, {
 		eager: true
 	})
 	accountIssuedPunishments?: AccountPunishment[] | number[];
 
-	/* @OneToMany(() => AccountSerial, (accountSerial) => accountSerial.serial, { eager: true })
-	accountSerials?: AccountSerial[] | number[];
-
-	@OneToMany(() => AccountSocialClub, (accountSocialClub) => accountSocialClub.socialClub, {
-		eager: false
-	})
-	accountSocialClubs?: AccountSocialClub[] | number[];
-
-	@OneToMany(() => AccountIp, (accountIp) => accountIp.ip, {
-		eager: false
-	})
-	accountIps?: AccountIp[] | number[]; */
-
+	@Exclude()
 	@OneToMany(() => Report, (report) => report.claimedBy, { eager: true })
 	accountClaimedBy?: Report[] | number[];
 
+	@Exclude()
 	@OneToMany(() => Report, (report) => report.reportedBy, { eager: true })
 	accountReportedBy?: Report[] | number[];
 
@@ -73,7 +86,6 @@ export class Account extends TimestampEntity {
 		salt: string,
 		role: Role | number = 1
 	) {
-		super();
 		this.username = username;
 		this.email = email;
 		this.password = password;

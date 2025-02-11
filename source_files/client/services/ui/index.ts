@@ -1,4 +1,4 @@
-import { CEF, PlayerServiceData } from '@shared';
+import { CEF } from '@shared';
 
 export class UIService {
 	private static _instance: UIService = new UIService();
@@ -17,10 +17,6 @@ export class UIService {
 	private playerReady() {
 		this.showGameUI(false);
 		mp.gui.chat.show(false);
-	}
-
-	setCharacterData(data: PlayerServiceData) {
-		this.browser.call(CEF.Events.CharacterCreator.SetCharacterData, JSON.stringify(data));
 	}
 
 	setAccountData(accountData: string) {

@@ -1,8 +1,8 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-import { Types } from '@shared';
+import { AccountData } from '@shared';
 
-const initialState: { authInfo: Types.AccountData } = {
+const initialState: { authInfo: AccountData } = {
 	authInfo: {
 		characters: [],
 		username: '',
@@ -15,7 +15,7 @@ const authSlice = createSlice({
 	name: 'auth',
 	initialState,
 	reducers: {
-		setAuthInfo: (state: any, action: PayloadAction<any>) => {
+		setAuthInfo: (state: any, action: PayloadAction<AccountData>) => {
 			state.authInfo = action.payload;
 		}
 	}

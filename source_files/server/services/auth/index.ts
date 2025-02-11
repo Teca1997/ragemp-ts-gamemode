@@ -1,9 +1,10 @@
-import { Config, RegisterFormValues, Server, Variables } from '@shared';
+import { AccountData, Config, RegisterFormValues, Server } from '@shared';
 
+import { instanceToPlain } from 'class-transformer';
 import { yellow } from 'colorette';
 import crypto from 'crypto';
 import { Like } from 'typeorm';
-import { Datasource } from '../../db';
+import { Database } from '../../db';
 import { Account } from '../../db/entities/Account';
 
 export class AuthService {
@@ -28,14 +29,13 @@ export class AuthService {
 
 	private logout(player: PlayerMp) {
 		this.playerReady(player);
-		player.account = null;
 	}
 
 	private async login(player: PlayerMp, values: string): Promise<string> {
 		const { username, password } = JSON.parse(values);
 
 		try {
-			const account = await Datasource.getRepository(Account).findOne({
+			const account = await Database.getRepository(Account).findOne({
 				where: { username: Like(username) }
 			});
 			if (account == null) {
@@ -45,22 +45,17 @@ export class AuthService {
 				});
 			} else {
 				if (this.comparePasswords(password, account.password, account.salt)) {
-					await Datasource.getRepository(Account).update(
+					await Database.getRepository(Account).update(
 						{ username: Like(account.username) },
 						{ lastLogin: new Date() }
 					);
-					const { username, email, role, characters } = account;
+					//sets objects property of account and also does .setOwnVariable of stringified object
+					player.ownData.account = instanceToPlain(account) as AccountData;
 
-					player.account = account;
-					player.setOwnVariable(Variables.Player.Account, player.account);
+					console.log(player.ownData.account);
 
 					return JSON.stringify({
-						account: {
-							username,
-							email,
-							role,
-							characters
-						},
+						account,
 						msgs: []
 					});
 				} else {
@@ -86,7 +81,7 @@ export class AuthService {
 			JSON.parse(values);
 
 		try {
-			const accounts = await Datasource.getRepository(Account).findBy({
+			const accounts = await Database.getRepository(Account).findBy({
 				username: Like(username + '::VARCHAR'),
 				email: Like(email + '::VARCHAR')
 			});
@@ -98,7 +93,7 @@ export class AuthService {
 			} else {
 				const { hash, salt } = this.hashPassword(password);
 				const newAccount = new Account(username, email, hash, salt);
-				await Datasource.getRepository(Account).save(newAccount);
+				await Database.getRepository(Account).save(newAccount);
 				return JSON.stringify({
 					success: true,
 					msgs: ['Username or email already in use!']

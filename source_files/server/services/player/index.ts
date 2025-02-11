@@ -1,5 +1,5 @@
 import { yellow } from 'colorette';
-import { Datasource } from '../../db';
+import { Database } from '../../db';
 import { CharacterDeathLog } from '../../db/entities/CharacterDeathLog';
 
 export class PlayerService {
@@ -15,17 +15,19 @@ export class PlayerService {
 
 	private async playerDeath(player: PlayerMp, reason: number, killer: PlayerMp | undefined) {
 		player.spawn(new Vector3(0, 0, 0));
+
 		if (!player.activeCharacter) return;
 
-		const deathLog = new CharacterDeathLog(
-			player.activeCharacter!,
-			killer?.activeCharacter,
-			reason
-		);
-		try {
-			await Datasource.getRepository(CharacterDeathLog).save(deathLog);
-		} catch (error) {
-			console.log(error);
+		if (!killer) {
+			const deathLog = new CharacterDeathLog(player.activeCharacter.id!, null, reason);
+			await Database.getRepository(CharacterDeathLog).save(deathLog);
+		} else {
+			const deathLog = new CharacterDeathLog(
+				player.activeCharacter.id!,
+				killer.activeCharacter!.id!,
+				reason
+			);
+			await Database.getRepository(CharacterDeathLog).save(deathLog);
 		}
 	}
 }

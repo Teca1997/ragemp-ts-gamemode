@@ -1,8 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { defaultMaleCharacter, Types } from '@shared';
+import {
+	CharacterData,
+	CharacterHeadOverlay,
+	CharacterParents,
+	defaultMaleCharacter
+} from '@shared';
 
 type CharacterCreatorData = {
-	creatorData: Types.CharacterData;
+	creatorData: CharacterData;
 };
 
 const initialState: CharacterCreatorData = {
@@ -15,17 +20,14 @@ const characterCreatorSlice = createSlice({
 	reducers: {
 		setCharacterCreatorData: (
 			state: CharacterCreatorData,
-			action: PayloadAction<Types.CharacterData>
+			action: PayloadAction<CharacterData>
 		) => {
 			state.creatorData = action.payload;
 		},
 		setGender: (state: CharacterCreatorData, action: PayloadAction<number>) => {
 			state.creatorData.gender = action.payload;
 		},
-		setParents: (
-			state: CharacterCreatorData,
-			action: PayloadAction<Types.CharacterParents>
-		) => {
+		setParents: (state: CharacterCreatorData, action: PayloadAction<CharacterParents>) => {
 			state.creatorData.parents = action.payload;
 		},
 		setFaceFeature: (
@@ -39,7 +41,7 @@ const characterCreatorSlice = createSlice({
 			action: PayloadAction<{ index: number; value: number; valueName: string }>
 		) => {
 			state.creatorData.headOverlays.forEach(
-				(overlay) =>
+				(overlay: CharacterHeadOverlay) =>
 					overlay.index == action.payload.index &&
 					overlay[action.payload.valueName as keyof typeof overlay]
 			);

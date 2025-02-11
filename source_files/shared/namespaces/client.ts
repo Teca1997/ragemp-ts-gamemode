@@ -1,5 +1,5 @@
 import { ProcessedNamespace } from '../types';
-import { processNamespace } from '../utils/NamespaceEnumValueProcessor';
+import { processNamespace } from '../utils/processNamespace';
 
 namespace ClientNamespace {
 	export namespace Events {
@@ -29,7 +29,11 @@ namespace ClientNamespace {
 			UpdateGander,
 			UpdateParents,
 			UpdateFaceFeature,
-			UpdateHeadOverlay
+			UpdateHeadOverlay,
+			UpdateComponentVariation,
+			UpdateHairColor,
+			UpdateFirstName,
+			UpdateLastName
 		}
 	}
 }

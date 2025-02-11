@@ -20,22 +20,18 @@ export interface VehicleMod {
 	value: number;
 }
 
-export type RoleData = Pick<Role, 'name' | 'description' | 'color'>;
+export interface ownDataType {
+	account?: AccountData | null;
+}
 
-export type CharacterData = Omit<Character, 'dateUpdated' | 'dateDeleted' | 'account'>;
+export type RoleData = Omit<Role, 'accounts' | 'dateUpdated' | 'dateDeleted'>;
 
-export type AccountData = Omit<
-	Account,
-	'password' | 'salt' | 'dateCreated' | 'dateUpdated' | 'dateDeleted'
-> & {
+export type CharacterData = Omit<Character, 'dateUpdated' | 'dateDeleted'>;
+
+export type AccountData = Omit<Account, 'password' | 'salt' | 'dateUpdated' | 'dateDeleted'> & {
 	role: RoleData;
 	characters: CharacterData[] | [] | null | undefined;
 };
-
-export type PlayerServiceData = Pick<
-	CharacterData,
-	'faceFeatures' | 'colors' | 'gender' | 'hairColors' | 'headOverlays' | 'parents' | 'clothes'
->;
 
 export type LoginFormValues = {
 	username: string;
@@ -70,6 +66,11 @@ export interface CharacterHeadOverlay {
 	secondColor?: number;
 }
 
+export interface ClothingCategory {
+	id: number;
+	name: string;
+	numOfComVarPermutions: number[];
+}
 export interface CharacterClothingItem {
 	id: number;
 	drawable: number;

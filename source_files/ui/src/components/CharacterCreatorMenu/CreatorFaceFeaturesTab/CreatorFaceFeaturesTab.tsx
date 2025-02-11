@@ -1,5 +1,6 @@
 import { Divider, FormLabel, Slider, Stack } from '@mui/material';
 import { Client } from '@shared';
+import React from 'react';
 import ExpandableMenu from '../../ExpandableMenu/ExpandableMenu';
 
 const faceFeatures = [
@@ -171,9 +172,8 @@ export default function CreatorFaceFeaturesTab() {
 			<Stack key={'s'} sx={{ gap: '1rem', padding: '0 20px' }}>
 				{faceFeatures.map(({ name, defaultValue, marks }, index) => {
 					return (
-						<>
+						<React.Fragment key={name}>
 							<Slider
-								key={'faceFeatureSlider' + index}
 								name={index.toString()}
 								aria-label="Always visible"
 								defaultValue={defaultValue}
@@ -190,7 +190,7 @@ export default function CreatorFaceFeaturesTab() {
 							/>
 							<FormLabel sx={{ textAlign: 'center' }}>{name}</FormLabel>
 							<Divider />
-						</>
+						</React.Fragment>
 					);
 				})}
 			</Stack>

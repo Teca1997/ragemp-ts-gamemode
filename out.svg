@@ -1,0 +1,1013 @@
+<svg version="1.1" baseProfile="full" width="4072.0" height="1652.0" viewBox="0 0 4072 1652" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:ev="http://www.w3.org/2001/xml-events">
+<desc >#.interface: fill=lightblue
+#.enumeration: fill=lightgreen
+#.type: fill=lightgray
+
+[Command|+abstract alias: string;+next: Command \| null|+abstract process(): void;+run(): void;+setNextHandler(): void]
+[Command]  -  [Command]
+[CommandProcessor|-commandChain: Command \| null;-aliasList: string\[\];-static _instance: CommandProcessor|+process(): void]
+[CommandProcessor]  -  [Command]
+[CommandProcessor]  -  [CommandProcessor]
+[TeleportToWayPoint|+alias: string|+process(): void]
+[Command]&lt;:-[TeleportToWayPoint]
+[VehicleCommand|+alias: string|+process(): void]
+[Command]&lt;:-[VehicleCommand]
+[Account|+id?: number;+username: string;+email: string;+password: string;+salt: string;+dateActivated?: Date;+lastLogin?: Date;+role: number \| Role;+characters?: Character\[\];+accountPunishments?: AccountPunishment\[\] \| number\[\];+accountIssuedPunishments?: AccountPunishment\[\] \| number\[\];+accountClaimedBy?: number\[\] \| Report\[\];+accountReportedBy?: number\[\] \| Report\[\]|]
+[TimestampEntity]&lt;:-[Account]
+[Account] 0..* -  [Role]
+[Account]  - 0..* [Character]
+[Account]  - 0..* [AccountPunishment]
+[Account]  - 0..* [AccountPunishment]
+[Account]  - 0..* [Report]
+[Account]  - 0..* [Report]
+[AccountIp|+account: number \| Account;+ip: string|]
+[TimestampEntity]&lt;:-[AccountIp]
+[AccountIp]  -  [Account]
+[AccountPunishment|+punishment: Punishment;+receivedId: number;+issuedId: number;+dateCreated?: Date;+dateDeleted?: Date;+dateUpdated?: Date;+received: number \| Account;+issued?: number \| Account;+expires?: Date|+beforeinsert(): void]
+[AccountPunishment] 0..* -  [Punishment]
+[AccountSerial|+account: number \| Account;+serial: string|]
+[TimestampEntity]&lt;:-[AccountSerial]
+[AccountSerial]  -  [Account]
+[AccountSocialClub|+account: number \| Account;+socialClub: string|]
+[TimestampEntity]&lt;:-[AccountSocialClub]
+[AccountSocialClub]  -  [Account]
+[Alias|+aliasing: number;+aliased: number;+alias: string|]
+[TimestampEntity]&lt;:-[Alias]
+[Character|+id?: number;+firstName: string;+lastName: string;+eyeColor: number;+gender: number;+parents: CharacterParents;+faceFeatures: number\[\];+headOverlays: CharacterHeadOverlay\[\];+clothes: CharacterClothingItem\[\];+hairColors: CharacterHair;+position: Position;+timePlayed?: number;+inventory: any;+vitals?: CharacterVitals;+account?: number \| Account \| null;+aliasedCharacters?: Alias\[\];+aliasedByCharacters?: Alias\[\];+characterIdLog?: CharacterIdLog\[\];+characterVehicle?: Vehicle\[\];+characterVictim?: number \| CharacterDeathLog;+characterKiller?: number \| CharacterDeathLog|]
+[TimestampEntity]&lt;:-[Character]
+[Pick]&lt;:--[Character]
+[Character]  - 0..* [Alias]
+[Character]  - 0..* [Alias]
+[Character]  - 0..* [CharacterIdLog]
+[Character]  - 0..* [Vehicle]
+[Character]  -  [CharacterDeathLog]
+[Character]  -  [CharacterDeathLog]
+[CharacterDeathLog|+victim: number \| Character;+killer: number \| Character \| null;+reason: number;+dateCreated?: Date;+dateDeleted?: Date;+dateUpdated?: Date|]
+[CharacterIdLog|+character: number;+timeAssigned: Date;+assignedId: number|]
+[TimestampEntity]&lt;:-[CharacterIdLog]
+[Ip|+id: string;+accountIps: number\[\] \| AccountIp\[\]|]
+[TimestampEntity]&lt;:-[Ip]
+[Ip]  - 0..* [AccountIp]
+[Punishment|+id?: number;+description: string;+duration: number \| null;+accountPunishments?: AccountPunishment\[\] \| number\[\]|]
+[TimestampEntity]&lt;:-[Punishment]
+[Report|+id?: number;+timeCreated?: Date;+timeClaimed?: Date;+timeClosed?: Date;+reportText: string;+reportedBy: number \| Account;+claimedBy?: number \| Account;+reportType?: number \| ReportType|]
+[TimestampEntity]&lt;:-[Report]
+[Report] 0..* -  [ReportType]
+[ReportType|+id?: number;+name: string;+reports?: Report\[\]|]
+[TimestampEntity]&lt;:-[ReportType]
+[Role|+id?: number;+name: string;+description: string;+color: string;+accounts?: number\[\] \| Account\[\] \| null|]
+[TimestampEntity]&lt;:-[Role]
+[Serial|+id: string;+accountSerials?: number\[\] \| AccountSerial\[\]|]
+[TimestampEntity]&lt;:-[Serial]
+[Serial]  - 0..* [AccountSerial]
+[SocialClub|+id: string;+accountSocialClubs?: string\[\] \| AccountSocialClub\[\]|]
+[TimestampEntity]&lt;:-[SocialClub]
+[SocialClub]  - 0..* [AccountSocialClub]
+[TimestampEntity|+dateCreated?: Date;+dateDeleted?: Date;+dateUpdated?: Date|]
+[Vehicle|+id?: number;+price?: number;+plate?: string;+model: string;+doorState?: boolean;+engineHealth?: number;+distanceDriven?: number;+tank?: number;+mods?: VehicleMod\[\];+position: Position;+characterOwner?: number|+beforeInsert(): void]
+[TimestampEntity]&lt;:-[Vehicle]
+[WorldDoor|+id?: number;+name: string;+state: boolean;+labelPosition: Vector;+interactionColshapePosition: Vector;+interactionColshapeRadius: number;+dimension?: number|]
+[TimestampEntity]&lt;:-[WorldDoor]
+[Mock||+run(): Promise&lt;void&gt;]
+[Seeder]&lt;:--[Mock]
+[AdminService|-static _instance: AdminService|]
+[AdminService]  -  [AdminService]
+[AuthService|-static _instance: AuthService|-playerReady(): void;-logout(): void;-login(): Promise&lt;string&gt;;-register(): Promise&lt;string&gt;;+hashPassword(): { salt: string; hash: string; };+comparePasswords(): boolean]
+[AuthService]  -  [AuthService]
+[CharacterSelector|-static _instance: CharacterSelector;-freemodeCharacters: any\[\]|-setHeadOverlay(): void;-play(): Promise&lt;boolean&gt;;-applyCharacter(): Promise&lt;void&gt;]
+[CharacterSelector]  -  [CharacterSelector]
+[PlayerService|-static _instance: PlayerService|-playerDeath(): Promise&lt;void&gt;]
+[PlayerService]  -  [PlayerService]
+[PunishmentService|-static _instance: PunishmentService|-playerJoin(): Promise&lt;void&gt;]
+[PunishmentService]  -  [PunishmentService]</desc>
+<g stroke-width="1.0" text-align="left" font="12pt Helvetica, Arial, sans-serif" font-size="12pt" font-family="Helvetica" font-weight="normal" font-style="normal">
+<g font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" stroke-width="3.0" stroke-linejoin="round" stroke-linecap="round" stroke="#33322E">
+<g stroke="transparent" fill="transparent">
+<rect x="0.0" y="0.0" height="1652.0" width="4072.0" stroke="none"></rect>
+</g>
+<g transform="translate(8, 8)" fill="#33322E">
+<g transform="translate(20, 20)" fill="#33322E" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal">
+<path d="M297.0 291.2 L368.8333333333333 262 L386.7916666666667 262 L386.7916666666667 262 L404.75 334.5 L404.75 334.5 L386.7916666666667 407 L386.7916666666667 407 L368.8333333333333 407 L368.8333333333333 407 L297 377.79672897196264 L297.0 377.8 " fill="none"></path>
+<path d="M190.5 169.5 L190.5 230 L190.5 262 L190.5 262.0 " fill="none"></path>
+<path d="M348.5 50.8 L378.5 40.5 L386 40.5 L386 40.5 L393.5 105 L393.5 105 L386 169.5 L386 169.5 L378.5 169.5 L378.5 169.5 L348.5 159.20744680851064 L348.5 159.2 " fill="none"></path>
+<path d="M110.1 416.5 L88 439 L88 459 L88.0 459.0 " fill="none"></path>
+<path d="M113.9 420.3 L110.1 416.5 L106.2 412.8 L119.4 407.0 Z"></path>
+<path d="M270.9 416.5 L293 439 L293 459 L293.0 459.0 " fill="none"></path>
+<path d="M274.8 412.8 L270.9 416.5 L267.1 420.3 L261.6 407.0 Z"></path>
+<path d="M1993.8 166.2 L1919 230 L1919 334.5 L1919 334.5 L1919 439 L1919 439 L1919 507 L1919 507 L1919 575 L1919 575 L1948.771986970684 595 L1948.8 595.0 " fill="none"></path>
+<path d="M1997.3 170.2 L1993.8 166.2 L1990.4 162.1 L2004.0 157.5 Z"></path>
+<text x="1897.5" y="770.5" stroke="none">0..*</text>
+<path d="M1889.5 750.5 L349.75 882 L363.4655963302752 1031.5 L363.5 1031.5 " fill="none"></path>
+<text x="1197.3" y="957.4" stroke="none">0..*</text>
+<path d="M1889.5 766.6 L1109 882 L1232.25 965.3778122575641 L1232.3 965.4 " fill="none"></path>
+<text x="2037.1" y="979.0" stroke="none">0..*</text>
+<path d="M1948.8 862.0 L1919 882 L2029.0573394495414 987 L2029.1 987.0 " fill="none"></path>
+<text x="2234.0" y="1066.9" stroke="none">0..*</text>
+<path d="M2405.5 766.0 L3204.25 882 L2269 1074.9354151880766 L2269.0 1074.9 " fill="none"></path>
+<text x="3538.9" y="999.0" stroke="none">0..*</text>
+<path d="M2405.5 758.0 L3488 882 L3530.8612385321103 1007 L3530.9 1007.0 " fill="none"></path>
+<text x="3570.8" y="999.0" stroke="none">0..*</text>
+<path d="M2405.5 756.5 L3562.75 882 L3562.75 1007 L3562.8 1007.0 " fill="none"></path>
+<path d="M2041.1 170.0 L2018.5 230 L2018.5 334.5 L2018.5 334.5 L2018.5 439 L2018.5 439 L2051.764705882353 463 L2051.8 463.0 " fill="none"></path>
+<path d="M2046.1 171.9 L2041.1 170.0 L2036.1 168.1 L2045.8 157.5 Z"></path>
+<path d="M2112.8 551.0 L2112.75 575 L2117.277687296417 595 L2117.3 595.0 " fill="none"></path>
+<text x="2155.5" y="1233.0" stroke="none">0..*</text>
+<path d="M2147.5 1213.0 L2147.5 1318 L2147.5 1406.5 L2147.5 1406.5 " fill="none"></path>
+<path d="M2170.5 144.8 L2395.5 230 L2395.5 334.5 L2395.5 334.5 L2395.5 439 L2395.5 439 L2434.9411764705883 463 L2434.9 463.0 " fill="none"></path>
+<path d="M2172.4 139.8 L2170.5 144.8 L2168.6 149.7 L2158.0 140.0 Z"></path>
+<path d="M2507.3 551.0 L2507.25 575 L2405.5 618.4152189020153 L2405.5 618.4 " fill="none"></path>
+<path d="M2171.2 122.0 L2842.5 230 L2842.5 334.5 L2842.5 334.5 L2842.5 439 L2842.5 439 L2887.4117647058824 463 L2887.4 463.0 " fill="none"></path>
+<path d="M2172.0 116.7 L2171.2 122.0 L2170.3 127.3 L2158.0 119.9 Z"></path>
+<path d="M2969.8 551.0 L2969.75 575 L2405.5 680.3358163575555 L2405.5 680.3 " fill="none"></path>
+<path d="M1959.7 113.8 L569.75 230 L569.75 334.5 L569.75 334.5 L569.75 439 L569.75 439 L569.75 507 L569.75 507 L569.75 575 L569.75 575 L569.75 728.5 L569.75 728.5 L569.75 882 L569.75 882 L569.75 1100 L569.75 1100 L569.75 1318 L569.75 1318 L595.6560402684564 1414.5 L595.7 1414.5 " fill="none"></path>
+<path d="M1960.2 119.2 L1959.7 113.8 L1959.3 108.5 L1973.0 112.7 Z"></path>
+<path d="M1959.9 126.8 L1459.75 230 L1459.75 334.5 L1459.75 334.5 L1459.75 439 L1459.75 439 L1459.75 507 L1459.75 507 L1459.75 575 L1459.75 575 L1459.75 728.5 L1459.75 728.5 L1459.75 882 L1459.75 882 L1457.1353211009175 902 L1457.1 902.0 " fill="none"></path>
+<path d="M1961.0 132.0 L1959.9 126.8 L1958.9 121.6 L1973.0 124.1 Z"></path>
+<g stroke-dasharray="6 6">
+<path d="M1524.3 757.8 L1524.25 882 L1515.717889908257 902 L1515.7 902.0 " fill="none"></path>
+</g>
+<path d="M1529.6 757.8 L1524.3 757.8 L1518.9 757.8 L1524.3 744.5 Z"></path>
+<text x="590.6" y="1406.5" stroke="none">0..*</text>
+<path d="M1232.3 1155.9 L654.75 1318 L625.6057046979865 1414.5 L625.6 1414.5 " fill="none"></path>
+<text x="604.7" y="1406.5" stroke="none">0..*</text>
+<path d="M1232.3 1158.9 L694.75 1318 L639.6996644295302 1414.5 L639.7 1414.5 " fill="none"></path>
+<text x="754.8" y="1406.5" stroke="none">0..*</text>
+<path d="M1232.3 1162.3 L734.75 1318 L789.8003355704698 1414.5 L789.8 1414.5 " fill="none"></path>
+<text x="1441.9" y="1330.0" stroke="none">0..*</text>
+<path d="M1431.3 1298.0 L1431.25 1318 L1433.9010067114093 1338 L1433.9 1338.0 " fill="none"></path>
+<path d="M1630.3 1252.4 L1716 1318 L1728.4077181208054 1390.5 L1728.4 1390.5 " fill="none"></path>
+<path d="M1630.3 1173.2 L2024.25 1318 L1876 1396.1229000884173 L1876.0 1396.1 " fill="none"></path>
+<path d="M1959.7 115.8 L839.75 230 L839.75 334.5 L839.75 334.5 L839.75 439 L839.75 439 L839.75 507 L839.75 507 L839.75 575 L839.75 575 L839.75 728.5 L839.75 728.5 L839.75 882 L839.75 882 L839.75 1100 L839.75 1100 L839.75 1318 L839.75 1318 L826.7969798657718 1414.5 L826.8 1414.5 " fill="none"></path>
+<path d="M1960.3 121.1 L1959.7 115.8 L1959.2 110.5 L1973.0 114.4 Z"></path>
+<path d="M2134.9 166.3 L2207 230 L2207 290.5 L2207.0 290.5 " fill="none"></path>
+<path d="M2138.5 162.3 L2134.9 166.3 L2131.4 170.3 L2124.9 157.5 Z"></path>
+<text x="2138.7" y="455.0" stroke="none">0..*</text>
+<path d="M2207.0 378.5 L2207 439 L2173.735294117647 463 L2173.7 463.0 " fill="none"></path>
+<path d="M2171.3 115.1 L3373.25 230 L3373.25 334.5 L3373.25 334.5 L3373.25 439 L3373.25 439 L3373.25 507 L3373.25 507 L3373.25 575 L3373.25 575 L3373.25 728.5 L3373.25 728.5 L3373.25 882 L3373.25 882 L3373.25 1100 L3373.25 1100 L3373.25 1318 L3373.25 1318 L2379 1438.859269834795 L2379.0 1438.9 " fill="none"></path>
+<path d="M2171.8 109.8 L2171.3 115.1 L2170.8 120.4 L2158.0 113.8 Z"></path>
+<path d="M2171.3 113.4 L3637.5 230 L3637.5 334.5 L3637.5 334.5 L3637.5 439 L3637.5 439 L3637.5 507 L3637.5 507 L3637.5 575 L3637.5 575 L3637.5 728.5 L3637.5 728.5 L3637.5 882 L3637.5 882 L3594.6387614678897 1007 L3594.6 1007.0 " fill="none"></path>
+<path d="M2171.7 108.1 L2171.3 113.4 L2170.9 118.7 L2158.0 112.4 Z"></path>
+<text x="3527.8" y="1213.0" stroke="none">0..*</text>
+<path d="M3562.8 1193.0 L3562.75 1318 L3624.114932885906 1414.5 L3624.1 1414.5 " fill="none"></path>
+<path d="M2171.3 112.8 L3752.25 230 L3752.25 334.5 L3752.25 334.5 L3752.25 439 L3752.25 439 L3752.25 507 L3752.25 507 L3752.25 575 L3752.25 575 L3752.25 728.5 L3752.25 728.5 L3752.25 882 L3752.25 882 L3752.25 1100 L3752.25 1100 L3752.25 1318 L3752.25 1318 L3690.885067114094 1414.5 L3690.9 1414.5 " fill="none"></path>
+<path d="M2171.7 107.5 L2171.3 112.8 L2170.9 118.2 L2158.0 111.9 Z"></path>
+<path d="M1959.7 113.2 L449.75 230 L449.75 334.5 L449.75 334.5 L449.75 439 L449.75 439 L449.75 507 L449.75 507 L449.75 575 L449.75 575 L449.75 728.5 L449.75 728.5 L449.75 882 L449.75 882 L394.88761467889907 1031.5 L394.9 1031.5 " fill="none"></path>
+<path d="M1960.1 118.5 L1959.7 113.2 L1959.3 107.9 L1973.0 112.2 Z"></path>
+<path d="M2171.0 128.8 L2619 230 L2619 290.5 L2619.0 290.5 " fill="none"></path>
+<path d="M2172.2 123.6 L2171.0 128.8 L2169.8 134.0 L2158.0 125.9 Z"></path>
+<text x="2544.6" y="455.0" stroke="none">0..*</text>
+<path d="M2619.0 378.5 L2619 439 L2579.5588235294117 463 L2579.6 463.0 " fill="none"></path>
+<path d="M2171.2 117.8 L3097 230 L3097 290.5 L3097.0 290.5 " fill="none"></path>
+<path d="M2171.9 112.5 L2171.2 117.8 L2170.6 123.1 L2158.0 116.2 Z"></path>
+<text x="3017.1" y="455.0" stroke="none">0..*</text>
+<path d="M3097.0 378.5 L3097 439 L3052.0882352941176 463 L3052.1 463.0 " fill="none"></path>
+<path d="M1960.3 138.8 L1676 230 L1676 334.5 L1676 334.5 L1676 439 L1676 439 L1676 507 L1676 507 L1676 575 L1676 575 L1676 728.5 L1676 728.5 L1676 882 L1676 882 L1676 1100 L1676 1100 L1676 1318 L1676 1318 L1567 1390.1822222222222 L1567.0 1390.2 " fill="none"></path>
+<path d="M1961.9 143.8 L1960.3 138.8 L1958.7 133.7 L1973.0 134.7 Z"></path>
+<path d="M1959.8 117.8 L1034.25 230 L1034.25 250 L1034.3 250.0 " fill="none"></path>
+<path d="M1960.4 123.1 L1959.8 117.8 L1959.1 112.5 L1973.0 116.2 Z"></path>
+<g stroke-dasharray="6 6">
+<path d="M933.8 119.0 L1324.25 230 L1324.25 298.5 L1324.3 298.5 " fill="none"></path>
+</g>
+<path d="M935.3 113.9 L933.8 119.0 L932.4 124.2 L921.0 115.4 Z"></path>
+<path d="M2462.0 75.7 L2492 69 L2499.5 69 L2499.5 69 L2507 105 L2507 105 L2499.5 141 L2499.5 141 L2492 141 L2492 141 L2462 134.33333333333334 L2462.0 134.3 " fill="none"></path>
+<path d="M2819.0 19.3 L2849 0 L2856.5 0 L2856.5 0 L2864 105 L2864 105 L2856.5 210 L2856.5 210 L2849 210 L2849 210 L2819 190.73394495412845 L2819.0 190.7 " fill="none"></path>
+<path d="M3208.0 44.6 L3238 32.5 L3245.5 32.5 L3245.5 32.5 L3253 105 L3253 105 L3245.5 177.5 L3245.5 177.5 L3238 177.5 L3238 177.5 L3208 165.38300835654596 L3208.0 165.4 " fill="none"></path>
+<path d="M3563.0 65.9 L3593 57 L3600.5 57 L3600.5 57 L3608 105 L3608 105 L3600.5 153 L3600.5 153 L3593 153 L3593 153 L3563 144.13846153846154 L3563.0 144.1 " fill="none"></path>
+<path d="M3961.0 64.8 L3991 57 L3998.5 57 L3998.5 57 L4006 105 L4006 105 L3998.5 153 L3998.5 153 L3991 153 L3991 153 L3961 145.17391304347825 L3961.0 145.2 " fill="none"></path>
+<g data-name="Command">
+<g fill="#eee8d5" stroke="#33322E" data-name="Command">
+<rect x="84.0" y="262.0" height="145.0" width="213.0" data-name="Command"></rect>
+<path d="M84.0 294.0 L297.0 294.0" fill="none" data-name="Command"></path>
+<path d="M84.0 342.0 L297.0 342.0" fill="none" data-name="Command"></path>
+</g>
+<g transform="translate(84, 262)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Command" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Command" data-compartment="0">
+<a id="source_files\server\commandProcessor\command.ts.Command" xlink:href="source_files\server\commandProcessor\command.ts"><text x="98.5" y="14.1" stroke="none" text-anchor="middle" data-name="Command" data-compartment="0">Command</text></a>
+
+</g>
+</g>
+<g transform="translate(84, 294)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Command" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Command" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="Command" data-compartment="1">+abstract alias: string</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Command" data-compartment="1">+next: Command | null</text>
+
+</g>
+</g>
+<g transform="translate(84, 342)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Command" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Command" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="Command" data-compartment="2">+abstract process(): void</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Command" data-compartment="2">+run(): void</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Command" data-compartment="2">+setNextHandler(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="CommandProcessor">
+<g fill="#eee8d5" stroke="#33322E" data-name="CommandProcessor">
+<rect x="32.5" y="40.5" height="129.0" width="316.0" data-name="CommandProcessor"></rect>
+<path d="M32.5 72.5 L348.5 72.5" fill="none" data-name="CommandProcessor"></path>
+<path d="M32.5 137.5 L348.5 137.5" fill="none" data-name="CommandProcessor"></path>
+</g>
+<g transform="translate(32.5, 40.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="CommandProcessor" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="CommandProcessor" data-compartment="0">
+<a id="source_files\server\commandProcessor\index.ts.CommandProcessor" xlink:href="source_files\server\commandProcessor\index.ts"><text x="150.0" y="14.1" stroke="none" text-anchor="middle" data-name="CommandProcessor" data-compartment="0">CommandProcessor</text></a>
+
+</g>
+</g>
+<g transform="translate(32.5, 72.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CommandProcessor" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CommandProcessor" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="CommandProcessor" data-compartment="1">-commandChain: Command | null</text>
+<text x="0.0" y="30.3" stroke="none" data-name="CommandProcessor" data-compartment="1">-aliasList: string[]</text>
+<text x="0.0" y="46.5" stroke="none" data-name="CommandProcessor" data-compartment="1">-static _instance: CommandProcessor</text>
+
+</g>
+</g>
+<g transform="translate(32.5, 137.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CommandProcessor" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CommandProcessor" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="CommandProcessor" data-compartment="2">+process(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="TeleportToWayPoint">
+<g fill="#eee8d5" stroke="#33322E" data-name="TeleportToWayPoint">
+<rect x="0.0" y="459.0" height="96.0" width="176.0" data-name="TeleportToWayPoint"></rect>
+<path d="M0.0 491.0 L176.0 491.0" fill="none" data-name="TeleportToWayPoint"></path>
+<path d="M0.0 523.0 L176.0 523.0" fill="none" data-name="TeleportToWayPoint"></path>
+</g>
+<g transform="translate(0, 459)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="TeleportToWayPoint" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="TeleportToWayPoint" data-compartment="0">
+<a id="source_files\server\commandProcessor\commands\tpwp.ts.TeleportToWayPoint" xlink:href="source_files\server\commandProcessor\commands\tpwp.ts"><text x="80.0" y="14.1" stroke="none" text-anchor="middle" data-name="TeleportToWayPoint" data-compartment="0">TeleportToWayPoint</text></a>
+
+</g>
+</g>
+<g transform="translate(0, 491)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="TeleportToWayPoint" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="TeleportToWayPoint" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="TeleportToWayPoint" data-compartment="1">+alias: string</text>
+
+</g>
+</g>
+<g transform="translate(0, 523)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="TeleportToWayPoint" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="TeleportToWayPoint" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="TeleportToWayPoint" data-compartment="2">+process(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="VehicleCommand">
+<g fill="#eee8d5" stroke="#33322E" data-name="VehicleCommand">
+<rect x="216.0" y="459.0" height="96.0" width="154.0" data-name="VehicleCommand"></rect>
+<path d="M216.0 491.0 L370.0 491.0" fill="none" data-name="VehicleCommand"></path>
+<path d="M216.0 523.0 L370.0 523.0" fill="none" data-name="VehicleCommand"></path>
+</g>
+<g transform="translate(216, 459)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="VehicleCommand" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="VehicleCommand" data-compartment="0">
+<a id="source_files\server\commandProcessor\commands\vehicle.ts.VehicleCommand" xlink:href="source_files\server\commandProcessor\commands\vehicle.ts"><text x="69.0" y="14.1" stroke="none" text-anchor="middle" data-name="VehicleCommand" data-compartment="0">VehicleCommand</text></a>
+
+</g>
+</g>
+<g transform="translate(216, 491)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="VehicleCommand" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="VehicleCommand" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="VehicleCommand" data-compartment="1">+alias: string</text>
+
+</g>
+</g>
+<g transform="translate(216, 523)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="VehicleCommand" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="VehicleCommand" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="VehicleCommand" data-compartment="2">+process(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="Account">
+<g fill="#eee8d5" stroke="#33322E" data-name="Account">
+<rect x="1889.5" y="595.0" height="267.0" width="516.0" data-name="Account"></rect>
+<path d="M1889.5 627.0 L2405.5 627.0" fill="none" data-name="Account"></path>
+<path d="M1889.5 854.0 L2405.5 854.0" fill="none" data-name="Account"></path>
+</g>
+<g transform="translate(1889.5, 595)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Account" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Account" data-compartment="0">
+<a id="source_files\server\db\entities\Account.ts.Account" xlink:href="source_files\server\db\entities\Account.ts"><text x="250.0" y="14.1" stroke="none" text-anchor="middle" data-name="Account" data-compartment="0">Account</text></a>
+
+</g>
+</g>
+<g transform="translate(1889.5, 627)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Account" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Account" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="Account" data-compartment="1">+id?: number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Account" data-compartment="1">+username: string</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Account" data-compartment="1">+email: string</text>
+<text x="0.0" y="62.7" stroke="none" data-name="Account" data-compartment="1">+password: string</text>
+<text x="0.0" y="78.9" stroke="none" data-name="Account" data-compartment="1">+salt: string</text>
+<text x="0.0" y="95.1" stroke="none" data-name="Account" data-compartment="1">+dateActivated?: Date</text>
+<text x="0.0" y="111.3" stroke="none" data-name="Account" data-compartment="1">+lastLogin?: Date</text>
+<text x="0.0" y="127.5" stroke="none" data-name="Account" data-compartment="1">+role: number | Role</text>
+<text x="0.0" y="143.7" stroke="none" data-name="Account" data-compartment="1">+characters?: Character[]</text>
+<text x="0.0" y="159.9" stroke="none" data-name="Account" data-compartment="1">+accountPunishments?: AccountPunishment[] | number[]</text>
+<text x="0.0" y="176.1" stroke="none" data-name="Account" data-compartment="1">+accountIssuedPunishments?: AccountPunishment[] | number[]</text>
+<text x="0.0" y="192.3" stroke="none" data-name="Account" data-compartment="1">+accountClaimedBy?: number[] | Report[]</text>
+<text x="0.0" y="208.5" stroke="none" data-name="Account" data-compartment="1">+accountReportedBy?: number[] | Report[]</text>
+
+</g>
+</g>
+<g transform="translate(1889.5, 854)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Account" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Account" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="TimestampEntity">
+<g fill="#eee8d5" stroke="#33322E" data-name="TimestampEntity">
+<rect x="1973.0" y="52.5" height="105.0" width="185.0" data-name="TimestampEntity"></rect>
+<path d="M1973.0 84.5 L2158.0 84.5" fill="none" data-name="TimestampEntity"></path>
+<path d="M1973.0 149.5 L2158.0 149.5" fill="none" data-name="TimestampEntity"></path>
+</g>
+<g transform="translate(1973, 52.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="TimestampEntity" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="TimestampEntity" data-compartment="0">
+<a id="source_files\server\db\entities\TimestampEntity.ts.TimestampEntity" xlink:href="source_files\server\db\entities\TimestampEntity.ts"><text x="84.5" y="14.1" stroke="none" text-anchor="middle" data-name="TimestampEntity" data-compartment="0">TimestampEntity</text></a>
+
+</g>
+</g>
+<g transform="translate(1973, 84.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="TimestampEntity" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="TimestampEntity" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="TimestampEntity" data-compartment="1">+dateCreated?: Date</text>
+<text x="0.0" y="30.3" stroke="none" data-name="TimestampEntity" data-compartment="1">+dateDeleted?: Date</text>
+<text x="0.0" y="46.5" stroke="none" data-name="TimestampEntity" data-compartment="1">+dateUpdated?: Date</text>
+
+</g>
+</g>
+<g transform="translate(1973, 149.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="TimestampEntity" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="TimestampEntity" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="Role">
+<g fill="#eee8d5" stroke="#33322E" data-name="Role">
+<rect x="209.8" y="1031.5" height="137.0" width="320.0" data-name="Role"></rect>
+<path d="M209.8 1063.5 L529.8 1063.5" fill="none" data-name="Role"></path>
+<path d="M209.8 1160.5 L529.8 1160.5" fill="none" data-name="Role"></path>
+</g>
+<g transform="translate(209.75, 1031.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Role" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Role" data-compartment="0">
+<a id="source_files\server\db\entities\Role.ts.Role" xlink:href="source_files\server\db\entities\Role.ts"><text x="152.0" y="14.1" stroke="none" text-anchor="middle" data-name="Role" data-compartment="0">Role</text></a>
+
+</g>
+</g>
+<g transform="translate(209.75, 1063.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Role" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Role" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="Role" data-compartment="1">+id?: number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Role" data-compartment="1">+name: string</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Role" data-compartment="1">+description: string</text>
+<text x="0.0" y="62.7" stroke="none" data-name="Role" data-compartment="1">+color: string</text>
+<text x="0.0" y="78.9" stroke="none" data-name="Role" data-compartment="1">+accounts?: number[] | Account[] | null</text>
+
+</g>
+</g>
+<g transform="translate(209.75, 1160.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Role" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Role" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="Character">
+<g fill="#eee8d5" stroke="#33322E" data-name="Character">
+<rect x="1232.3" y="902.0" height="396.0" width="398.0" data-name="Character"></rect>
+<path d="M1232.3 934.0 L1630.3 934.0" fill="none" data-name="Character"></path>
+<path d="M1232.3 1290.0 L1630.3 1290.0" fill="none" data-name="Character"></path>
+</g>
+<g transform="translate(1232.25, 902)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Character" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Character" data-compartment="0">
+<a id="source_files\server\db\entities\Character.ts.Character" xlink:href="source_files\server\db\entities\Character.ts"><text x="191.0" y="14.1" stroke="none" text-anchor="middle" data-name="Character" data-compartment="0">Character</text></a>
+
+</g>
+</g>
+<g transform="translate(1232.25, 934)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Character" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Character" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="Character" data-compartment="1">+id?: number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Character" data-compartment="1">+firstName: string</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Character" data-compartment="1">+lastName: string</text>
+<text x="0.0" y="62.7" stroke="none" data-name="Character" data-compartment="1">+eyeColor: number</text>
+<text x="0.0" y="78.9" stroke="none" data-name="Character" data-compartment="1">+gender: number</text>
+<text x="0.0" y="95.1" stroke="none" data-name="Character" data-compartment="1">+parents: CharacterParents</text>
+<text x="0.0" y="111.3" stroke="none" data-name="Character" data-compartment="1">+faceFeatures: number[]</text>
+<text x="0.0" y="127.5" stroke="none" data-name="Character" data-compartment="1">+headOverlays: CharacterHeadOverlay[]</text>
+<text x="0.0" y="143.7" stroke="none" data-name="Character" data-compartment="1">+clothes: CharacterClothingItem[]</text>
+<text x="0.0" y="159.9" stroke="none" data-name="Character" data-compartment="1">+hairColors: CharacterHair</text>
+<text x="0.0" y="176.1" stroke="none" data-name="Character" data-compartment="1">+position: Position</text>
+<text x="0.0" y="192.3" stroke="none" data-name="Character" data-compartment="1">+timePlayed?: number</text>
+<text x="0.0" y="208.5" stroke="none" data-name="Character" data-compartment="1">+inventory: any</text>
+<text x="0.0" y="224.7" stroke="none" data-name="Character" data-compartment="1">+vitals?: CharacterVitals</text>
+<text x="0.0" y="240.9" stroke="none" data-name="Character" data-compartment="1">+account?: number | Account | null</text>
+<text x="0.0" y="257.1" stroke="none" data-name="Character" data-compartment="1">+aliasedCharacters?: Alias[]</text>
+<text x="0.0" y="273.3" stroke="none" data-name="Character" data-compartment="1">+aliasedByCharacters?: Alias[]</text>
+<text x="0.0" y="289.5" stroke="none" data-name="Character" data-compartment="1">+characterIdLog?: CharacterIdLog[]</text>
+<text x="0.0" y="305.7" stroke="none" data-name="Character" data-compartment="1">+characterVehicle?: Vehicle[]</text>
+<text x="0.0" y="321.9" stroke="none" data-name="Character" data-compartment="1">+characterVictim?: number | CharacterDeathLog</text>
+<text x="0.0" y="338.1" stroke="none" data-name="Character" data-compartment="1">+characterKiller?: number | CharacterDeathLog</text>
+
+</g>
+</g>
+<g transform="translate(1232.25, 1290)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Character" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Character" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="AccountPunishment">
+<g fill="#eee8d5" stroke="#33322E" data-name="AccountPunishment">
+<rect x="2026.0" y="987.0" height="226.0" width="243.0" data-name="AccountPunishment"></rect>
+<path d="M2026.0 1019.0 L2269.0 1019.0" fill="none" data-name="AccountPunishment"></path>
+<path d="M2026.0 1181.0 L2269.0 1181.0" fill="none" data-name="AccountPunishment"></path>
+</g>
+<g transform="translate(2026, 987)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="AccountPunishment" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AccountPunishment" data-compartment="0">
+<a id="source_files\server\db\entities\AccountPunishment.ts.AccountPunishment" xlink:href="source_files\server\db\entities\AccountPunishment.ts"><text x="113.5" y="14.1" stroke="none" text-anchor="middle" data-name="AccountPunishment" data-compartment="0">AccountPunishment</text></a>
+
+</g>
+</g>
+<g transform="translate(2026, 1019)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AccountPunishment" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AccountPunishment" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="AccountPunishment" data-compartment="1">+punishment: Punishment</text>
+<text x="0.0" y="30.3" stroke="none" data-name="AccountPunishment" data-compartment="1">+receivedId: number</text>
+<text x="0.0" y="46.5" stroke="none" data-name="AccountPunishment" data-compartment="1">+issuedId: number</text>
+<text x="0.0" y="62.7" stroke="none" data-name="AccountPunishment" data-compartment="1">+dateCreated?: Date</text>
+<text x="0.0" y="78.9" stroke="none" data-name="AccountPunishment" data-compartment="1">+dateDeleted?: Date</text>
+<text x="0.0" y="95.1" stroke="none" data-name="AccountPunishment" data-compartment="1">+dateUpdated?: Date</text>
+<text x="0.0" y="111.3" stroke="none" data-name="AccountPunishment" data-compartment="1">+received: number | Account</text>
+<text x="0.0" y="127.5" stroke="none" data-name="AccountPunishment" data-compartment="1">+issued?: number | Account</text>
+<text x="0.0" y="143.7" stroke="none" data-name="AccountPunishment" data-compartment="1">+expires?: Date</text>
+
+</g>
+</g>
+<g transform="translate(2026, 1181)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AccountPunishment" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AccountPunishment" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="AccountPunishment" data-compartment="2">+beforeinsert(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="Report">
+<g fill="#eee8d5" stroke="#33322E" data-name="Report">
+<rect x="3413.3" y="1007.0" height="186.0" width="299.0" data-name="Report"></rect>
+<path d="M3413.3 1039.0 L3712.3 1039.0" fill="none" data-name="Report"></path>
+<path d="M3413.3 1185.0 L3712.3 1185.0" fill="none" data-name="Report"></path>
+</g>
+<g transform="translate(3413.25, 1007)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Report" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Report" data-compartment="0">
+<a id="source_files\server\db\entities\Report.ts.Report" xlink:href="source_files\server\db\entities\Report.ts"><text x="141.5" y="14.1" stroke="none" text-anchor="middle" data-name="Report" data-compartment="0">Report</text></a>
+
+</g>
+</g>
+<g transform="translate(3413.25, 1039)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Report" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Report" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="Report" data-compartment="1">+id?: number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Report" data-compartment="1">+timeCreated?: Date</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Report" data-compartment="1">+timeClaimed?: Date</text>
+<text x="0.0" y="62.7" stroke="none" data-name="Report" data-compartment="1">+timeClosed?: Date</text>
+<text x="0.0" y="78.9" stroke="none" data-name="Report" data-compartment="1">+reportText: string</text>
+<text x="0.0" y="95.1" stroke="none" data-name="Report" data-compartment="1">+reportedBy: number | Account</text>
+<text x="0.0" y="111.3" stroke="none" data-name="Report" data-compartment="1">+claimedBy?: number | Account</text>
+<text x="0.0" y="127.5" stroke="none" data-name="Report" data-compartment="1">+reportType?: number | ReportType</text>
+
+</g>
+</g>
+<g transform="translate(3413.25, 1185)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Report" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Report" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="AccountIp">
+<g fill="#eee8d5" stroke="#33322E" data-name="AccountIp">
+<rect x="1993.8" y="463.0" height="88.0" width="238.0" data-name="AccountIp"></rect>
+<path d="M1993.8 495.0 L2231.8 495.0" fill="none" data-name="AccountIp"></path>
+<path d="M1993.8 543.0 L2231.8 543.0" fill="none" data-name="AccountIp"></path>
+</g>
+<g transform="translate(1993.75, 463)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="AccountIp" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AccountIp" data-compartment="0">
+<a id="source_files\server\db\entities\AccountIp.ts.AccountIp" xlink:href="source_files\server\db\entities\AccountIp.ts"><text x="111.0" y="14.1" stroke="none" text-anchor="middle" data-name="AccountIp" data-compartment="0">AccountIp</text></a>
+
+</g>
+</g>
+<g transform="translate(1993.75, 495)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AccountIp" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AccountIp" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="AccountIp" data-compartment="1">+account: number | Account</text>
+<text x="0.0" y="30.3" stroke="none" data-name="AccountIp" data-compartment="1">+ip: string</text>
+
+</g>
+</g>
+<g transform="translate(1993.75, 543)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AccountIp" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="AccountIp" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="Punishment">
+<g fill="#eee8d5" stroke="#33322E" data-name="Punishment">
+<rect x="1916.0" y="1406.5" height="121.0" width="463.0" data-name="Punishment"></rect>
+<path d="M1916.0 1438.5 L2379.0 1438.5" fill="none" data-name="Punishment"></path>
+<path d="M1916.0 1519.5 L2379.0 1519.5" fill="none" data-name="Punishment"></path>
+</g>
+<g transform="translate(1916, 1406.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Punishment" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Punishment" data-compartment="0">
+<a id="source_files\server\db\entities\Punishment.ts.Punishment" xlink:href="source_files\server\db\entities\Punishment.ts"><text x="223.5" y="14.1" stroke="none" text-anchor="middle" data-name="Punishment" data-compartment="0">Punishment</text></a>
+
+</g>
+</g>
+<g transform="translate(1916, 1438.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Punishment" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Punishment" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="Punishment" data-compartment="1">+id?: number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Punishment" data-compartment="1">+description: string</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Punishment" data-compartment="1">+duration: number | null</text>
+<text x="0.0" y="62.7" stroke="none" data-name="Punishment" data-compartment="1">+accountPunishments?: AccountPunishment[] | number[]</text>
+
+</g>
+</g>
+<g transform="translate(1916, 1519.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Punishment" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Punishment" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="AccountSerial">
+<g fill="#eee8d5" stroke="#33322E" data-name="AccountSerial">
+<rect x="2388.3" y="463.0" height="88.0" width="238.0" data-name="AccountSerial"></rect>
+<path d="M2388.3 495.0 L2626.3 495.0" fill="none" data-name="AccountSerial"></path>
+<path d="M2388.3 543.0 L2626.3 543.0" fill="none" data-name="AccountSerial"></path>
+</g>
+<g transform="translate(2388.25, 463)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="AccountSerial" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AccountSerial" data-compartment="0">
+<a id="source_files\server\db\entities\AccountSerial.ts.AccountSerial" xlink:href="source_files\server\db\entities\AccountSerial.ts"><text x="111.0" y="14.1" stroke="none" text-anchor="middle" data-name="AccountSerial" data-compartment="0">AccountSerial</text></a>
+
+</g>
+</g>
+<g transform="translate(2388.25, 495)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AccountSerial" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AccountSerial" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="AccountSerial" data-compartment="1">+account: number | Account</text>
+<text x="0.0" y="30.3" stroke="none" data-name="AccountSerial" data-compartment="1">+serial: string</text>
+
+</g>
+</g>
+<g transform="translate(2388.25, 543)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AccountSerial" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="AccountSerial" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="AccountSocialClub">
+<g fill="#eee8d5" stroke="#33322E" data-name="AccountSocialClub">
+<rect x="2850.8" y="463.0" height="88.0" width="238.0" data-name="AccountSocialClub"></rect>
+<path d="M2850.8 495.0 L3088.8 495.0" fill="none" data-name="AccountSocialClub"></path>
+<path d="M2850.8 543.0 L3088.8 543.0" fill="none" data-name="AccountSocialClub"></path>
+</g>
+<g transform="translate(2850.75, 463)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="AccountSocialClub" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AccountSocialClub" data-compartment="0">
+<a id="source_files\server\db\entities\AccountSocialClub.ts.AccountSocialClub" xlink:href="source_files\server\db\entities\AccountSocialClub.ts"><text x="111.0" y="14.1" stroke="none" text-anchor="middle" data-name="AccountSocialClub" data-compartment="0">AccountSocialClub</text></a>
+
+</g>
+</g>
+<g transform="translate(2850.75, 495)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AccountSocialClub" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AccountSocialClub" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="AccountSocialClub" data-compartment="1">+account: number | Account</text>
+<text x="0.0" y="30.3" stroke="none" data-name="AccountSocialClub" data-compartment="1">+socialClub: string</text>
+
+</g>
+</g>
+<g transform="translate(2850.75, 543)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AccountSocialClub" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="AccountSocialClub" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="Alias">
+<g fill="#eee8d5" stroke="#33322E" data-name="Alias">
+<rect x="531.3" y="1414.5" height="105.0" width="157.0" data-name="Alias"></rect>
+<path d="M531.3 1446.5 L688.3 1446.5" fill="none" data-name="Alias"></path>
+<path d="M531.3 1511.5 L688.3 1511.5" fill="none" data-name="Alias"></path>
+</g>
+<g transform="translate(531.25, 1414.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Alias" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Alias" data-compartment="0">
+<a id="source_files\server\db\entities\Alias.ts.Alias" xlink:href="source_files\server\db\entities\Alias.ts"><text x="70.5" y="14.1" stroke="none" text-anchor="middle" data-name="Alias" data-compartment="0">Alias</text></a>
+
+</g>
+</g>
+<g transform="translate(531.25, 1446.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Alias" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Alias" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="Alias" data-compartment="1">+aliasing: number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Alias" data-compartment="1">+aliased: number</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Alias" data-compartment="1">+alias: string</text>
+
+</g>
+</g>
+<g transform="translate(531.25, 1511.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Alias" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Alias" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="Pick">
+<g fill="#eee8d5" stroke="#33322E" data-name="Pick">
+<rect x="1499.8" y="712.5" height="32.0" width="49.0" data-name="Pick"></rect>
+</g>
+<g transform="translate(1499.75, 712.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Pick" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Pick" data-compartment="0">
+<text x="16.5" y="14.1" stroke="none" text-anchor="middle" data-name="Pick" data-compartment="0">Pick</text>
+
+</g>
+</g>
+</g>
+<g data-name="CharacterIdLog">
+<g fill="#eee8d5" stroke="#33322E" data-name="CharacterIdLog">
+<rect x="728.3" y="1414.5" height="105.0" width="183.0" data-name="CharacterIdLog"></rect>
+<path d="M728.3 1446.5 L911.3 1446.5" fill="none" data-name="CharacterIdLog"></path>
+<path d="M728.3 1511.5 L911.3 1511.5" fill="none" data-name="CharacterIdLog"></path>
+</g>
+<g transform="translate(728.25, 1414.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="CharacterIdLog" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="CharacterIdLog" data-compartment="0">
+<a id="source_files\server\db\entities\CharacterIdLog.ts.CharacterIdLog" xlink:href="source_files\server\db\entities\CharacterIdLog.ts"><text x="83.5" y="14.1" stroke="none" text-anchor="middle" data-name="CharacterIdLog" data-compartment="0">CharacterIdLog</text></a>
+
+</g>
+</g>
+<g transform="translate(728.25, 1446.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CharacterIdLog" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CharacterIdLog" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="CharacterIdLog" data-compartment="1">+character: number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="CharacterIdLog" data-compartment="1">+timeAssigned: Date</text>
+<text x="0.0" y="46.5" stroke="none" data-name="CharacterIdLog" data-compartment="1">+assignedId: number</text>
+
+</g>
+</g>
+<g transform="translate(728.25, 1511.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CharacterIdLog" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="CharacterIdLog" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="Vehicle">
+<g fill="#eee8d5" stroke="#33322E" data-name="Vehicle">
+<rect x="1335.0" y="1338.0" height="258.0" width="232.0" data-name="Vehicle"></rect>
+<path d="M1335.0 1370.0 L1567.0 1370.0" fill="none" data-name="Vehicle"></path>
+<path d="M1335.0 1564.0 L1567.0 1564.0" fill="none" data-name="Vehicle"></path>
+</g>
+<g transform="translate(1335, 1338)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Vehicle" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Vehicle" data-compartment="0">
+<a id="source_files\server\db\entities\Vehicle.ts.Vehicle" xlink:href="source_files\server\db\entities\Vehicle.ts"><text x="108.0" y="14.1" stroke="none" text-anchor="middle" data-name="Vehicle" data-compartment="0">Vehicle</text></a>
+
+</g>
+</g>
+<g transform="translate(1335, 1370)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Vehicle" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Vehicle" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="Vehicle" data-compartment="1">+id?: number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Vehicle" data-compartment="1">+price?: number</text>
+<text x="0.0" y="46.5" stroke="none" data-name="Vehicle" data-compartment="1">+plate?: string</text>
+<text x="0.0" y="62.7" stroke="none" data-name="Vehicle" data-compartment="1">+model: string</text>
+<text x="0.0" y="78.9" stroke="none" data-name="Vehicle" data-compartment="1">+doorState?: boolean</text>
+<text x="0.0" y="95.1" stroke="none" data-name="Vehicle" data-compartment="1">+engineHealth?: number</text>
+<text x="0.0" y="111.3" stroke="none" data-name="Vehicle" data-compartment="1">+distanceDriven?: number</text>
+<text x="0.0" y="127.5" stroke="none" data-name="Vehicle" data-compartment="1">+tank?: number</text>
+<text x="0.0" y="143.7" stroke="none" data-name="Vehicle" data-compartment="1">+mods?: VehicleMod[]</text>
+<text x="0.0" y="159.9" stroke="none" data-name="Vehicle" data-compartment="1">+position: Position</text>
+<text x="0.0" y="176.1" stroke="none" data-name="Vehicle" data-compartment="1">+characterOwner?: number</text>
+
+</g>
+</g>
+<g transform="translate(1335, 1564)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Vehicle" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Vehicle" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="Vehicle" data-compartment="2">+beforeInsert(): void</text>
+
+</g>
+</g>
+</g>
+<g data-name="CharacterDeathLog">
+<g fill="#eee8d5" stroke="#33322E" data-name="CharacterDeathLog">
+<rect x="1607.0" y="1390.5" height="153.0" width="269.0" data-name="CharacterDeathLog"></rect>
+<path d="M1607.0 1422.5 L1876.0 1422.5" fill="none" data-name="CharacterDeathLog"></path>
+<path d="M1607.0 1535.5 L1876.0 1535.5" fill="none" data-name="CharacterDeathLog"></path>
+</g>
+<g transform="translate(1607, 1390.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="CharacterDeathLog" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="CharacterDeathLog" data-compartment="0">
+<a id="source_files\server\db\entities\CharacterDeathLog.ts.CharacterDeathLog" xlink:href="source_files\server\db\entities\CharacterDeathLog.ts"><text x="126.5" y="14.1" stroke="none" text-anchor="middle" data-name="CharacterDeathLog" data-compartment="0">CharacterDeathLog</text></a>
+
+</g>
+</g>
+<g transform="translate(1607, 1422.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CharacterDeathLog" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CharacterDeathLog" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="CharacterDeathLog" data-compartment="1">+victim: number | Character</text>
+<text x="0.0" y="30.3" stroke="none" data-name="CharacterDeathLog" data-compartment="1">+killer: number | Character | null</text>
+<text x="0.0" y="46.5" stroke="none" data-name="CharacterDeathLog" data-compartment="1">+reason: number</text>
+<text x="0.0" y="62.7" stroke="none" data-name="CharacterDeathLog" data-compartment="1">+dateCreated?: Date</text>
+<text x="0.0" y="78.9" stroke="none" data-name="CharacterDeathLog" data-compartment="1">+dateDeleted?: Date</text>
+<text x="0.0" y="95.1" stroke="none" data-name="CharacterDeathLog" data-compartment="1">+dateUpdated?: Date</text>
+
+</g>
+</g>
+<g transform="translate(1607, 1535.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CharacterDeathLog" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="CharacterDeathLog" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="Ip">
+<g fill="#eee8d5" stroke="#33322E" data-name="Ip">
+<rect x="2058.5" y="290.5" height="88.0" width="297.0" data-name="Ip"></rect>
+<path d="M2058.5 322.5 L2355.5 322.5" fill="none" data-name="Ip"></path>
+<path d="M2058.5 370.5 L2355.5 370.5" fill="none" data-name="Ip"></path>
+</g>
+<g transform="translate(2058.5, 290.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Ip" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Ip" data-compartment="0">
+<a id="source_files\server\db\entities\Ip.ts.Ip" xlink:href="source_files\server\db\entities\Ip.ts"><text x="140.5" y="14.1" stroke="none" text-anchor="middle" data-name="Ip" data-compartment="0">Ip</text></a>
+
+</g>
+</g>
+<g transform="translate(2058.5, 322.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Ip" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Ip" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="Ip" data-compartment="1">+id: string</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Ip" data-compartment="1">+accountIps: number[] | AccountIp[]</text>
+
+</g>
+</g>
+<g transform="translate(2058.5, 370.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Ip" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Ip" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="ReportType">
+<g fill="#eee8d5" stroke="#33322E" data-name="ReportType">
+<rect x="3575.0" y="1414.5" height="105.0" width="165.0" data-name="ReportType"></rect>
+<path d="M3575.0 1446.5 L3740.0 1446.5" fill="none" data-name="ReportType"></path>
+<path d="M3575.0 1511.5 L3740.0 1511.5" fill="none" data-name="ReportType"></path>
+</g>
+<g transform="translate(3575, 1414.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="ReportType" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="ReportType" data-compartment="0">
+<a id="source_files\server\db\entities\ReportType.ts.ReportType" xlink:href="source_files\server\db\entities\ReportType.ts"><text x="74.5" y="14.1" stroke="none" text-anchor="middle" data-name="ReportType" data-compartment="0">ReportType</text></a>
+
+</g>
+</g>
+<g transform="translate(3575, 1446.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ReportType" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="ReportType" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="ReportType" data-compartment="1">+id?: number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="ReportType" data-compartment="1">+name: string</text>
+<text x="0.0" y="46.5" stroke="none" data-name="ReportType" data-compartment="1">+reports?: Report[]</text>
+
+</g>
+</g>
+<g transform="translate(3575, 1511.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="ReportType" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="ReportType" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="Serial">
+<g fill="#eee8d5" stroke="#33322E" data-name="Serial">
+<rect x="2435.5" y="290.5" height="88.0" width="367.0" data-name="Serial"></rect>
+<path d="M2435.5 322.5 L2802.5 322.5" fill="none" data-name="Serial"></path>
+<path d="M2435.5 370.5 L2802.5 370.5" fill="none" data-name="Serial"></path>
+</g>
+<g transform="translate(2435.5, 290.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Serial" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Serial" data-compartment="0">
+<a id="source_files\server\db\entities\Serial.ts.Serial" xlink:href="source_files\server\db\entities\Serial.ts"><text x="175.5" y="14.1" stroke="none" text-anchor="middle" data-name="Serial" data-compartment="0">Serial</text></a>
+
+</g>
+</g>
+<g transform="translate(2435.5, 322.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Serial" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Serial" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="Serial" data-compartment="1">+id: string</text>
+<text x="0.0" y="30.3" stroke="none" data-name="Serial" data-compartment="1">+accountSerials?: number[] | AccountSerial[]</text>
+
+</g>
+</g>
+<g transform="translate(2435.5, 370.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Serial" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Serial" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="SocialClub">
+<g fill="#eee8d5" stroke="#33322E" data-name="SocialClub">
+<rect x="2882.5" y="290.5" height="88.0" width="429.0" data-name="SocialClub"></rect>
+<path d="M2882.5 322.5 L3311.5 322.5" fill="none" data-name="SocialClub"></path>
+<path d="M2882.5 370.5 L3311.5 370.5" fill="none" data-name="SocialClub"></path>
+</g>
+<g transform="translate(2882.5, 290.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="SocialClub" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="SocialClub" data-compartment="0">
+<a id="source_files\server\db\entities\SocialClub.ts.SocialClub" xlink:href="source_files\server\db\entities\SocialClub.ts"><text x="206.5" y="14.1" stroke="none" text-anchor="middle" data-name="SocialClub" data-compartment="0">SocialClub</text></a>
+
+</g>
+</g>
+<g transform="translate(2882.5, 322.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="SocialClub" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="SocialClub" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="SocialClub" data-compartment="1">+id: string</text>
+<text x="0.0" y="30.3" stroke="none" data-name="SocialClub" data-compartment="1">+accountSocialClubs?: string[] | AccountSocialClub[]</text>
+
+</g>
+</g>
+<g transform="translate(2882.5, 370.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="SocialClub" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="SocialClub" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="WorldDoor">
+<g fill="#eee8d5" stroke="#33322E" data-name="WorldDoor">
+<rect x="879.8" y="250.0" height="169.0" width="309.0" data-name="WorldDoor"></rect>
+<path d="M879.8 282.0 L1188.8 282.0" fill="none" data-name="WorldDoor"></path>
+<path d="M879.8 411.0 L1188.8 411.0" fill="none" data-name="WorldDoor"></path>
+</g>
+<g transform="translate(879.75, 250)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="WorldDoor" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="WorldDoor" data-compartment="0">
+<a id="source_files\server\db\entities\WorldDoor.ts.WorldDoor" xlink:href="source_files\server\db\entities\WorldDoor.ts"><text x="146.5" y="14.1" stroke="none" text-anchor="middle" data-name="WorldDoor" data-compartment="0">WorldDoor</text></a>
+
+</g>
+</g>
+<g transform="translate(879.75, 282)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="WorldDoor" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="WorldDoor" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="WorldDoor" data-compartment="1">+id?: number</text>
+<text x="0.0" y="30.3" stroke="none" data-name="WorldDoor" data-compartment="1">+name: string</text>
+<text x="0.0" y="46.5" stroke="none" data-name="WorldDoor" data-compartment="1">+state: boolean</text>
+<text x="0.0" y="62.7" stroke="none" data-name="WorldDoor" data-compartment="1">+labelPosition: Vector</text>
+<text x="0.0" y="78.9" stroke="none" data-name="WorldDoor" data-compartment="1">+interactionColshapePosition: Vector</text>
+<text x="0.0" y="95.1" stroke="none" data-name="WorldDoor" data-compartment="1">+interactionColshapeRadius: number</text>
+<text x="0.0" y="111.3" stroke="none" data-name="WorldDoor" data-compartment="1">+dimension?: number</text>
+
+</g>
+</g>
+<g transform="translate(879.75, 411)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="WorldDoor" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="WorldDoor" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="Mock">
+<g fill="#eee8d5" stroke="#33322E" data-name="Mock">
+<rect x="1228.8" y="298.5" height="72.0" width="191.0" data-name="Mock"></rect>
+<path d="M1228.8 330.5 L1419.8 330.5" fill="none" data-name="Mock"></path>
+<path d="M1228.8 338.5 L1419.8 338.5" fill="none" data-name="Mock"></path>
+</g>
+<g transform="translate(1228.75, 298.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Mock" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Mock" data-compartment="0">
+<a id="source_files\server\db\seeds\mockDataSeeder.ts.Mock" xlink:href="source_files\server\db\seeds\mockDataSeeder.ts"><text x="87.5" y="14.1" stroke="none" text-anchor="middle" data-name="Mock" data-compartment="0">Mock</text></a>
+
+</g>
+</g>
+<g transform="translate(1228.75, 330.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Mock" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" data-name="Mock" data-compartment="1">
+
+</g>
+</g>
+<g transform="translate(1228.75, 338.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="Mock" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="Mock" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="Mock" data-compartment="2">+run(): Promise&lt;void&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="Seeder">
+<g fill="#eee8d5" stroke="#33322E" data-name="Seeder">
+<rect x="848.0" y="89.0" height="32.0" width="73.0" data-name="Seeder"></rect>
+</g>
+<g transform="translate(848, 89)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="Seeder" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="Seeder" data-compartment="0">
+<text x="28.5" y="14.1" stroke="none" text-anchor="middle" data-name="Seeder" data-compartment="0">Seeder</text>
+
+</g>
+</g>
+</g>
+<g data-name="AdminService">
+<g fill="#eee8d5" stroke="#33322E" data-name="AdminService">
+<rect x="2198.0" y="69.0" height="72.0" width="264.0" data-name="AdminService"></rect>
+<path d="M2198.0 101.0 L2462.0 101.0" fill="none" data-name="AdminService"></path>
+<path d="M2198.0 133.0 L2462.0 133.0" fill="none" data-name="AdminService"></path>
+</g>
+<g transform="translate(2198, 69)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="AdminService" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AdminService" data-compartment="0">
+<a id="source_files\server\services\admin\index.ts.AdminService" xlink:href="source_files\server\services\admin\index.ts"><text x="124.0" y="14.1" stroke="none" text-anchor="middle" data-name="AdminService" data-compartment="0">AdminService</text></a>
+
+</g>
+</g>
+<g transform="translate(2198, 101)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AdminService" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AdminService" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="AdminService" data-compartment="1">-static _instance: AdminService</text>
+
+</g>
+</g>
+<g transform="translate(2198, 133)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AdminService" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" data-name="AdminService" data-compartment="2">
+
+</g>
+</g>
+</g>
+<g data-name="AuthService">
+<g fill="#eee8d5" stroke="#33322E" data-name="AuthService">
+<rect x="2552.0" y="0.0" height="210.0" width="267.0" data-name="AuthService"></rect>
+<path d="M2552.0 32.0 L2819.0 32.0" fill="none" data-name="AuthService"></path>
+<path d="M2552.0 64.0 L2819.0 64.0" fill="none" data-name="AuthService"></path>
+</g>
+<g transform="translate(2552, 0)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="AuthService" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="AuthService" data-compartment="0">
+<a id="source_files\server\services\auth\index.ts.AuthService" xlink:href="source_files\server\services\auth\index.ts"><text x="125.5" y="14.1" stroke="none" text-anchor="middle" data-name="AuthService" data-compartment="0">AuthService</text></a>
+
+</g>
+</g>
+<g transform="translate(2552, 32)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AuthService" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AuthService" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="AuthService" data-compartment="1">-static _instance: AuthService</text>
+
+</g>
+</g>
+<g transform="translate(2552, 64)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="AuthService" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="AuthService" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="AuthService" data-compartment="2">-playerReady(): void</text>
+<text x="0.0" y="30.3" stroke="none" data-name="AuthService" data-compartment="2">-logout(): void</text>
+<text x="0.0" y="46.5" stroke="none" data-name="AuthService" data-compartment="2">-login(): Promise&lt;string&gt;</text>
+<text x="0.0" y="62.7" stroke="none" data-name="AuthService" data-compartment="2">-register(): Promise&lt;string&gt;</text>
+<text x="0.0" y="78.9" stroke="none" data-name="AuthService" data-compartment="2">+hashPassword(): { salt: string</text>
+<text x="0.0" y="95.1" stroke="none" data-name="AuthService" data-compartment="2">hash: string</text>
+<text x="0.0" y="111.3" stroke="none" data-name="AuthService" data-compartment="2">}</text>
+<text x="0.0" y="127.5" stroke="none" data-name="AuthService" data-compartment="2">+comparePasswords(): boolean</text>
+
+</g>
+</g>
+</g>
+<g data-name="CharacterSelector">
+<g fill="#eee8d5" stroke="#33322E" data-name="CharacterSelector">
+<rect x="2909.0" y="32.5" height="145.0" width="299.0" data-name="CharacterSelector"></rect>
+<path d="M2909.0 64.5 L3208.0 64.5" fill="none" data-name="CharacterSelector"></path>
+<path d="M2909.0 112.5 L3208.0 112.5" fill="none" data-name="CharacterSelector"></path>
+</g>
+<g transform="translate(2909, 32.5)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="CharacterSelector" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="CharacterSelector" data-compartment="0">
+<a id="source_files\server\services\characterSelector\index.ts.CharacterSelector" xlink:href="source_files\server\services\characterSelector\index.ts"><text x="141.5" y="14.1" stroke="none" text-anchor="middle" data-name="CharacterSelector" data-compartment="0">CharacterSelector</text></a>
+
+</g>
+</g>
+<g transform="translate(2909, 64.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CharacterSelector" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CharacterSelector" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="CharacterSelector" data-compartment="1">-static _instance: CharacterSelector</text>
+<text x="0.0" y="30.3" stroke="none" data-name="CharacterSelector" data-compartment="1">-freemodeCharacters: any[]</text>
+
+</g>
+</g>
+<g transform="translate(2909, 112.5)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="CharacterSelector" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="CharacterSelector" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="CharacterSelector" data-compartment="2">-setHeadOverlay(): void</text>
+<text x="0.0" y="30.3" stroke="none" data-name="CharacterSelector" data-compartment="2">-play(): Promise&lt;boolean&gt;</text>
+<text x="0.0" y="46.5" stroke="none" data-name="CharacterSelector" data-compartment="2">-applyCharacter(): Promise&lt;void&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="PlayerService">
+<g fill="#eee8d5" stroke="#33322E" data-name="PlayerService">
+<rect x="3298.0" y="57.0" height="96.0" width="265.0" data-name="PlayerService"></rect>
+<path d="M3298.0 89.0 L3563.0 89.0" fill="none" data-name="PlayerService"></path>
+<path d="M3298.0 121.0 L3563.0 121.0" fill="none" data-name="PlayerService"></path>
+</g>
+<g transform="translate(3298, 57)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="PlayerService" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PlayerService" data-compartment="0">
+<a id="source_files\server\services\player\index.ts.PlayerService" xlink:href="source_files\server\services\player\index.ts"><text x="124.5" y="14.1" stroke="none" text-anchor="middle" data-name="PlayerService" data-compartment="0">PlayerService</text></a>
+
+</g>
+</g>
+<g transform="translate(3298, 89)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerService" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PlayerService" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="PlayerService" data-compartment="1">-static _instance: PlayerService</text>
+
+</g>
+</g>
+<g transform="translate(3298, 121)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PlayerService" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PlayerService" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="PlayerService" data-compartment="2">-playerDeath(): Promise&lt;void&gt;</text>
+
+</g>
+</g>
+</g>
+<g data-name="PunishmentService">
+<g fill="#eee8d5" stroke="#33322E" data-name="PunishmentService">
+<rect x="3653.0" y="57.0" height="96.0" width="308.0" data-name="PunishmentService"></rect>
+<path d="M3653.0 89.0 L3961.0 89.0" fill="none" data-name="PunishmentService"></path>
+<path d="M3653.0 121.0 L3961.0 121.0" fill="none" data-name="PunishmentService"></path>
+</g>
+<g transform="translate(3653, 57)" font-family="Helvetica" font-size="12pt" font-weight="bold" font-style="normal" data-name="PunishmentService" data-compartment="0">
+<g transform="translate(8, 8)" fill="#33322E" text-align="center" data-name="PunishmentService" data-compartment="0">
+<a id="source_files\server\services\punishment\index.ts.PunishmentService" xlink:href="source_files\server\services\punishment\index.ts"><text x="146.0" y="14.1" stroke="none" text-anchor="middle" data-name="PunishmentService" data-compartment="0">PunishmentService</text></a>
+
+</g>
+</g>
+<g transform="translate(3653, 89)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PunishmentService" data-compartment="1">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PunishmentService" data-compartment="1">
+<text x="0.0" y="14.1" stroke="none" data-name="PunishmentService" data-compartment="1">-static _instance: PunishmentService</text>
+
+</g>
+</g>
+<g transform="translate(3653, 121)" font-family="Helvetica" font-size="12pt" font-weight="normal" font-style="normal" data-name="PunishmentService" data-compartment="2">
+<g transform="translate(8, 8)" fill="#33322E" text-align="left" data-name="PunishmentService" data-compartment="2">
+<text x="0.0" y="14.1" stroke="none" data-name="PunishmentService" data-compartment="2">-playerJoin(): Promise&lt;void&gt;</text>
+
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+</svg>

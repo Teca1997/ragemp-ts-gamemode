@@ -7,6 +7,10 @@
 			"@shared": ["../shared/index.ts"]
 		}
 	},
-	"files": ["../../node_modules/@ragempcommunity/types-client/index.d.ts", "../shared/index.ts"],
+	"files": [
+		"../../node_modules/@ragempcommunity/types-client/index.d.ts",
+		"../shared/index.ts",
+		"./@types/index.d.ts"
+	],
 	"include": ["./**/*", "../shared/index.ts"]
 }

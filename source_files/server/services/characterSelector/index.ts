@@ -29,30 +29,23 @@ export class CharacterSelector {
 	}
 
 	private async play(player: PlayerMp, characterIndex: number) {
-		if (
-			player.account == undefined ||
-			player.account == null ||
-			player.account.characters == null
-		)
-			return;
 		this.applyCharacter(player, characterIndex);
-		const { x, y, z } = player.account!.characters[characterIndex].position.location;
+		const { x, y, z } = player.ownData.account?.characters![characterIndex].position.location!;
 		player.position = new mp.Vector3(x, y, z);
-		player.dimension = player.account!.characters[characterIndex].position.dimension;
-		player.heading = player.account!.characters[characterIndex].position.heading;
+		player.dimension = player.ownData.account?.characters![characterIndex].position.dimension!;
+		player.heading = player.ownData.account?.characters![characterIndex].position.heading!;
 		return true;
 	}
 
 	private async applyCharacter(player: PlayerMp, characterIndex: number) {
 		if (
-			player.account == undefined ||
-			player.account == null ||
-			player.account.characters == null
+			player.ownData.account == undefined ||
+			player.ownData.account == null ||
+			player.ownData.account.characters == null
 		)
 			return;
-		const { gender, parents, hairColors, clothes, faceFeatures, colors, headOverlays } =
-			player.account.characters[characterIndex];
-
+		const { gender, parents, hairColors, clothes, faceFeatures, eyeColor, headOverlays } =
+			player.ownData.account.characters[characterIndex];
 		player.model = this.freemodeCharacters[gender];
 		player.setCustomization(
 			gender == 0 ? false : true,
@@ -65,7 +58,7 @@ export class CharacterSelector {
 			parents.similarity,
 			parents.skinSimilarity,
 			0.0,
-			colors.eyeColor,
+			eyeColor,
 			hairColors.color,
 			hairColors.highlightColor,
 			faceFeatures

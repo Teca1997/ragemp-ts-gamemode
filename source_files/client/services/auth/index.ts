@@ -42,6 +42,10 @@ export class AuthService {
 		UIService.instance.setPage(CEF.Pages.Auth);
 		UIService.instance.info('Logged out');
 		mp.events.callRemote(Server.Events.Auth.Logout);
+
+		mp.events.add('uncaughtException', (exception) => {
+			mp.console.logInfo(exception);
+		});
 	}
 
 	private async login(values: string) {

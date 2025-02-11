@@ -1,9 +1,11 @@
 import { ProcessedNamespace } from '../types';
-import { processNamespace } from '../utils/NamespaceEnumValueProcessor';
+import { processNamespace } from '../utils/processNamespace';
 
 export namespace VariablesNamespace {
 	export enum Player {
-		Account
+		Account,
+		Characters,
+		ActiveCharacter
 	}
 }
 

@@ -1,16 +1,15 @@
-import { Account } from '../db/entities/Account';
-import { Character } from '../db/entities/Character';
+import { CharacterData, ownDataType } from '@shared';
 
 declare global {
 	export interface PlayerMp {
-		account?: Account | null;
-		activeCharacter?: Character;
+		activeCharacter?: CharacterData;
+		ownData: ownDataType;
+		__ownData: ownDataType;
 	}
 
-	namespace NodeJS {
+	export namespace NodeJS {
 		interface ProcessEnv {
 			PRODUCTION_MODE: string;
-			COMPILER_USE_SWC: string;
 			NODE_ENV: string;
 			DB_SUPERUSERNAME: string;
 			DB_SUPERPASSWORD: string;
@@ -20,10 +19,6 @@ declare global {
 			DB_PASSWORD: string;
 			DB_SCHEMA: string;
 			DB_PORT: string;
-			DB_LOGGING: string;
-			DB_SYNCHRONISE: string;
-			DB_DROPDB: string;
-			DB_INSERTDATA: string;
 		}
 	}
 }

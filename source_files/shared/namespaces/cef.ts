@@ -1,5 +1,5 @@
 import { ProcessedNamespace } from '../types';
-import { processNamespace } from '../utils/NamespaceEnumValueProcessor';
+import { processNamespace } from '../utils/processNamespace';
 
 namespace CEFNamespce {
 	export enum Pages {
@@ -9,10 +9,6 @@ namespace CEFNamespce {
 		Hud
 	}
 	export namespace Events {
-		export enum CharacterCreator {
-			SetCharacterData
-		}
-
 		export enum Auth {
 			SetAccountData
 		}

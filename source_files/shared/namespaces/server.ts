@@ -1,5 +1,5 @@
 import { ProcessedNamespace } from '../types';
-import { processNamespace } from '../utils/NamespaceEnumValueProcessor';
+import { processNamespace } from '../utils/processNamespace';
 
 namespace ServerNamespace {
 	export namespace Events {
@@ -13,6 +13,10 @@ namespace ServerNamespace {
 			Start,
 			Play,
 			ApplyCharacter
+		}
+
+		export enum CharacterCreator {
+			Save
 		}
 	}
 }

@@ -11,7 +11,6 @@ export class ControlsService {
 	public set allControlActionsState(value) {
 		this._allControlActionsState = value;
 		if (!value) {
-			mp.console.logInfo('started disabling controls');
 			this.startDisableAllControlActions();
 		}
 	}
@@ -31,8 +30,6 @@ export class ControlsService {
 			mp.game.controls.disableAllControlActions(0);
 			await mp.game.waitAsync(5);
 			this.startDisableAllControlActions();
-		} else {
-			mp.console.logInfo('stopped disabling');
 		}
 	}
 }

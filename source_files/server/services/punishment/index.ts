@@ -18,8 +18,8 @@ export class PunishmentService {
 
 	private async playerJoin(player: PlayerMp) {
 		const { socialClub, serial, ip } = player;
-		await Database.datasource.getRepository(SocialClub).save(new SocialClub(socialClub));
-		await Database.datasource.getRepository(Serial).save(new Serial(serial));
-		await Database.datasource.getRepository(Ip).save(new Ip(ip));
+		await Database.getRepository(SocialClub).save(new SocialClub(socialClub));
+		await Database.getRepository(Serial).save(new Serial(serial));
+		await Database.getRepository(Ip).save(new Ip(ip));
 	}
 }

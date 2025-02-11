@@ -8,7 +8,8 @@ import {
 	TextField
 } from '@mui/material';
 import { Client } from '@shared';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../../../redux/hooks';
 import { characterCreatorActions } from '../../../redux/slices/characterCreatorSlice';
 import { RootState } from '../../../redux/store';
 import ExpandableMenu from '../../ExpandableMenu/ExpandableMenu';
@@ -16,9 +17,8 @@ export default function CreatorPersonalDetailsTab({
 	defaultExpanded = false
 }: {
 	defaultExpanded?: boolean;
-	store: any;
 }) {
-	const dispatch = useDispatch();
+	const dispatch = useAppDispatch();
 
 	const { gender, firstName, lastName } = useSelector(
 		(state: RootState) => state.characterCreator.creatorData
@@ -52,6 +52,12 @@ export default function CreatorPersonalDetailsTab({
 						name="firstName"
 						placeholder="First name....."
 						defaultValue={firstName}
+						onChange={(event) => {
+							mp.trigger(
+								Client.Events.CharacterCreator.UpdateFirstName,
+								event.target.value
+							);
+						}}
 					/>
 					<Divider />
 					<TextField
@@ -62,6 +68,12 @@ export default function CreatorPersonalDetailsTab({
 						name="lastName"
 						placeholder="Last name....."
 						defaultValue={lastName}
+						onChange={(event) => {
+							mp.trigger(
+								Client.Events.CharacterCreator.UpdateLastName,
+								event.target.value
+							);
+						}}
 					/>
 				</Stack>
 			</ExpandableMenu>

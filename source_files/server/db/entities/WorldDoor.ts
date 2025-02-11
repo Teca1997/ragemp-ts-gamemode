@@ -1,7 +1,13 @@
 import { Vector } from '@shared';
-import { Column, PrimaryGeneratedColumn } from 'typeorm';
-import { TimestampEntity } from './TimestampEntity';
-export class WorldDoor extends TimestampEntity {
+import { Exclude } from 'class-transformer';
+import {
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
+} from 'typeorm';
+export class WorldDoor {
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
 
@@ -22,4 +28,15 @@ export class WorldDoor extends TimestampEntity {
 
 	@Column('int8', { default: () => '0' })
 	dimension?: number;
+
+	@CreateDateColumn({ type: 'timestamptz', primary: true })
+	dateCreated?: Date;
+
+	@Exclude()
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@Exclude()
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 }

@@ -1,63 +1,49 @@
 import { FormLabel, Slider, Stack } from '@mui/material';
-import { Client } from '@shared';
-import { useEffect, useState } from 'react';
+import { CharacterClothingItem, Client, ClothingCategory } from '@shared';
+import React, { useEffect, useState } from 'react';
 import ExpandableMenu from '../ExpandableMenu/ExpandableMenu';
-
-type ClothingCategory = {
-	componentId: number;
-	name: string;
-	numOfComVarPermutions: number[];
-};
-
-type UserSelection = {
-	componentId: number;
-	drawableId: number;
-	textureId: number;
-};
 
 export default function ClothesMenu() {
 	const [clothesData, setClothesData] = useState<null | ClothingCategory[]>(null);
 
-	const [currentSelections, setSurrentSelections] = useState<UserSelection[]>([
-		{ componentId: 1, drawableId: 0, textureId: 0 },
-		{ componentId: 2, drawableId: 0, textureId: 0 },
-		{ componentId: 3, drawableId: 0, textureId: 0 },
-		{ componentId: 4, drawableId: 0, textureId: 0 },
-		{ componentId: 5, drawableId: 0, textureId: 0 },
-		{ componentId: 6, drawableId: 0, textureId: 0 },
-		{ componentId: 7, drawableId: 0, textureId: 0 },
-		{ componentId: 8, drawableId: 0, textureId: 0 },
-		{ componentId: 9, drawableId: 0, textureId: 0 },
-		{ componentId: 10, drawableId: 0, textureId: 0 },
-		{ componentId: 11, drawableId: 0, textureId: 0 }
+	const [currentSelections, setSurrentSelections] = useState<CharacterClothingItem[]>([
+		{ id: 1, drawable: 0, texture: 0, palette: 0 },
+		{ id: 2, drawable: 0, texture: 0, palette: 0 },
+		{ id: 3, drawable: 0, texture: 0, palette: 0 },
+		{ id: 4, drawable: 0, texture: 0, palette: 0 },
+		{ id: 5, drawable: 0, texture: 0, palette: 0 },
+		{ id: 6, drawable: 0, texture: 0, palette: 0 },
+		{ id: 7, drawable: 0, texture: 0, palette: 0 },
+		{ id: 8, drawable: 0, texture: 0, palette: 0 },
+		{ id: 9, drawable: 0, texture: 0, palette: 0 },
+		{ id: 10, drawable: 0, texture: 0, palette: 0 },
+		{ id: 11, drawable: 0, texture: 0, palette: 0 }
 	]);
 
 	const clothingCategories: ClothingCategory[] = [
-		{ componentId: 1, name: 'Masks', numOfComVarPermutions: [] },
-		{ componentId: 2, name: 'Hair Styles', numOfComVarPermutions: [] },
-		{ componentId: 3, name: 'Torsos', numOfComVarPermutions: [] },
-		{ componentId: 4, name: 'Legs', numOfComVarPermutions: [] },
-		{ componentId: 5, name: 'Bags and Parachutes', numOfComVarPermutions: [] },
-		{ componentId: 6, name: 'Shoes', numOfComVarPermutions: [] },
-		{ componentId: 7, name: 'Accessories', numOfComVarPermutions: [] },
-		{ componentId: 8, name: 'Undershirts', numOfComVarPermutions: [] },
-		{ componentId: 9, name: 'Body Armors', numOfComVarPermutions: [] },
-		{ componentId: 10, name: 'Decals', numOfComVarPermutions: [] },
-		{ componentId: 11, name: 'Tops', numOfComVarPermutions: [] }
+		{ id: 1, name: 'Masks', numOfComVarPermutions: [] },
+		{ id: 4, name: 'Pants', numOfComVarPermutions: [] },
+		{ id: 5, name: 'Bags and Parachutes', numOfComVarPermutions: [] },
+		{ id: 6, name: 'Shoes', numOfComVarPermutions: [] },
+		{ id: 7, name: 'Accessories', numOfComVarPermutions: [] },
+		{ id: 8, name: 'Undershirts', numOfComVarPermutions: [] },
+		{ id: 9, name: 'Body Armors', numOfComVarPermutions: [] },
+		{ id: 10, name: 'Decals', numOfComVarPermutions: [] },
+		{ id: 11, name: 'Tops', numOfComVarPermutions: [] }
 	];
 
 	useEffect(() => {
 		Promise.all(
-			clothingCategories.map(async ({ componentId, name }) => {
+			clothingCategories.map(async ({ id, name }) => {
 				const result = await mp.events.callProc(
 					Client.Events.PlayerService.GetNumOfComVarPermutions,
-					componentId
+					id
 				);
 
 				return {
-					componentId,
+					id,
 					name,
-					numOfComVarPermutions: result
+					numOfComVarPermutions: JSON.parse(result)
 				};
 			})
 		).then((result) => {
@@ -66,13 +52,21 @@ export default function ClothesMenu() {
 	}, []);
 
 	const handleChange =
-		(componentId: number, valueName: string) =>
+		(id: number, valueName: string) =>
 		(_event: Event, value: number | number[], _activeThumb: number) => {
 			const nextUserSelections = currentSelections.map((selection) => {
-				const nextUserSelection = JSON.parse(JSON.stringify(selection));
-				if (nextUserSelection.componentId == componentId) {
-					nextUserSelection[valueName] = value as number;
+				const nextUserSelection: CharacterClothingItem = JSON.parse(
+					JSON.stringify(selection)
+				);
+				if (nextUserSelection.id == id) {
+					nextUserSelection[valueName as keyof typeof nextUserSelection] =
+						value as number;
+					mp.trigger(
+						Client.Events.CharacterCreator.UpdateComponentVariation,
+						JSON.stringify(nextUserSelection)
+					);
 				}
+
 				return nextUserSelection;
 			});
 
@@ -83,45 +77,44 @@ export default function ClothesMenu() {
 		<ExpandableMenu summary="Clothes">
 			<Stack sx={{ gap: '2rem', padding: '20px' }}>
 				{clothesData &&
-					clothesData.map(({ componentId, name, numOfComVarPermutions }, index) => {
-						const drawableId =
+					clothesData.map(({ id, name, numOfComVarPermutions }, index) => {
+						const drawable =
 							currentSelections[
-								currentSelections.findIndex(
-									(category) => category.componentId == componentId
-								)
-							].drawableId;
-						const textureId =
+								currentSelections.findIndex((category) => category.id == id)
+							].drawable;
+						const texture =
 							currentSelections[
-								currentSelections.findIndex(
-									(category) => category.componentId == componentId
-								)
-							].textureId;
+								currentSelections.findIndex((category) => category.id == id)
+							].texture;
 
 						return (
-							<ExpandableMenu summary={name}>
-								<Slider
-									key={'clothesMenuSliderDrawable' + name}
-									name={'clothesMenuSliderDrawable' + name}
-									value={drawableId}
-									aria-label="Always visible"
-									step={1}
-									min={0}
-									onChange={handleChange(componentId, 'drawableId')}
-									max={numOfComVarPermutions.length}
-								/>
-								<FormLabel sx={{ textAlign: 'center' }}>Drawable</FormLabel>
-								<Slider
-									key={'clothesMenuSliderTexture' + name}
-									name={'clothesMenuSliderTexture' + name}
-									value={textureId}
-									aria-label="Always visible"
-									step={1}
-									min={0}
-									onChange={handleChange(componentId, 'textureId')}
-									max={numOfComVarPermutions[index]}
-								/>
-								<FormLabel sx={{ textAlign: 'center' }}>Texture</FormLabel>
-							</ExpandableMenu>
+							<React.Fragment key={name}>
+								<ExpandableMenu summary={name}>
+									<Slider
+										key={'clothesMenuSliderDrawable' + name}
+										name={'clothesMenuSliderDrawable' + name}
+										value={drawable}
+										aria-label="Always visible"
+										step={1}
+										min={0}
+										onChange={handleChange(id, 'drawable')}
+										max={numOfComVarPermutions.length}
+									/>
+									<FormLabel sx={{ textAlign: 'center' }}>Drawable</FormLabel>
+									<Slider
+										disabled={numOfComVarPermutions[index] < 2}
+										key={'clothesMenuSliderTexture' + name}
+										name={'clothesMenuSliderTexture' + name}
+										value={texture}
+										aria-label="Always visible"
+										step={1}
+										min={0}
+										onChange={handleChange(id, 'texture')}
+										max={numOfComVarPermutions[index]}
+									/>
+									<FormLabel sx={{ textAlign: 'center' }}>Texture</FormLabel>
+								</ExpandableMenu>
+							</React.Fragment>
 						);
 					})}
 			</Stack>

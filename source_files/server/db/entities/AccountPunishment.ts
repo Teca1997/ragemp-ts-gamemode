@@ -9,6 +9,7 @@ import {
 	UpdateDateColumn
 } from 'typeorm';
 
+import { Exclude } from 'class-transformer';
 import moment from 'moment';
 import { Account } from './Account';
 import { Punishment } from './Punishment';
@@ -28,9 +29,11 @@ export class AccountPunishment {
 	@CreateDateColumn({ type: 'timestamptz', primary: true })
 	dateCreated?: Date;
 
+	@Exclude()
 	@DeleteDateColumn({ type: 'timestamptz' })
 	dateDeleted?: Date;
 
+	@Exclude()
 	@UpdateDateColumn({ type: 'timestamptz' })
 	dateUpdated?: Date;
 

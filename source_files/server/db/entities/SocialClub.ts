@@ -1,18 +1,35 @@
-import { Entity, OneToMany, PrimaryColumn } from 'typeorm';
+import {
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	OneToMany,
+	PrimaryColumn,
+	UpdateDateColumn
+} from 'typeorm';
 
+import { Exclude } from 'class-transformer';
 import { AccountSocialClub } from './AccountSocialClub';
-import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class SocialClub extends TimestampEntity {
+export class SocialClub {
 	@PrimaryColumn({ type: 'varchar', length: 128 })
 	id!: string;
+
+	@CreateDateColumn({ type: 'timestamptz', primary: true })
+	dateCreated?: Date;
+
+	@Exclude()
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@Exclude()
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 
 	@OneToMany(() => AccountSocialClub, (accountSocialClub) => accountSocialClub.socialClub)
 	accountSocialClubs?: AccountSocialClub[] | string[];
 
 	constructor(id: string) {
-		super();
 		this.id = id;
 	}
 }

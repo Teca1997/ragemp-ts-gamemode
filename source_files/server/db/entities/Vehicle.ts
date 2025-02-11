@@ -1,12 +1,22 @@
-import { BeforeInsert, Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+	BeforeInsert,
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	Index,
+	ManyToOne,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
+} from 'typeorm';
 
 import { Position, VehicleMod } from '@shared';
+import { Exclude } from 'class-transformer';
 import { randomBytes } from 'crypto';
 import { Character } from './Character';
-import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class Vehicle extends TimestampEntity {
+export class Vehicle {
 	@Index()
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
@@ -37,6 +47,17 @@ export class Vehicle extends TimestampEntity {
 
 	@Column({ type: 'jsonb', nullable: true })
 	position!: Position;
+
+	@CreateDateColumn({ type: 'timestamptz', primary: true })
+	dateCreated?: Date;
+
+	@Exclude()
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@Exclude()
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
 
 	@Index()
 	@ManyToOne(() => Character, (character) => character.characterVehicle, { nullable: true })

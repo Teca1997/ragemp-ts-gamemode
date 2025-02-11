@@ -7,39 +7,40 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Client } from '@shared';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
 
 function CharacterSelector() {
 	const theme = useTheme();
-	const authStore = useSelector((state: RootState) => state.auth.authInfo);
-
-	const characters = authStore.characters;
+	const authData = useSelector((state: RootState) => state.auth.authInfo);
 
 	const [currentCharacterIndex, setCurrentCharacterIndex] = useState(0);
 
+	useEffect(() => {}, [authData]);
+
 	const handlePrevCharacter = () => {
-		console.log(currentCharacterIndex);
 		if (currentCharacterIndex == 0) {
-			setCurrentCharacterIndex(characters!.length - 1);
+			setCurrentCharacterIndex(authData.characters!.length - 1);
+			mp.trigger(
+				Client.Events.CharacterSelector.ApplyCharacter,
+				authData.characters!.length - 1
+			);
 		} else {
 			setCurrentCharacterIndex(currentCharacterIndex - 1);
+			mp.trigger(Client.Events.CharacterSelector.ApplyCharacter, currentCharacterIndex - 1);
 		}
-		mp.trigger(Client.Events.CharacterSelector.ApplyCharacter, currentCharacterIndex);
-		console.log(currentCharacterIndex);
 	};
 
 	const handleNextCharacter = () => {
-		console.log(currentCharacterIndex);
-
-		if (currentCharacterIndex == characters!.length - 1) {
+		if (currentCharacterIndex == authData.characters!.length - 1) {
 			setCurrentCharacterIndex(0);
+			mp.trigger(Client.Events.CharacterSelector.ApplyCharacter, 0);
 		} else {
 			setCurrentCharacterIndex(currentCharacterIndex + 1);
+			mp.trigger(Client.Events.CharacterSelector.ApplyCharacter, currentCharacterIndex + 1);
 		}
 		console.log(currentCharacterIndex);
-		mp.trigger(Client.Events.CharacterSelector.ApplyCharacter, currentCharacterIndex);
 	};
 
 	const handlePlay = () => {
@@ -56,7 +57,7 @@ function CharacterSelector() {
 				}}
 			>
 				<IconButton onClick={handlePrevCharacter}>
-					{characters!.length >= 2 && (
+					{authData.characters!.length >= 2 && (
 						<ChevronLeftIcon color={'primary'} sx={{ fontSize: '10rem' }} />
 					)}
 				</IconButton>
@@ -70,12 +71,12 @@ function CharacterSelector() {
 				}}
 			>
 				<IconButton onClick={handleNextCharacter}>
-					{characters!.length >= 2 && (
+					{authData.characters!.length >= 2 && (
 						<ChevronRightIcon color={'primary'} sx={{ fontSize: '10rem' }} />
 					)}
 				</IconButton>
 			</Box>
-			{characters!.length > 0 && (
+			{authData.characters!.length > 0 && (
 				<Button
 					variant={'contained'}
 					sx={{
@@ -125,20 +126,20 @@ function CharacterSelector() {
 				<Stack sx={{ gap: '0.5rem' }}>
 					<Typography color="primary" fontSize={'16'}>
 						Name:{' '}
-						{authStore.characters &&
-							authStore?.characters[currentCharacterIndex].firstname +
+						{authData.characters &&
+							authData.characters[currentCharacterIndex].firstName +
 								' ' +
-								authStore?.characters[currentCharacterIndex].lastname}
+								authData.characters[currentCharacterIndex].lastName}
 					</Typography>
 					<Typography color="primary" fontSize={'16'}>
 						Time played:{' '}
-						{authStore.characters &&
-							authStore?.characters[currentCharacterIndex].timePlayed}
+						{authData.characters &&
+							authData?.characters[currentCharacterIndex].timePlayed}
 					</Typography>
 					<Typography color="primary" fontSize={'16'}>
 						Created:{' '}
-						{authStore.characters &&
-							authStore?.characters[currentCharacterIndex].dateCreated?.toString()}
+						{authData.characters &&
+							authData.characters[currentCharacterIndex].dateCreated?.toString()}
 					</Typography>
 				</Stack>
 			</Paper>

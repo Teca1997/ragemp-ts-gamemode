@@ -1,5 +1,5 @@
 import { FormLabel, Slider, Stack } from '@mui/material';
-import { CEF, Client, defaultHeadOverlays } from '@shared';
+import { Client, defaultHeadOverlays } from '@shared';
 import { useEffect, useState } from 'react';
 import ExpandableMenu from '../../ExpandableMenu/ExpandableMenu';
 
@@ -59,10 +59,6 @@ export default function CreatorHeadOverlaysTab() {
 	const [headOverlays, setHeadOverlays] = useState<
 		{ name: string; numHeadOverlayValues: number }[] | null
 	>(null);
-
-	mp.events.add(CEF.Events.CharacterCreator.SetCharacterData, (data: string) => {
-		setUserHeadOverlays(JSON.parse(data));
-	});
 
 	useEffect(() => {
 		Promise.all(
@@ -139,7 +135,7 @@ export default function CreatorHeadOverlaysTab() {
 											step={1}
 											min={0}
 											max={63}
-											onChange={handleChange('firstColor', index)}
+											onChange={handleChange('color', index)}
 										/>
 										<FormLabel sx={{ textAlign: 'center' }}>
 											First color

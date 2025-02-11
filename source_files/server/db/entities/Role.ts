@@ -1,10 +1,18 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	OneToMany,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
+} from 'typeorm';
 
+import { Exclude } from 'class-transformer';
 import { Account } from './Account';
-import { TimestampEntity } from './TimestampEntity';
 
 @Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
-export class Role extends TimestampEntity {
+export class Role {
 	@PrimaryGeneratedColumn('increment')
 	id?: number;
 
@@ -17,11 +25,23 @@ export class Role extends TimestampEntity {
 	@Column({ length: 8 })
 	color!: string;
 
+	@Exclude()
 	@OneToMany(() => Account, (account) => account.role)
 	accounts?: Account[] | number[] | null;
 
+	@Exclude()
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@Exclude()
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@Exclude()
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
+
 	constructor(name: string, description: string, color: string) {
-		super();
 		this.name = name;
 		this.description = description;
 		this.color = color;

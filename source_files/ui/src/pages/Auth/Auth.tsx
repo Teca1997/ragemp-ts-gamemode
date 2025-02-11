@@ -1,13 +1,22 @@
 import { BottomNavigation, BottomNavigationAction, Stack } from '@mui/material';
 
 import AppRegistrationIcon from '@mui/icons-material/AppRegistration';
-import LoginForm from '../../components/LoginForm/LoginForm';
 import LoginIcon from '@mui/icons-material/Login';
-import RegisterForm from '../../components/RegisterForm/RegisterForm';
+import { CEF } from '@shared';
 import { useState } from 'react';
+import LoginForm from '../../components/LoginForm/LoginForm';
+import RegisterForm from '../../components/RegisterForm/RegisterForm';
+import { useAppDispatch } from '../../redux/hooks';
+import { authActions } from '../../redux/slices/authSlice';
 
 function Auth() {
 	const [value, setValue] = useState(0);
+	const dispatch = useAppDispatch();
+
+	mp.events.add(CEF.Events.Auth.SetAccountData, (data: string) =>
+		dispatch(authActions.setAuthInfo(JSON.parse(data)))
+	);
+
 	return (
 		<Stack sx={{ height: '100%' }}>
 			<Stack

@@ -34,15 +34,15 @@ export class PlayerService {
 				mp.players.local.getNumberOfTextureVariations(componentId, index)
 			);
 		}
-		mp.console.logInfo(JSON.stringify(numOfTexturesPerDrawable));
+
 		return JSON.stringify(numOfTexturesPerDrawable);
 	}
 
-	setGender(gender: number) {
+	public setGender(gender: number) {
 		mp.players.local.model = this.freemodeCharacters[gender];
 	}
 
-	setParents({ mother, father, similarity, skinSimilarity }: CharacterParents) {
+	public setParents({ mother, father, similarity, skinSimilarity }: CharacterParents) {
 		mp.players.local.setHeadBlendData(
 			mother >>> 0,
 			father >>> 0,
@@ -60,15 +60,16 @@ export class PlayerService {
 	public applyCharacter({
 		gender,
 		parents,
-		hairColors,
-		clothes,
 		faceFeatures,
-		colors,
-		headOverlays
+		headOverlays,
+		clothes,
+		hairColors,
+		eyeColor
 	}: CharacterData) {
 		this.setGender(gender);
 		this.setParents(parents);
-		faceFeatures.forEach((feature, index) => {
+
+		faceFeatures.map((feature, index) => {
 			mp.players.local.setFaceFeature(index, feature);
 		});
 
@@ -80,7 +81,7 @@ export class PlayerService {
 			mp.players.local.setComponentVariation(id, drawable, texture, palette);
 		});
 
-		//mp.players.local.setHairColor(hairColors.color, hairColors.highlightColor);
-		mp.players.local.setEyeColor(colors.eyeColor);
+		mp.players.local.setHairColor(hairColors.color, hairColors.highlightColor);
+		mp.players.local.setEyeColor(eyeColor);
 	}
 }
