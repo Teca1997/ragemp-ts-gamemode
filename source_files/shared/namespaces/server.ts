@@ -1,5 +1,5 @@
 import { ProcessedNamespace } from '../types';
-import { processNamespace } from '../utils/processNamespace';
+import { Utils } from '../utils';
 
 namespace ServerNamespace {
 	export namespace Events {
@@ -21,7 +21,7 @@ namespace ServerNamespace {
 	}
 }
 
-export const Server: ProcessedNamespace<typeof ServerNamespace> = processNamespace(
+export const Server: ProcessedNamespace<typeof ServerNamespace> = Utils.processNamespace(
 	'Server',
 	ServerNamespace
 );

@@ -1,6 +1,6 @@
 import { Divider, FormLabel, Stack } from '@mui/material';
 import Slider from '@mui/material/Slider';
-import { Client, defaultParents } from '@shared';
+import { Client, defaultParents, fatherNames, motherNames } from '@shared';
 import { useMemo, useState } from 'react';
 import ExpandableMenu from '../../ExpandableMenu/ExpandableMenu';
 
@@ -9,8 +9,8 @@ type CreatorParentsTabProps = {
 };
 
 export default function CreatorParentsTab({ defaultExpanded = false }: CreatorParentsTabProps) {
-	const numberOfFathers = 24;
-	const numberOfMothers = 22;
+	const numberOfFathers = fatherNames.length;
+	const numberOfMothers = motherNames.length;
 
 	const [father, setFather] = useState(defaultParents.father);
 	const [mother, setMother] = useState(defaultParents.mother);
@@ -53,27 +53,6 @@ export default function CreatorParentsTab({ defaultExpanded = false }: CreatorPa
 		}
 	];
 
-	const marksFathers = [
-		{
-			value: 0,
-			label: 1
-		},
-		{
-			value: numberOfFathers,
-			label: numberOfFathers
-		}
-	];
-	const marksMothers = [
-		{
-			value: 0,
-			label: 1
-		},
-		{
-			value: numberOfMothers,
-			label: numberOfMothers
-		}
-	];
-
 	return (
 		<ExpandableMenu summary={'Parents'} defaultExpanded={defaultExpanded}>
 			<Stack sx={{ padding: '0 1rem' }}>
@@ -83,14 +62,14 @@ export default function CreatorParentsTab({ defaultExpanded = false }: CreatorPa
 						style={{
 							width: '100px',
 							height: '100px',
-							borderRadius: '1rem'
+							borderRadius: '1rem',
+							margin: 'auto'
 						}}
 					/>
 					<Slider
 						name="fatherSlider"
 						value={father}
 						step={1}
-						marks={marksFathers}
 						min={0}
 						max={numberOfFathers - 1}
 						onChange={(_, value) => {
@@ -106,7 +85,7 @@ export default function CreatorParentsTab({ defaultExpanded = false }: CreatorPa
 							);
 						}}
 					/>
-					<FormLabel sx={{ textAlign: 'center' }}>Father</FormLabel>
+					<FormLabel sx={{ textAlign: 'center' }}>Father: {fatherNames[father]}</FormLabel>
 				</Stack>
 				<Divider />
 				<Stack sx={{ justifyContent: 'center' }}>
@@ -115,14 +94,14 @@ export default function CreatorParentsTab({ defaultExpanded = false }: CreatorPa
 						style={{
 							width: '100px',
 							height: '100px',
-							borderRadius: '1rem'
+							borderRadius: '1rem',
+							margin: 'auto'
 						}}
 					/>
 					<Slider
 						name="motherSlider"
 						value={mother}
 						step={1}
-						marks={marksMothers}
 						min={0}
 						max={numberOfMothers - 1}
 						onChange={(_, value) => {
@@ -138,7 +117,7 @@ export default function CreatorParentsTab({ defaultExpanded = false }: CreatorPa
 							);
 						}}
 					/>
-					<FormLabel sx={{ textAlign: 'center' }}>Mother</FormLabel>
+					<FormLabel sx={{ textAlign: 'center' }}>Mother: {motherNames[mother]}</FormLabel>
 				</Stack>
 				<Divider />
 				<Slider

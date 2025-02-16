@@ -25,7 +25,7 @@ export default function CreatorPersonalDetailsTab({
 	);
 
 	const handleGenderChange = (_event: any, gender: string) => {
-		mp.trigger(Client.Events.CharacterCreator.UpdateGander, gender);
+		mp.trigger(Client.Events.CharacterCreator.UpdateGender, gender);
 		dispatch(characterCreatorActions.setGender(parseInt(gender)));
 	};
 

@@ -1,12 +1,11 @@
-import { yellow } from 'colorette';
-import { Database } from './db';
-
+import { NestFactory } from '@nestjs/core';
 import 'reflect-metadata';
-import './commandProcessor';
-import './objectExtensions';
-import './services';
+import { AppModule } from './app.module';
+import './prototypes';
 
-(async () => {
-	await Database.initialize();
-	console.log(`${yellow('[INFO]')} Packages started....`);
-})();
+async function bootstrap() {
+	await NestFactory.createApplicationContext(AppModule /* , { logger: false } */);
+	console.log(`Server bootstrapped.`);
+}
+
+bootstrap();

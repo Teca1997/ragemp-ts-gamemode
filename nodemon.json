@@ -1,0 +1,7 @@
+{
+	"watch": ["./packages/server/", "./client_packages/"],
+	"ext": "js,json",
+	"exec": "./ragemp-server.exe",
+	"ignore": ["./node_modules"],
+	"verbose": false
+}

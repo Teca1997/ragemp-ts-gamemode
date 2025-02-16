@@ -1,15 +1,29 @@
 {
-	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
+		"target": "ESNext",
+		"moduleResolution": "node",
 		"outDir": "../../client_packages/",
 		"esModuleInterop": true,
+		"module": "CommonJS",
+		"strictNullChecks": true,
+		"strictFunctionTypes": true,
+		"skipLibCheck": true,
+		"strictPropertyInitialization": false,
+		"noImplicitThis": false,
+		"forceConsistentCasingInFileNames": true,
+		"strict": true,
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"resolveJsonModule": true,
+		"baseUrl": "./",
 		"paths": {
-			"@shared": ["../shared/index.ts"]
+			"@shared": ["../shared/index.ts"],
+			"@utils": ["./utils/index.ts"]
 		}
 	},
 	"files": [
 		"../../node_modules/@ragempcommunity/types-client/index.d.ts",
-		"../shared/index.ts",
+		/* "../shared/index.ts", */
 		"./@types/index.d.ts"
 	],
 	"include": ["./**/*", "../shared/index.ts"]

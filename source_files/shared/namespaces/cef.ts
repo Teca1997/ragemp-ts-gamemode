@@ -1,5 +1,5 @@
 import { ProcessedNamespace } from '../types';
-import { processNamespace } from '../utils/processNamespace';
+import { Utils } from '../utils';
 
 namespace CEFNamespce {
 	export enum Pages {
@@ -25,4 +25,7 @@ namespace CEFNamespce {
 	}
 }
 
-export const CEF: ProcessedNamespace<typeof CEFNamespce> = processNamespace('CEF', CEFNamespce);
+export const CEF: ProcessedNamespace<typeof CEFNamespce> = Utils.processNamespace(
+	'CEF',
+	CEFNamespce
+);

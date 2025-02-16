@@ -3,47 +3,33 @@ import { Client, LoginFormValues } from '@shared';
 import { Form, Formik, FormikHelpers } from 'formik';
 
 import TextField from '@mui/material/TextField';
-import { useDispatch } from 'react-redux';
-import { authActions } from '../../redux/slices/authSlice';
+import { LoginResponse } from '../../../../shared/types';
 import { LoginValidationSchema } from '../../utils/validations/validationSchemas';
 import { AuthFormWrapper } from '../StyledComponents';
 import { ToastManager } from '../Toast/ToastManager';
 
 function LoginForm() {
-	const dispatch = useDispatch();
-
-	const handleFormSubmit = (
-		values: LoginFormValues,
-		{ resetForm }: FormikHelpers<LoginFormValues>
-	) => {
+	const handleFormSubmit = async (values: LoginFormValues, { resetForm }: FormikHelpers<LoginFormValues>) => {
 		if (window.mp) {
-			console.log(Client.Events.Auth.Login);
-			console.log(values);
-			mp.events
-				.callProc(Client.Events.Auth.Login, JSON.stringify(values))
-				.then((resultString) => {
-					const result = JSON.parse(resultString);
-					if (result.account) {
-						mp.trigger(Client.Events.Auth.StopAuthCameras);
-						mp.trigger(Client.Events.CharacterSelector.Start);
+			const resultString = await mp.events.callProc(Client.Events.Auth.Login, JSON.stringify(values));
 
-						dispatch(
-							authActions.setAuthInfo({
-								username: result.account.username,
-								email: result.account.email,
-								role: result.account.role,
-								characters: result.account.characters
-							})
-						);
+			try {
+				const result: LoginResponse = JSON.parse(resultString);
+				if (result.success) {
+					mp.trigger(Client.Events.Auth.StopAuthCameras);
+					mp.trigger(Client.Events.CharacterSelector.Start);
 
-						ToastManager.instance.success('Logged in!');
-					} else {
-						result.msgs.map((msg: string) => {
-							ToastManager.instance.warning(msg);
-						});
-					}
-				})
-				.catch((error) => console.log(error));
+					result.msgs.map((msg: string) => {
+						ToastManager.instance.success(msg);
+					});
+				} else {
+					result.msgs.map((msg: string) => {
+						ToastManager.instance.warning(msg);
+					});
+				}
+			} catch (error) {
+				console.log(error);
+			}
 		}
 		resetForm();
 	};
@@ -75,9 +61,7 @@ function LoginForm() {
 									value={formik.values.username}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									error={
-										formik.touched.username && Boolean(formik.errors.username)
-									}
+									error={formik.touched.username && Boolean(formik.errors.username)}
 									helperText={formik.touched.username && formik.errors.username}
 								/>
 
@@ -91,20 +75,13 @@ function LoginForm() {
 									value={formik.values.password}
 									onChange={formik.handleChange}
 									onBlur={formik.handleBlur}
-									error={
-										formik.touched.password && Boolean(formik.errors.password)
-									}
+									error={formik.touched.password && Boolean(formik.errors.password)}
 									helperText={formik.touched.password && formik.errors.password}
 								/>
 							</Stack>
 
 							{
-								<Button
-									variant="contained"
-									type="submit"
-									disabled={formik.isSubmitting}
-									fullWidth
-								>
+								<Button variant="contained" type="submit" disabled={formik.isSubmitting} fullWidth>
 									{formik.isSubmitting ? 'Processing...' : 'Sign in'}
 								</Button>
 							}

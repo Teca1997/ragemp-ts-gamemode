@@ -1,13 +1,8 @@
 import { ProcessedNamespace } from '../types';
-import { processNamespace } from '../utils/processNamespace';
+import { Utils } from '../utils';
 
 namespace ClientNamespace {
 	export namespace Events {
-		export enum PlayerService {
-			GetNumOfComVarPermutions,
-			GetNumHeadOverlayValues
-		}
-
 		export enum Auth {
 			Login,
 			Register,
@@ -26,19 +21,21 @@ namespace ClientNamespace {
 			Start,
 			ApplyCharacter,
 			Save,
-			UpdateGander,
+			UpdateGender,
 			UpdateParents,
 			UpdateFaceFeature,
 			UpdateHeadOverlay,
 			UpdateComponentVariation,
 			UpdateHairColor,
 			UpdateFirstName,
-			UpdateLastName
+			UpdateLastName,
+			GetNumOfComVarPermutions,
+			GetNumHeadOverlayValues
 		}
 	}
 }
 
-export const Client: ProcessedNamespace<typeof ClientNamespace> = processNamespace(
+export const Client: ProcessedNamespace<typeof ClientNamespace> = Utils.processNamespace(
 	'Client',
 	ClientNamespace
 );

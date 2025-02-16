@@ -1,13 +1,20 @@
-import { CharacterData, ownDataType } from '@shared';
+import { CharacterData, ownDataType } from '../../shared/index';
 
 declare global {
-	export interface PlayerMp {
+	interface PlayerMp {
 		activeCharacter?: CharacterData;
 		ownData: ownDataType;
 		__ownData: ownDataType;
 	}
 
-	export namespace NodeJS {
+	namespace NodeJS {
+		interface Module {
+			hot?: {
+				accept: (path?: string, callback?: () => void) => void;
+				dispose: (callback: (data: unknown) => void) => void;
+			};
+		}
+
 		interface ProcessEnv {
 			PRODUCTION_MODE: string;
 			NODE_ENV: string;
