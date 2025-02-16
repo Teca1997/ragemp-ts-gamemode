@@ -1,11 +1,4 @@
-import {
-	CreateDateColumn,
-	DeleteDateColumn,
-	Entity,
-	OneToMany,
-	PrimaryColumn,
-	UpdateDateColumn
-} from 'typeorm';
+import { CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 
 import { Exclude } from 'class-transformer';
 import { AccountSocialClub } from './AccountSocialClub';

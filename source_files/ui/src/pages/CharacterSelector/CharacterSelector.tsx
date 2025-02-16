@@ -152,6 +152,8 @@ function CharacterSelector() {
 				</IconButton>
 				<IconButton
 					onClick={() => {
+						console.log('Character creator');
+
 						mp.trigger(Client.Events.CharacterCreator.Start);
 					}}
 					sx={{ color: 'white' }}

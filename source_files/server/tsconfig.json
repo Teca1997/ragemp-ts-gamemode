@@ -1,7 +1,7 @@
 {
 	"extends": "../../tsconfig.base.json",
 	"compilerOptions": {
-		"outDir": "../../packages/gamemode",
+		"outDir": "../../packages",
 		"sourceMap": false,
 		"declaration": false,
 		"alwaysStrict": true,
@@ -10,14 +10,12 @@
 		"allowJs": true,
 		"esModuleInterop": true,
 		"skipLibCheck": true,
+		"baseUrl": "./",
 		"paths": {
 			"@shared": ["../shared/index.ts"]
-		}
+		},
+		"typeRoots": ["../../node_modules/@ragempcommunity/types-server/index.d.ts"]
 	},
-	"files": [
-		"../../node_modules/@ragempcommunity/types-server/index.d.ts",
-		"./@types/index.d.ts",
-		"../shared/index.ts"
-	],
-	"include": ["./**/*", "../shared/index.ts"]
+	"files": ["@types/index.d.ts", "../../node_modules/@ragempcommunity/types-server/index.d.ts"],
+	"include": ["./**/*", "../../node_modules/@ragempcommunity/types-server/index.d.ts"]
 }

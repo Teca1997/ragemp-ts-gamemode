@@ -1,5 +1,5 @@
 import { ProcessedNamespace } from '../types';
-import { processNamespace } from '../utils/processNamespace';
+import { Utils } from '../utils';
 
 export namespace VariablesNamespace {
 	export enum Player {
@@ -9,7 +9,7 @@ export namespace VariablesNamespace {
 	}
 }
 
-export const Variables: ProcessedNamespace<typeof VariablesNamespace> = processNamespace(
+export const Variables: ProcessedNamespace<typeof VariablesNamespace> = Utils.processNamespace(
 	'Variables',
 	VariablesNamespace
 );

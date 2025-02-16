@@ -45,7 +45,7 @@ export class Character {
 	@Column({ type: 'jsonb', nullable: false })
 	parents!: CharacterParents;
 
-	@Column('int', { array: true })
+	@Column('float', { array: true })
 	faceFeatures!: number[];
 
 	@Column({ type: 'jsonb' })

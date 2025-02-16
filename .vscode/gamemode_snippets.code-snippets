@@ -16,21 +16,38 @@
 	// 	"description": "Log output to console"
 	// }
 
-	"Generate service class by file name": {
-		"prefix": "srvclass",
+	"Client side module": {
+		"prefix": "module",
 		"body": [
-			"export class ${1:NameOfComponent} {",
-			"\tprivate static _instance: ${1:NameOfComponent} = new ${1:NameOfComponent}();",
+			"import { Module, ModuleBase } from '@utils';",
 			"",
-			"\tprivate constructor() {",
-			"\t\tmp.console.logInfo(`[INFO] ${1:NameOfComponent} started......`);",
-			"\t}",
-			"",
-			"\tpublic static get instance(): ${1:NameOfComponent} {",
-			"\t\treturn ${1:NameOfComponent}._instance;",
-			"\t}",
-			"}"
+			"@Module({})",
+			"export class ${1:NameOfComponent} extends ModuleBase {}"
 		],
-		"description": "Generate service class by file name"
+		"description": "Creates standard client side module class and decorator"
+	},
+	"Client side service": {
+		"prefix": "service",
+		"body": [
+			"import { ServiceBase } from '@utils';",
+			"import { injectable } from 'tsyringe';",
+			"",
+			"@injectable()",
+			"export class ${1:NameOfComponent} extends ServiceBase {}",
+			""
+		],
+		"description": "Creates standard client side service"
+	},
+	"Client side events": {
+		"prefix": "events",
+		"body": [
+			"import { MPEvent } from '@utils';",
+			"import { singleton } from 'tsyringe';",
+			"",
+			"@singleton()",
+			"export class ${1:NameOfComponent} {}",
+			""
+		],
+		"description": "Creates standard client side events file"
 	}
 }

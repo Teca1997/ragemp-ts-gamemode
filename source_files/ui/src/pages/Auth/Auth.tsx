@@ -13,9 +13,9 @@ function Auth() {
 	const [value, setValue] = useState(0);
 	const dispatch = useAppDispatch();
 
-	mp.events.add(CEF.Events.Auth.SetAccountData, (data: string) =>
-		dispatch(authActions.setAuthInfo(JSON.parse(data)))
-	);
+	mp.events.add(CEF.Events.Auth.SetAccountData, (data: string) => {
+		dispatch(authActions.setAuthInfo(JSON.parse(data)));
+	});
 
 	return (
 		<Stack sx={{ height: '100%' }}>

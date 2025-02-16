@@ -36,7 +36,7 @@ export default function ClothesMenu() {
 		Promise.all(
 			clothingCategories.map(async ({ id, name }) => {
 				const result = await mp.events.callProc(
-					Client.Events.PlayerService.GetNumOfComVarPermutions,
+					Client.Events.CharacterCreator.GetNumOfComVarPermutions,
 					id
 				);
 

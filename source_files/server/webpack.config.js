@@ -4,8 +4,9 @@ const dotenv = require('dotenv');
 const nodeExternals = require('webpack-node-externals');
 dotenv.config();
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+const webpack = require('webpack');
 
-const outputPath = path.join(__dirname, '../../packages/gamemode');
+const outputPath = path.join(__dirname, '../../packages');
 const pathToModules = path.join(__dirname, '../../node_modules');
 
 const entryPath = path.join(__dirname, './index.ts');
@@ -16,18 +17,14 @@ module.exports = {
 	entry: {
 		server: entryPath
 	},
-	devtool: 'inline-source-map',
+	devtool: 'source-map',
 	target: 'node',
 	mode: 'development',
-	externals: [
-		nodeExternals({
-			modulesDir: pathToModules
-		})
-	],
+	externals: [nodeExternals({ modulesDir: pathToModules })],
 	module: {
 		rules: [
 			{
-				test: /\.ts?$/,
+				test: /\.ts$/,
 				use: 'ts-loader',
 				exclude: [pathToModules]
 			}
@@ -38,8 +35,13 @@ module.exports = {
 		extensions: ['.ts', '.js'],
 		modules: [pathToModules]
 	},
+	plugins: [
+		/* new webpack.HotModuleReplacementPlugin() */
+	],
+	watch: true,
 	output: {
 		path: outputPath,
-		filename: 'index.js'
+		filename: '[name]/index.js',
+		clean: true
 	}
 };

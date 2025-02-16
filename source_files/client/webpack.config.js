@@ -15,33 +15,34 @@ const configPath = path.join(__dirname, './tsconfig.json');
 const sourcePath = path.join(__dirname, './');
 
 module.exports = {
+	mode: 'development',
 	entry: {
 		client: entryPath
 	},
 	devtool: 'inline-source-map',
-	target: 'node',
-	mode: 'development',
-	externals: [
-		nodeExternals({
-			modulesDir: pathToModules
-		})
-	],
+	target: ['web', 'es5'],
 	module: {
 		rules: [
 			{
 				test: /\.ts?$/,
 				use: 'ts-loader',
-				exclude: [pathToModules]
+				exclude: /node_modules/
 			}
 		]
 	},
 	resolve: {
+		preferRelative: true,
 		plugins: [new TsconfigPathsPlugin({ configFile: configPath, baseUrl: sourcePath })],
-		extensions: ['.ts', '.js'],
-		modules: [pathToModules]
+		extensions: ['.ts', '.js']
+		//modules: [pathToModules]
 	},
+	watch: true,
 	output: {
 		path: outputPath,
-		filename: 'index.js'
+		filename: 'index.js',
+		clean: true
+	},
+	optimization: {
+		minimize: false
 	}
 };

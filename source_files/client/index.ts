@@ -1,6 +1,10 @@
+import 'reflect-metadata';
+
+import { ModuleResolver } from '@utils';
+import { AppModule } from 'app.module';
+
 import './dataHandlers';
-import './objectExtensions';
-import './services';
+import './prototype';
 
 mp.keys.bind(0x71, true, function () {
 	if (mp.gui.cursor.visible) {
@@ -9,3 +13,10 @@ mp.keys.bind(0x71, true, function () {
 		mp.gui.cursor.show(true, true);
 	}
 });
+
+function bootstrap() {
+	const appModuleInstance = ModuleResolver.resolve(AppModule);
+	mp.console.logInfo('[BOOTSTRAP] Bootstrap done.');
+}
+
+bootstrap();

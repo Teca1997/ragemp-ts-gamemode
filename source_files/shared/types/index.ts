@@ -20,6 +20,8 @@ export interface VehicleMod {
 	value: number;
 }
 
+export type StringifiedObject<T> = string & { __stringifiedObjectTag: T };
+
 export interface ownDataType {
 	account?: AccountData | null;
 }
@@ -38,11 +40,15 @@ export type LoginFormValues = {
 	password: string;
 };
 
+export type LoginResponse = {
+	success: boolean;
+	msgs: string[];
+};
+
 export type RegisterFormValues = {
 	username: string;
 	email: string;
 	password: string;
-	repeatPassword: string;
 };
 export interface CharacterVitals {
 	armour: number;
@@ -92,7 +98,7 @@ export interface CharacterColors {
 	chestHairColor: number;
 }
 
-type IsEnum<T> = T extends Record<string, number> ? true : false;
+export type IsEnum<T> = T extends Record<string, number> ? true : false;
 
 export type ProcessedNamespace<T> = {
 	[K in keyof T]: T[K] extends Record<string, any>

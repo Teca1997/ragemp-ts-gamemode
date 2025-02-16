@@ -1,6 +1,8 @@
 import { FormLabel, Slider, Stack } from '@mui/material';
-import { Client, defaultHeadOverlays } from '@shared';
+import { Client, headOverlaysNames } from '@shared';
 import { useEffect, useState } from 'react';
+import { useAppSelector } from '../../../redux/hooks';
+import { RootState } from '../../../redux/store';
 import ExpandableMenu from '../../ExpandableMenu/ExpandableMenu';
 
 const initialHeadOverlays = [
@@ -55,7 +57,10 @@ const initialHeadOverlays = [
 ];
 
 export default function CreatorHeadOverlaysTab() {
-	const [userHeadOverlays, setUserHeadOverlays] = useState(defaultHeadOverlays);
+	const initialUserHeadOverlays = useAppSelector(
+		(state: RootState) => state.characterCreator.creatorData.headOverlays
+	);
+	const [userHeadOverlays, setUserHeadOverlays] = useState(initialUserHeadOverlays);
 	const [headOverlays, setHeadOverlays] = useState<
 		{ name: string; numHeadOverlayValues: number }[] | null
 	>(null);
@@ -68,7 +73,7 @@ export default function CreatorHeadOverlaysTab() {
 					index: number
 				): Promise<{ name: string; numHeadOverlayValues: number }> => {
 					const result = await mp.events.callProc(
-						Client.Events.PlayerService.GetNumHeadOverlayValues,
+						Client.Events.CharacterCreator.GetNumHeadOverlayValues,
 						index
 					);
 					overlay.numHeadOverlayValues = result;
@@ -82,6 +87,12 @@ export default function CreatorHeadOverlaysTab() {
 
 	const handleChange =
 		(valueName: string, index: number) => (_: Event, value: number | number[]) => {
+			setUserHeadOverlays((prev) => {
+				const newArray = [...prev];
+				newArray[index] = { ...newArray[index], [valueName]: value };
+				return newArray;
+			});
+
 			mp.trigger(
 				Client.Events.CharacterCreator.UpdateHeadOverlay,
 				JSON.stringify({ valueName, index, value })
@@ -99,7 +110,7 @@ export default function CreatorHeadOverlaysTab() {
 								<Slider
 									key={'headOverlaySliderValue' + index}
 									name={'headOverlaySliderValue' + index}
-									defaultValue={
+									value={
 										userHeadOverlays[index].value == 255
 											? -1
 											: userHeadOverlays[index].value
@@ -110,12 +121,17 @@ export default function CreatorHeadOverlaysTab() {
 									max={numHeadOverlayValues - 1}
 									onChange={handleChange('value', index)}
 								/>
-								<FormLabel sx={{ textAlign: 'center' }}>Value</FormLabel>
+								<FormLabel sx={{ textAlign: 'center' }}>
+									Value:{' '}
+									{userHeadOverlays[index].value == 255
+										? ''
+										: headOverlaysNames[index][userHeadOverlays[index]?.value]}
+								</FormLabel>
 								<Slider
 									disabled={userHeadOverlays[index].value == -1}
 									key={'headOverlaySliderOpacity' + index}
 									name={'headOverlaySliderOpacity' + index}
-									defaultValue={userHeadOverlays[index].opacity}
+									value={userHeadOverlays[index].opacity}
 									aria-label="Always visible"
 									step={0.01}
 									min={0}
@@ -130,7 +146,7 @@ export default function CreatorHeadOverlaysTab() {
 											disabled={userHeadOverlays[index].value == -1}
 											key={'headOverlaySliderFirstColor' + index}
 											name={'headOverlaySliderValueFirstColor' + index}
-											defaultValue={userHeadOverlays[index].color}
+											value={userHeadOverlays[index].color}
 											aria-label="Always visible"
 											step={1}
 											min={0}
@@ -148,7 +164,7 @@ export default function CreatorHeadOverlaysTab() {
 											disabled={userHeadOverlays[index].value == -1}
 											key={'headOverlaySliderSecondColor' + index}
 											name={'headOverlaySliderSecondColor' + index}
-											defaultValue={userHeadOverlays[index].secondColor}
+											value={userHeadOverlays[index].secondColor}
 											aria-label="Always visible"
 											step={1}
 											min={0}
