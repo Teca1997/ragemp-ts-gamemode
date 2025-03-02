@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import './prototypes';
 
 async function bootstrap() {
-	await NestFactory.createApplicationContext(AppModule /* , { logger: false } */);
+	await NestFactory.createApplicationContext(AppModule);
 	console.log(`Server bootstrapped.`);
 }
 

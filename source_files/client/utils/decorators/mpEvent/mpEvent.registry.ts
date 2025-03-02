@@ -9,8 +9,15 @@ export class MPEventRegistry {
 
 		const classEvents = this.registry.get(target)!;
 
-		if (classEvents.findIndex((event) => event.eventName === eventData.eventName) !== -1) {
-			mp.console.logError(`Event "${eventData.eventName}" is already registered in ${target.name}.`);
+		if (
+			classEvents.findIndex(
+				(event) => event.eventName === eventData.eventName
+			) !== -1
+		) {
+			mp.console.logError(
+				`Event "${eventData.eventName}" is 
+				already registered in ${target.name}.`
+			);
 		}
 
 		classEvents.push(eventData);

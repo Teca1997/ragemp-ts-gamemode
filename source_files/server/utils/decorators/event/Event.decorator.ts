@@ -4,7 +4,11 @@ type MPEventOptions = {
 };
 
 function MPEvent(options?: MPEventOptions): MethodDecorator {
-	return function (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) {
+	return function (
+		target: any,
+		propertyKey: string | symbol,
+		descriptor: PropertyDescriptor
+	) {
 		if (!target.constructor._mpEvents) {
 			target.constructor._mpEvents = [];
 		}

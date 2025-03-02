@@ -14,17 +14,19 @@ import { RootState } from './redux/store';
 
 function App() {
 	const dispatch = useAppDispatch();
-	const currentPage = useAppSelector((state: RootState) => state.pageManager.currentPage);
+	const currentPage = useAppSelector(
+		(state: RootState) => state.pageManager.currentPage
+	);
 
-	if (window.mp) {
-		mp.events.add(CEF.Events.PageManager.SetPage, (page: string) =>
-			dispatch(pageManagerActions.setPage(page))
-		);
-	}
+	mp.events.add(CEF.Events.PageManager.SetPage, (page: string) =>
+		dispatch(pageManagerActions.setPage(page))
+	);
 	return (
 		<>
 			{currentPage === CEF.Pages.Auth && <Auth />}
-			{currentPage === CEF.Pages.CharacterSelector && <CharacterSelector />}
+			{currentPage === CEF.Pages.CharacterSelector && (
+				<CharacterSelector />
+			)}
 			{currentPage === CEF.Pages.CharacterCreator && <CharacterCreator />}
 			{currentPage === CEF.Pages.Hud && <Hud />}
 			<ToastContainer

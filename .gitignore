@@ -1,12 +1,8 @@
 node_modules
 client_packages
-plugins
-conf.json
-BugTrap-x64.dll
 packages
-maps
 dlcpacks
+maps
 .env
+plugins
 package-lock.jcon
-bin
-ragemp-server.exe

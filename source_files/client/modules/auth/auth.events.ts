@@ -38,7 +38,10 @@ export class AuthEvents extends EventsBase {
 
 	@MPEvent({ name: Client.Events.Auth.Register, proc: true })
 	private async register(data: string) {
-		return await mp.events.callRemoteProc(Server.Events.Auth.Register, data);
+		return await mp.events.callRemoteProc(
+			Server.Events.Auth.Register,
+			data
+		);
 	}
 
 	@MPEvent({ name: Client.Events.Auth.StartAuthCameras })

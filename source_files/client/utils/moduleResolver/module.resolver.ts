@@ -31,28 +31,44 @@ export class ModuleResolver {
 		eventClasses.forEach((eventClass) => {
 			const instance: any = container.resolve(eventClass as any);
 			const events = MPEventRegistry.get(eventClass);
-			events?.forEach(({ eventName, method, proc }: { eventName: string; method: Function; proc: boolean }) => {
-				if (proc == true) {
-					mp.events.addProc(eventName, async (...args: any[]) => {
-						const result = await method.apply(instance, [...args]);
-						return result !== undefined ? result : null;
-					});
-				} else {
-					mp.events.add(eventName, method.bind(instance));
+			events?.forEach(
+				({
+					eventName,
+					method,
+					proc
+				}: {
+					eventName: string;
+					method: Function;
+					proc: boolean;
+				}) => {
+					if (proc == true) {
+						mp.events.addProc(eventName, async (...args: any[]) => {
+							const result = await method.apply(instance, [
+								...args
+							]);
+							return result !== undefined ? result : null;
+						});
+					} else {
+						mp.events.add(eventName, method.bind(instance));
+					}
+					mp.console.logInfo(
+						`Registered ${
+							proc == true ? 'proc ' : ''
+						}event ${eventName} on method ${method.name} from ${
+							instance.constructor.name
+						}`
+					);
 				}
-				mp.console.logInfo(
-					`Registered ${proc == true ? 'proc ' : ''}event ${eventName} on method ${method.name} from ${
-						instance.constructor.name
-					}`
-				);
-			});
+			);
 		});
 	}
 
 	private static resolveImports(imports: any[] = []) {
 		imports.forEach((importedModule) => {
 			if (!ModuleRegistry.has(importedModule)) {
-				mp.console.logError(`Imported module ${importedModule} is not registered.`);
+				mp.console.logError(
+					`Imported module ${importedModule} is not registered.`
+				);
 			}
 			this.resolve(importedModule);
 		});

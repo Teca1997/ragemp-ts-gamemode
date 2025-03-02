@@ -43,7 +43,7 @@ function LoginForm() {
 			</Stack>
 
 			<Formik
-				initialValues={{ username: 'test1', password: 'password' }}
+				initialValues={{ username: '', password: '' }}
 				onSubmit={handleFormSubmit}
 				validationSchema={LoginValidationSchema}
 			>
