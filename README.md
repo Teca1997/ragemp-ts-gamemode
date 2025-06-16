@@ -1,6 +1,6 @@
 # RAGE:MP TypeScript Gamemode
 
-A modular, full-stack gamemode framework for [RAGE:MP](https://rage.mp/) built with **TypeScript** and modern tooling. This project is designed for serious roleplay or freeroam servers, providing clean separation of server, client, and UI logic, and aiming for extensibility.
+A **modular, full-stack gamemode framework** for [RAGE:MP](https://rage.mp/) built with **TypeScript** and modern tooling. Designed for extensibility, clean architecture, and maintainability.
 
 ---
 
@@ -13,6 +13,7 @@ A modular, full-stack gamemode framework for [RAGE:MP](https://rage.mp/) built w
   - [UI](#ui)
   - [Shared](#shared)
 - [Development](#development)
+- [Custom Decorators](#custom-decorators)
 - [Extending & Contributing](#extending--contributing)
 - [License](#license)
 
@@ -20,13 +21,13 @@ A modular, full-stack gamemode framework for [RAGE:MP](https://rage.mp/) built w
 
 ## Overview
 
-This repository implements a modern full-stack gamemode for RAGE:MP with:
+This repository implements a scalable, modular gamemode with:
 
-- **NestJS** backend for modular, testable game logic and module resolution (NestJS is only used for its module resolving ability via `NestFactory`/`NestApplication` and does **not** create a NestJS HTTP server).
-- **TypeORM** for database-agnostic entity management.
-- **Custom Module Resolution** for the client code (inspired by NestJS’s module system, providing modular architecture and dependency resolution).
-- **React + Vite** UI for in-game overlays and menus.
-- **Extensible module system** for adding new features.
+- **NestJS** (server-side module resolution, not REST)
+- **TypeORM** (database-agnostic entity management)
+- **Custom Dependency Injection** (client-side, server migration planned)
+- **React + Vite** (for in-game UI overlays and menus)
+- **Extensible module and event system** (add features easily)
 
 ---
 
@@ -35,260 +36,262 @@ This repository implements a modern full-stack gamemode for RAGE:MP with:
 ### Server
 
 **Main technologies:**  
-- [NestJS](https://nestjs.com/) (for module resolution, not REST API)
-- [TypeORM](https://typeorm.io/) (ORM for DB)
-- TypeScript (strict typing)
+- [NestJS](https://nestjs.com/) (for module wiring)
+- [TypeORM](https://typeorm.io/) ORM
+- TypeScript (strict)
 
-#### Key Concepts
+#### Features as Modules
 
-- **Features as Modules**  
-  Each gameplay feature (authentication, punishment, character creation, etc.) is a separate NestJS module under `server/features/`.
+Each feature (authentication, punishment, character creation, etc.) is a standalone module under `source_files/server/features/`.
 
-  ```typescript
-  // Example: server/features/auth/auth.module.ts
-  import { Module } from '@nestjs/common';
-  import { AuthService } from './auth.service';
-  import { AccountEntity } from '../db/entities/account.entity';
+```typescript name=source_files/server/features/auth/auth.module.ts
+import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Account } from 'db/entities/Account';
+import { AuthEvents } from './auth.events';
+import { AuthService } from './auth.service';
 
-  @Module({
-    providers: [AuthService],
-    imports: [TypeOrmModule.forFeature([AccountEntity])]
-  })
-  export class AuthModule {}
-  ```
+@Module({
+	imports: [TypeOrmModule.forFeature([Account])],
+	providers: [AuthService, AuthEvents],
+	exports: [AuthService]
+})
+export class AuthModule {}
+```
 
-- **Database Entities**  
-  All persistent game data is modeled as TypeORM entities in `server/db/entities/`.
+#### Database Entities
 
-  ```typescript
-  // Example: server/db/entities/account.entity.ts
-  @Entity()
-  export class Account {
-    @PrimaryGeneratedColumn()
-    id: number;
+Entities are in `source_files/server/db/entities/`.
 
-    @Column({ unique: true })
-    username: string;
+```typescript name=source_files/server/db/entities/Account.ts
+import {
+	Column,
+	CreateDateColumn,
+	DeleteDateColumn,
+	Entity,
+	Index,
+	ManyToOne,
+	OneToMany,
+	PrimaryGeneratedColumn,
+	UpdateDateColumn
+} from 'typeorm';
 
-    @Column()
-    email: string;
+import { Exclude } from 'class-transformer';
+import { AccountPunishment } from './AccountPunishment';
+import { Character } from './Character';
+import { Report } from './Report';
+import { Role } from './Role';
 
-    @Column()
-    passwordHash: string;
+@Entity({ database: process.env.DB_DATABASE, schema: process.env.DB_SCHEMA })
+export class Account {
+	@Index()
+	@PrimaryGeneratedColumn('increment')
+	id?: number;
 
-    @Column()
-    salt: string;
+	@Column({ length: 30, unique: true, nullable: false })
+	username!: string;
 
-    @Column({ default: 'user' })
-    role: string;
-  }
-  ```
+	@Column({ length: 50, unique: true, nullable: false })
+	email!: string;
 
-- **Dependency Injection**  
-  Server uses NestJS’s built-in DI for maintainable, testable code.
+	@Exclude()
+	@Column({ type: 'char', length: 128, nullable: false })
+	password!: string;
 
-- **Seeding & Mock Data**  
-  Seeders in `server/db/seeds/` use TypeORM to provide mock data for rapid local development.
+	@Exclude()
+	@Column({ type: 'char', length: 64, nullable: false })
+	salt!: string;
+
+	@Column({ type: 'timestamptz', nullable: true })
+	dateActivated?: Date;
+
+	@Column({ type: 'timestamptz', nullable: true })
+	lastLogin?: Date;
+
+	@Column({ type: 'int', name: 'roleId' })
+	@ManyToOne(() => Role, (role) => role.accounts, { nullable: false, eager: true })
+	role!: number | Role;
+
+	@CreateDateColumn({ type: 'timestamptz' })
+	dateCreated?: Date;
+
+	@Exclude()
+	@DeleteDateColumn({ type: 'timestamptz' })
+	dateDeleted?: Date;
+
+	@Exclude()
+	@UpdateDateColumn({ type: 'timestamptz' })
+	dateUpdated?: Date;
+
+	@OneToMany(() => Character, (character) => character.account, { eager: true })
+	characters?: Character[];
+
+	@OneToMany(() => AccountPunishment, (accountPunishment) => accountPunishment.received, {
+		eager: true
+	})
+	accountPunishments?: AccountPunishment[] | number[];
+
+	@Exclude()
+	@OneToMany(() => AccountPunishment, (accountPunishment) => accountPunishment.issued, {
+		eager: true
+	})
+	accountIssuedPunishments?: AccountPunishment[] | number[];
+
+	@Exclude()
+	@OneToMany(() => Report, (report) => report.claimedBy, { eager: true })
+	accountClaimedBy?: Report[] | number[];
+
+	@Exclude()
+	@OneToMany(() => Report, (report) => report.reportedBy, { eager: true })
+	accountReportedBy?: Report[] | number[];
+
+	constructor(
+		username: string,
+		email: string,
+		password: string,
+		salt: string,
+		role: Role | number = 1
+	) {
+		this.username = username;
+		this.email = email;
+		this.password = password;
+		this.salt = salt;
+		this.role = role;
+	}
+}
+```
 
 #### Major Features
 
-##### 1. Authentication & Account Management
+Authentication (with salted PBKDF2 password hashing):
 
-- **Account Entity:**  
-  Stores user credentials and roles.
-- **AuthService:**  
-  Handles registration and login, salting and hashing passwords with PBKDF2.
+```typescript name=source_files/server/features/auth/auth.service.ts
+public hashPassword(password: string) {
+	const salt = crypto.randomBytes(32).toString('hex');
+	const hash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+	return { salt, hash };
+}
+public comparePasswords(password: string, hash: string, salt: string): boolean {
+	return hash === crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+}
+```
 
-  ```typescript
-  // Example: server/features/auth/auth.service.ts
-  async login({ username, password }): Promise<{ account: AccountData | null; msgs: string[] }> {
-    const account = await this.accountRepository.findOne({ where: { username } });
-    if (!account) return { account: null, msgs: ['User not found'] };
-    const hash = pbkdf2Sync(password, account.salt, 10000, 64, 'sha512').toString('hex');
-    if (hash !== account.passwordHash) return { account: null, msgs: ['Invalid password'] };
-    return { account, msgs: ['Login successful'] };
-  }
-  ```
+Login logic:
 
-- Move players to a restricted "auth position" before login.
+```typescript name=source_files/server/features/auth/auth.service.ts
+async login({
+	username,
+	password
+}: {
+	username: string;
+	password: string;
+}): Promise<{ account: AccountData | null; msgs: string[] }> {
+	const account = await this.accountRepo?.findOne({
+		where: { username: Like(username) }
+	});
+	if (account == null) {
+		return { account: null, msgs: ['No account with username ' + username + ' found!'] };
+	} else {
+		if (this.comparePasswords(password, account.password, account.salt)) {
+			await this.accountRepo?.update(
+				{ username: Like(account.username) },
+				{ lastLogin: new Date() }
+			);
+			return { account: instanceToPlain(account) as AccountData, msgs: [] };
+		} else {
+			return { account: null, msgs: ['Wrong password!'] };
+		}
+	}
+}
+```
 
-##### 2. Character Management
+Module aggregation:
 
-- **Character Entity:**  
-  Stores data for player-created characters.
-- **CharacterCreatorService:**  
-  Attaches new characters to accounts and persists them.
+```typescript name=source_files/server/features/features.module.ts
+import { Module } from '@nestjs/common';
+import { AuthModule } from './auth/auth.module';
+import { CharacterCreatorModule } from './characterCreator/characterCreator.module';
+import { CharacterSelectorModule } from './characterSelector/chracterSelector.module';
+import { CommandProcessorModule } from './commandProcessor/commandProcessor.module';
+import { DeathLogModule } from './deathLog/deathLog.module';
+import { PunishmentModule } from './punishment/punishment.module';
 
-  ```typescript
-  // Example: server/features/character/character.service.ts
-  async createCharacter(accountId: number, data: CharacterDto) {
-    const character = this.characterRepository.create({ ...data, accountId });
-    return await this.characterRepository.save(character);
-  }
-  ```
-
-##### 3. Punishment System (Moderation)
-
-- **Entities:**  
-  - `Ip`, `Serial`, `SocialClub` to uniquely identify and track players.
-- **PunishmentService:**  
-  Saves identifiers for bans, mutes, etc.
-
-  ```typescript
-  // Example: server/features/punishment/punishment.service.ts
-  async banAccount(accountId: number, reason: string) {
-    await this.punishmentRepository.save({ accountId, reason, type: 'ban', createdAt: new Date() });
-  }
-  ```
-
-##### 4. Death Logging
-
-- **CharacterDeathLog Entity:**  
-  Tracks each death event.
-- **DeathLogService:**  
-  Persists logs for analytics or moderation.
-
-  ```typescript
-  // Example: server/features/deathlog/deathlog.service.ts
-  async logDeath(victimId: number, killerId: number, reason: string) {
-    return await this.deathLogRepository.save({ victimId, killerId, reason, timestamp: new Date() });
-  }
-  ```
-
-##### 5. Database Seeding
-
-- **Seeder Example:**  
-  `MockDataSeeder` creates sample roles, accounts, and characters.
+@Module({
+	providers: [],
+	imports: [
+		AuthModule,
+		CharacterCreatorModule,
+		CharacterSelectorModule,
+		CommandProcessorModule,
+		DeathLogModule,
+		PunishmentModule
+	]
+})
+export class FeaturesModule {}
+```
 
 ---
 
 ### Client
 
 **Main technologies:**  
-- TypeScript
-- Custom Module Resolution System (NestJS-inspired)
-- RAGE:MP Client API
+- TypeScript  
+- Custom module/DI system  
+- RAGE:MP Client API  
 
-#### Key Concepts
+Modular client app entrypoint:
 
-- **Modular Architecture**  
-  Client code mirrors the server’s module design.
+```typescript name=source_files/client/app.module.ts
+import { Module, ModuleBase } from '@utils';
+import { AuthModule } from 'modules/auth/auth.module';
+import { CharacterCreatorModule } from 'modules/characterCreator/characterCreator.module';
+import { CharacterSelectorModule } from 'modules/characterSelector/chracterSelector.module';
 
-- **Custom Module Registration & Resolution**  
-  The client features a custom module resolution system inspired by NestJS. Each feature is a module with metadata and dependencies, registered and resolved at runtime.
-
-  ```typescript
-  // Example: client/features/auth/auth.module.ts
-  @Module({ providers: [AuthClientService], events: [LoginEvent] })
-  class AuthClientModule {}
-  ModuleRegistry.register(AuthClientModule, metadata);
-  ModuleResolver.resolve(AuthClientModule);
-  ```
-
-- **Event Handling**  
-  Client events (game engine or custom) are registered to class methods.
-
-  ```typescript
-  // Example: client/features/auth/auth.service.ts
-  @Event('playerLogin')
-  onPlayerLogin(playerData) {
-    // Handle login logic
-  }
-  ```
-
-- **Lifecycle Hooks**  
-  Modules can implement `onInit()` for initialization logic.
-
-  ```typescript
-  // Example
-  class SomeFeatureClientModule {
-    onInit() {
-      // Initialization logic here
-    }
-  }
-  ```
-
-**Important Files:**
-
-- `client/utils/moduleResolver/module.decorator.ts`: Defines the `@Module()` decorator for client modules.
-- `client/utils/moduleResolver/module.registry.ts`: Central registry for modules and metadata.
-- `client/utils/moduleResolver/module.resolver.ts`: Handles module resolution, dependency wiring, lifecycle hooks, and event registration.
+@Module({
+	imports: [AuthModule, CharacterCreatorModule, CharacterSelectorModule]
+})
+export class AppModule extends ModuleBase {}
+```
 
 ---
 
 ### UI
 
 **Main technologies:**  
-- [React](https://react.dev/) (functional components, hooks)
-- [Vite](https://vitejs.dev/) (fast bundler with HMR)
-- TypeScript
-- ESLint (advanced configs)
+- React (functional components, hooks)  
+- Vite (fast build/HMR)  
+- TypeScript  
+- ESLint  
 
-#### Key Concepts
+Minimal UI entrypoint:
 
-- **UI for In-Game Overlays**  
-  The `ui/` directory contains a React app for in-game overlays or menus.
+```tsx name=source_files/ui/src/App.tsx
+import React from 'react';
 
-  ```tsx
-  // Example: ui/src/App.tsx
-  import React from 'react';
+function App() {
+	return (
+		<div className="App">
+			<h1>Welcome to RAGE:MP UI Overlay</h1>
+		</div>
+	);
+}
 
-  function App() {
-    return (
-      <div className="App">
-        <h1>Welcome to RAGE:MP UI Overlay</h1>
-        {/* Add components here */}
-      </div>
-    );
-  }
-
-  export default App;
-  ```
-
-- **Rapid Development**  
-  Vite enables fast changes with HMR.
-
-- **Extensible Linting**  
-  ESLint with recommended and type-aware rules; easy to extend.
-
-#### Customization
-
-- Expand the UI with new components, pages, and logic.
-
-  ```tsx
-  // Example: ui/src/components/PlayerList.tsx
-  import React from 'react';
-
-  export const PlayerList = ({ players }) => (
-    <ul>
-      {players.map(player => (
-        <li key={player.id}>{player.name}</li>
-      ))}
-    </ul>
-  );
-  ```
-
-- See `ui/README.md` for details on ESLint, React plugins, and customizing TypeScript project references.
+export default App;
+```
 
 ---
 
 ### Shared
 
-- **Purpose:**  
-  Contains code and types shared across server, client, and UI.
+Types and helpers used across server, client, and UI:
 
-- **Examples:**  
-  - Shared enums, interfaces, utility functions.
-  - Data for initial seeding/testing (`shared/data/accounts.ts`).
-
-  ```typescript
-  // Example: shared/types/player.ts
-  export interface PlayerData {
-    id: number;
-    name: string;
-    role: 'user' | 'admin';
-  }
-  ```
+```typescript name=source_files/shared/types.ts
+export interface PlayerData {
+	id: number;
+	name: string;
+	role: 'user' | 'admin';
+}
+```
 
 ---
 
@@ -296,15 +299,15 @@ This repository implements a modern full-stack gamemode for RAGE:MP with:
 
 ### Prerequisites
 
-- Node.js (16+ recommended)
-- RAGE:MP server installation
-- Database (PostgreSQL recommended; configure via `.env`)
+- Node.js (16+)
+- RAGE:MP server
+- PostgreSQL DB (configure via `.env`)
 
-### Setup Steps
+### Setup
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/Tecidis/ragemp-ts-gamemode.git
+   git clone https://github.com/Teca1997/ragemp-ts-gamemode.git
    cd ragemp-ts-gamemode
    ```
 
@@ -313,9 +316,8 @@ This repository implements a modern full-stack gamemode for RAGE:MP with:
    npm install
    ```
 
-3. **Configure Environment Variables**  
-   Set up `.env` for DB credentials, ports, etc.
-
+3. **Configure Environment Variables**
+   Edit `.env`:
    ```env
    DB_HOST=localhost
    DB_PORT=5432
@@ -328,7 +330,6 @@ This repository implements a modern full-stack gamemode for RAGE:MP with:
    ```bash
    npm run seed
    ```
-   Uses mock data in `server/db/seeds/`.
 
 5. **Start Server**
    ```bash
@@ -346,24 +347,120 @@ This repository implements a modern full-stack gamemode for RAGE:MP with:
    npm install
    npm run dev
    ```
-   Open the local URL provided by Vite.
+
+---
+
+## Custom Decorators
+
+### `@Module` (Client)
+
+```typescript name=source_files/client/utils/decorators/module/module.decorator.ts
+export interface ModuleMetadata {
+	imports?: any[];
+	exports?: any[];
+	events?: any[];
+	providers?: any[];
+}
+export function Module(metadata: ModuleMetadata) {
+	return function (target: any) {
+		ModuleRegistry.register(target, metadata);
+	};
+}
+```
+
+---
+
+### `@MPEvent` (Server)
+
+```typescript name=source_files/server/utils/decorators/event/Event.decorator.ts
+type MPEventOptions = { name?: string; proc?: boolean; };
+
+function MPEvent(options?: MPEventOptions): MethodDecorator {
+	return function (
+		target: any,
+		propertyKey: string | symbol,
+		descriptor: PropertyDescriptor
+	) {
+		if (!target.constructor._mpEvents) {
+			target.constructor._mpEvents = [];
+		}
+		target.constructor._mpEvents.push({
+			eventName: options?.name ? options.name : propertyKey,
+			propertyKey: propertyKey,
+			proc: options?.proc ? options.proc : false
+		});
+	};
+}
+export { MPEvent };
+```
+
+---
+
+### `ModuleBase` and `EventsBase` (Client)
+
+```typescript name=source_files/client/utils/decorators/module/Module.base.ts
+export abstract class ModuleBase {
+	constructor() {
+		mp.console.logInfo(`${this.constructor.name} created!`);
+	}
+}
+```
+
+```typescript name=source_files/client/utils/decorators/module/Event.base.ts
+export abstract class EventsBase {
+	public _events: { eventName: string; handler: Function; proc: boolean }[] = [];
+	constructor() {
+		mp.console.logInfo(`${this.constructor.name} created!`);
+	}
+}
+```
+
+---
+
+### `MPEventRegistry` (Client)
+
+```typescript name=source_files/client/utils/decorators/mpEvent/mpEvent.registry.ts
+type MPEventData = { eventName: string; method: Function; proc: boolean };
+export class MPEventRegistry {
+	private static registry = new Map<Function, MPEventData[]>();
+
+	static register(target: Function, eventData: MPEventData) {
+		if (!this.registry.has(target)) this.registry.set(target, []);
+		const classEvents = this.registry.get(target)!;
+		if (classEvents.findIndex(ev => ev.eventName === eventData.eventName) !== -1) {
+			mp.console.logError(`Event "${eventData.eventName}" is already registered in ${target.name}.`);
+		}
+		classEvents.push(eventData);
+	}
+	static get(target: Function) {
+		return this.registry.get(target) || [];
+	}
+	static has(target: Function) {
+		return this.registry.has(target);
+	}
+}
+```
+
+---
+
+### Decorator Summary Table
+
+| Decorator/Class      | Purpose                                                    | Where Used         |
+|----------------------|------------------------------------------------------------|--------------------|
+| `@Module`            | Registers a class/module and metadata in ModuleRegistry     | Client modules     |
+| `@MPEvent`           | Marks methods as event handlers; stores metadata           | Server event classes|
+| `ModuleBase`         | Base for module classes, logs creation                     | Client modules     |
+| `EventsBase`         | Base for event handler classes, logs creation              | Client events      |
+| `MPEventRegistry`    | Central registry for event handler metadata                | Client event system|
 
 ---
 
 ## Extending & Contributing
 
-- Add server features by creating modules under `server/features/`.
-
-  ```typescript
-  // Example: server/features/inventory/inventory.module.ts
-  @Module({ providers: [InventoryService] })
-  export class InventoryModule {}
-  ```
-
-- Add client features by implementing modules and registering them with the module resolver.
-- Share types/functions via `shared/`.
+- Add new server/client modules and register them.
+- Share types via `shared/`.
 - Extend the UI with new React components and pages.
-- Pull requests welcome! Please use TypeScript and keep code modular.
+- Pull requests welcome! Use TypeScript and modular code.
 
 ---
 
