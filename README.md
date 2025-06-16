@@ -1,6 +1,6 @@
 # RAGE:MP TypeScript Gamemode
 
-A modular, full-stack gamemode framework for [RAGE:MP](https://rage.mp/) built with **TypeScript** and modern tooling. This project is designed for serious roleplay or freeroam servers, providing clean separation of server, client, and UI logic, strong typing, and scalable architecture.
+A modular, full-stack gamemode framework for [RAGE:MP](https://rage.mp/) built with **TypeScript** and modern tooling. This project is designed for serious roleplay or freeroam servers, providing clean separation of server, client, and UI logic, and aiming for extensibility.
 
 ---
 
@@ -22,9 +22,9 @@ A modular, full-stack gamemode framework for [RAGE:MP](https://rage.mp/) built w
 
 This repository implements a modern full-stack gamemode for RAGE:MP with:
 
-- **NestJS** backend for modular, testable game logic and module resolution (NestJS is only used for its module resolving ability via `NestFactory`/`NestApplication` and does **not** create a NestJS REST API).
+- **NestJS** backend for modular, testable game logic and module resolution (NestJS is only used for its module resolving ability via `NestFactory`/`NestApplication` and does **not** create a NestJS HTTP server).
 - **TypeORM** for database-agnostic entity management.
-- **Custom Dependency Injection** for the client code (**server migration planned**).
+- **Custom Module Resolution** for the client code (inspired by NestJS’s module system, providing modular architecture and dependency resolution).
 - **React + Vite** UI for in-game overlays and menus.
 - **Extensible module system** for adding new features.
 
@@ -85,8 +85,7 @@ This repository implements a modern full-stack gamemode for RAGE:MP with:
   ```
 
 - **Dependency Injection**  
-  Server uses NestJS’s built-in DI for maintainable, testable code.  
-  **Planned:** Migrate to a custom DI system (like the client) in a future update.
+  Server uses NestJS’s built-in DI for maintainable, testable code.
 
 - **Seeding & Mock Data**  
   Seeders in `server/db/seeds/` use TypeORM to provide mock data for rapid local development.
@@ -167,7 +166,7 @@ This repository implements a modern full-stack gamemode for RAGE:MP with:
 
 **Main technologies:**  
 - TypeScript
-- Custom DI/Module System
+- Custom Module Resolution System (NestJS-inspired)
 - RAGE:MP Client API
 
 #### Key Concepts
@@ -175,8 +174,8 @@ This repository implements a modern full-stack gamemode for RAGE:MP with:
 - **Modular Architecture**  
   Client code mirrors the server’s module design.
 
-- **Module Registration & Dependency Injection**  
-  Each feature is a module with metadata.
+- **Custom Module Registration & Resolution**  
+  The client features a custom module resolution system inspired by NestJS. Each feature is a module with metadata and dependencies, registered and resolved at runtime.
 
   ```typescript
   // Example: client/features/auth/auth.module.ts
@@ -213,7 +212,7 @@ This repository implements a modern full-stack gamemode for RAGE:MP with:
 
 - `client/utils/moduleResolver/module.decorator.ts`: Defines the `@Module()` decorator for client modules.
 - `client/utils/moduleResolver/module.registry.ts`: Central registry for modules and metadata.
-- `client/utils/moduleResolver/module.resolver.ts`: Resolves dependencies, runs lifecycle hooks, registers events.
+- `client/utils/moduleResolver/module.resolver.ts`: Handles module resolution, dependency wiring, lifecycle hooks, and event registration.
 
 ---
 
